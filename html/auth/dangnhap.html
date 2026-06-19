@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../css/auth.css" />
+    <link rel="stylesheet" href="../../css/font.css" />
+    <title>Đăng nhập</title>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="logo">
+        <img src="../../image/logo.png" alt="logo" />
+        <a href="#">Manga.org</a>
+      </div>
+
+      <div class="login-box">
+        <div class="title"><h2>Đăng nhập vào tài khoản</h2></div>
+
+        <div class="login-input-div">
+          <label for="email">Email:</label>
+          <input type="email" id="email" />
+          <div id="email-login-message" class="message"></div>
+
+          <label for="password">Mật khẩu:</label>
+          <input type="password" id="password" />
+          <div id="password-login-message" class="message"></div>
+
+          <button class="login-btn" onclick="checkValidateforSignIn()">Đăng nhập</button>
+        </div>
+
+        <div class="or">hoặc</div>
+
+        <button class="btn-google" onclick="dangNhapGoogle()">
+          <img src="https://www.svgrepo.com/show/475656/google-color.svg" style="width: 24px" />
+          <span> Đăng nhập bằng Google </span>
+        </button>
+
+        <div class="box-new-user">
+          <p>Người mới? <a href="./dangky.html">Đăng ký ở đây</a></p>
+        </div>
+      </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+    
+    <script src="../../js/firebase-config.js"></script>
+    <script src="../../js/auth.js"></script>
+  </body>
+</html>

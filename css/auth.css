@@ -1,0 +1,140 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif !important;
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(14, 14, 14);
+}
+
+.login-container {
+  width: 90%;
+  max-width: 37.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.625em;
+  margin-bottom: 1.25em;
+}
+.logo img {
+  width: 4.0625em;
+}
+.logo a {
+  color: #eee;
+  font-size: 1.25em;
+  text-decoration: none;
+}
+
+.login-box {
+  width: 100%;
+  background-color: rgb(25, 26, 30);
+  padding: 2.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+  border-top: 0.3125em solid rgb(253, 79, 50);
+  border-radius: 0.3125em;
+}
+
+.title h2 {
+  color: #eee;
+  text-align: center;
+  margin-bottom: 0.3125em;
+}
+
+.login-input-div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3125em;
+}
+.login-input-div label {
+  color: #eee;
+  font-size: 0.9rem;
+}
+.message {
+  color: #ff4d4d;
+  font-size: 0.8rem;
+  min-height: 1em;
+}
+
+input {
+  width: 100%;
+  padding: 0.625em;
+  border-radius: 0.3125em;
+  border: 0.09375em solid transparent;
+  background-color: rgb(34, 35, 42);
+  color: white;
+  outline: none;
+  transition: border 0.3s;
+}
+input:focus {
+  border: 0.09375em solid rgb(253, 79, 50);
+}
+
+.login-btn {
+  background-color: rgb(253, 79, 50);
+  border: none;
+  border-radius: 0.3125em;
+  color: #eee;
+  padding: 0.6875em;
+  cursor: pointer;
+  margin-top: 0.5em;
+  transition: background-color 0.2s;
+}
+.login-btn:hover {
+  background-color: rgb(212, 66, 40);
+}
+
+.or {
+  display: flex;
+  align-items: center;
+  color: #444;
+  margin: 0.625em 0;
+}
+.or::before,
+.or::after {
+  content: "";
+  flex: 1;
+  height: 0.0625em;
+  background: #444;
+  margin: 0 0.625em;
+}
+
+.btn-google {
+  background-color: #eee;
+  color: #272727;
+  border: none;
+  border-radius: 0.3125em;
+  padding: 0.625em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+.btn-google span {
+  margin-left: 0.4375em;
+  font-size: 1.2em;
+}
+
+.box-new-user {
+  margin-top: 1.25em;
+  padding-top: 1.25em;
+  border-top: 0.0625em solid #444;
+  text-align: center;
+  color: #eee;
+}
+.box-new-user a {
+  color: rgb(212, 66, 40);
+  text-decoration: none;
+}
