@@ -1,5 +1,7 @@
-const urlApi =
-  "https://api.mangadex.org/manga?order[followedCount]=desc&year=2021&contentRating[]=safe&limit=5&includes[]=cover_art";
+const LIMIT = 5;
+const THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO = 1000;
+
+const urlApi = `https://api.mangadex.org/manga?order[followedCount]=desc&year=2021&contentRating[]=safe&limit=${LIMIT}&includes[]=cover_art`;
 
 function testElement(selector) {
   var element = document.querySelector(selector);
@@ -56,7 +58,7 @@ function setCarouselData(data) {
   xuLyGiaoDienCarousel();
   const carouselElement = document.querySelector("#carouselExampleCaptions");
   const carousel = new bootstrap.Carousel(carouselElement, {
-    interval: 2000,
+    interval: THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO,
     ride: "carousel",
   });
 }
@@ -66,7 +68,7 @@ function generateMangaPage(pageIndex, mangaItem) {
   const activeClass = pageIndex === 0 ? "active" : "";
 
   let nameTruyen = Object.values(mangaItem?.attributes?.title)[0];
-  let descriptionTruyen = mangaItem?.attributes?.description?.en;
+  let descTruyen = mangaItem?.attributes?.description?.en;
   let idTruyen = mangaItem?.id;
   const fileCoverTruyen = mangaItem?.relationships.find((item) => item.type === "cover_art")
     ?.attributes?.fileName;
@@ -74,17 +76,33 @@ function generateMangaPage(pageIndex, mangaItem) {
 
   const pageHtml = `
     <div class="carousel-item ${activeClass}">
-      <img src="${linkCoverTruyen}" class="d-block w-100" id="manga-carousel-background" alt="..." />
-      <div class="carousel-caption d-none d-md-block">
-        <h2 class="manga-carousel-popular-title">Manga mới nổi</h2>
-        <img src="${linkCoverTruyen}" alt="" class="manga-carousel-cover" />
-        <div class="manga-carousel-text-info">
-          <h5 class="manga-carousel-title-manga">${nameTruyen}</h5>
-          <ul class="manga-carousel-tag"></ul>
-          <p class="manga-carousel-description">${descriptionTruyen}</p>
-        </div>
-      </div>
-    </div>
+            <img
+              src="${linkCoverTruyen}"
+              class="d-block w-100"
+              id="manga-carousel-background"
+              alt="..."
+            />
+
+            <div class="carousel-caption d-none d-md-block">
+              <div class="manga-carousel-content-container">
+              <div class="manga-carousel-cover-container">
+                <img src="${linkCoverTruyen}" alt="" class="manga-carousel-cover" />
+              </div>
+
+              <div class="manga-carousel-text-info">
+                <h5 class="manga-carousel-title-manga">
+                  ${nameTruyen}
+                </h5>
+
+                <ul class="manga-carousel-tag"></ul>
+
+                <p class="manga-carousel-description">
+                  ${descTruyen}
+                </p>
+              </div>
+              </div>
+            </div>
+          </div>
   `;
 
   if (pageIndex === 0) container.innerHTML = "";

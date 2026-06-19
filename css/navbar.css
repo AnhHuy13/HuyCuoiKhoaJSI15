@@ -1,3 +1,7 @@
+:root {
+  --navbar-animation-time: 3s;
+}
+
 .sidebar {
   width: 20%;
   height: 100vh;
@@ -18,7 +22,7 @@
   gap: 10px;
   color: white;
   text-decoration: none;
-  padding: 10px;
+  padding: 0px;
   width: 100%;
 }
 
@@ -71,4 +75,15 @@ body {
   font-weight: bold;
   border-radius: 10px;
   border: none;
+}
+
+.sidebar {
+  left: 0;
+  right: auto;
+  transform: translateX(-100%);
+  transition: transform var(--navbar-animation-time) ease-in-out;
+}
+
+.sidebar.open {
+  transform: translateX(0);
 }

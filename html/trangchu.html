@@ -65,6 +65,13 @@
 
     <div class="container-fluid pt-4">
       <div class="banner-box">
+        <button
+          class="toggle-menu-btn"
+          style="position: fixed; top: 15px; right: 15px; z-index: 9999"
+        >
+          Menu
+        </button>
+
         <input type="text" placeholder="Search..." class="search-box" />
       </div>
       <div id="carouselExampleCaptions" class="carousel slide">
@@ -76,24 +83,25 @@
               id="manga-carousel-background"
               alt="..."
             />
+            <div class="carousel-caption">
+              <div class="manga-carousel-content-container">
+                <div class="manga-carousel-cover-container">
+                  <img src="../image/TEST.jpg" alt="" class="manga-carousel-cover" />
+                </div>
 
-            <div class="carousel-caption d-none d-md-block">
-              <h2 class="manga-carousel-popular-title">Manga mới nổi</h2>
+                <div class="manga-carousel-text-info">
+                  <h5 class="manga-carousel-title-manga">
+                    Lorem ipsum dolor sit amet consectetur adipiscing elit.
+                  </h5>
 
-              <img src="../image/TEST.jpg" alt="" class="manga-carousel-cover" />
+                  <ul class="manga-carousel-tag"></ul>
 
-              <div class="manga-carousel-text-info">
-                <h5 class="manga-carousel-title-manga">
-                  Lorem ipsum dolor sit amet consectetur adipiscing elit.
-                </h5>
-
-                <ul class="manga-carousel-tag"></ul>
-
-                <p class="manga-carousel-description">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-                  incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-                  exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </p>
+                  <p class="manga-carousel-description">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -102,5 +110,6 @@
     </div>
 
     <script src="../js/trangchu.js"></script>
+    <script src="../js/navbar.js"></script>
   </body>
 </html>
