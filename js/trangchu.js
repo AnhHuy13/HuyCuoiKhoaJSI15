@@ -1,5 +1,5 @@
 const LIMIT = 5;
-const THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO = 1000;
+const THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO = 3000;
 
 const urlApi = `https://api.mangadex.org/manga?order[followedCount]=desc&year=2021&contentRating[]=safe&limit=${LIMIT}&includes[]=cover_art`;
 
@@ -15,6 +15,7 @@ function testElement(selector) {
 fetch(urlApi)
   .then((response) => response.json())
   .then((data) => {
+    console.log(data);
     setCarouselData(data);
   })
   .catch((error) => {

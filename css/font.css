@@ -1,13 +1,13 @@
 @font-face {
-  font-family: "Ubuntu Regular";
+  font-family: "Ubuntu";
   src: url("../font/UbuntuRegular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Ubuntu Bold";
+  font-family: "Ubuntu";
   src: url(../font/UbuntuBold.woff2) format("woff2");
-  font-weight: bold;
+  font-weight: 700;
   font-style: normal;
 }

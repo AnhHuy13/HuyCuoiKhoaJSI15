@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đọc truyện</title>
+    <link rel="stylesheet" href="../css/font.css" />
+    <link rel="stylesheet" href="../css/doctruyen.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/css/flag-icon.min.css"
+    />
+  </head>
+  <body>
+    <div class="manga-container">
+      <div class="manga-page-container" id="manga-page-container">
+        <img src="" alt="" class="manga-page" id="manga-page" />
+        <div class="slider-container">
+          <div id="slider-tooltip">1</div>
+          <input type="range" min="1" max="10" step="1" value="1" id="manga-progress" />
+        </div>
+      </div>
+
+      <div class="manga-page-controller">
+        <div class="manga-sidebar-name-container">
+          <div class="manga-sidebar-name-container-content">
+            <span class="flag-icon flag-icon-un" id="flag-icon"></span>
+            <h5 class="manga-sidebar-name-manga" id="manga-sidebar-name-manga">Tên truyện</h5>
+          </div>
+          <p class="manga-sidebar-chapter-name-manga" id="manga-sidebar-chapter-name-manga">
+            Tên chương ở đây...
+          </p>
+        </div>
+        <div class="manga-sidebar-button-container">
+          <button id="prev-page">Trang trước</button>
+          <button id="next-page">Trang sau</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="../js/doctruyen/doctruyen.js"></script>
+    <script src="../js/doctruyen/sidebar-controller.js"></script>
+    r
+  </body>
+</html>

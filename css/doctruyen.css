@@ -1,0 +1,165 @@
+:root {
+  --background-color: rgb(25, 26, 28);
+  --sidebar-background-color: rgb(44, 44, 44);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif !important;
+}
+
+.manga-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.manga-page-container {
+  flex: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background-color);
+}
+
+.manga-page-controller {
+  flex: 1;
+  background-color: var(--sidebar-background-color);
+  border-left: 2px solid rgb(61, 64, 68);
+}
+
+.manga-page {
+  display: block;
+  max-width: 100%;
+  max-height: 100vh;
+  height: auto;
+  width: auto;
+  object-fit: contain;
+}
+
+.manga-sidebar-name-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid rgb(61, 64, 68);
+  border-bottom: 2px solid rgb(61, 64, 68);
+}
+
+.manga-sidebar-name-container-content {
+  margin-top: 7px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#flag-icon {
+  font-size: 1.6em;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.manga-sidebar-name-manga {
+  color: white;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.manga-sidebar-chapter-name-manga {
+  font-size: 13px;
+  color: lightgray;
+  margin-bottom: 7px;
+  margin-top: 3px;
+}
+.manga-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+}
+
+.manga-page-container {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background-color);
+  padding: 10px;
+}
+
+.manga-page {
+  flex: 1;
+  max-width: 100%;
+  max-height: calc(100vh - 50px);
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+#manga-progress {
+  -webkit-appearance: none;
+  width: 90%;
+  height: 6px;
+  background: #3d4044;
+  outline: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background: linear-gradient(to right, #2ecc71 var(--value), #3d4044 var(--value));
+}
+
+#manga-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 25px;
+  background: #cccccc;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+#manga-progress::-webkit-slider-thumb:hover {
+  background: #ffffff;
+}
+
+.manga-page-controller {
+  flex: 1;
+  background-color: var(--sidebar-background-color);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.manga-sidebar-name-container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.slider-container {
+  position: relative;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+#slider-tooltip {
+  position: absolute;
+  top: -40px;
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+
+  opacity: 0;
+  transition: opacity 0.3s ease;
+
+  left: 0;
+  transform: translateX(20%);
+}
+
+#slider-tooltip.show {
+  opacity: 1;
+}

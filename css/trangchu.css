@@ -1,17 +1,19 @@
 :root {
+  --navbar-animation-time: 0.3s;
+  --menu-background-color: rgb(25, 26, 28);
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Ubuntu Bold", sans-serif !important;
+  font-family: "Ubuntu", sans-serif !important;
 }
 
 body {
   padding-left: 0;
-  transition: padding-left 3s ease-in-out;
-  background-color: rgb(25, 26, 28);
+  transition: padding-left var(--navbar-animation-time) ease-in-out;
+  background-color: var(--menu-background-color);
 }
 
 body.sidebar-open {
@@ -35,8 +37,12 @@ body.sidebar-open {
   object-position: center 40% !important;
   opacity: 0.4;
 
-  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    var(--menu-background-color) 30%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(to bottom, var(--menu-background-color) 30%, transparent 100%);
 }
 
 .carousel-caption,
@@ -51,17 +57,13 @@ body.sidebar-open {
 
 .carousel-caption {
   position: absolute;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  top: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  padding: 0 !important;
-  margin: 0 !important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 10;
-
-  display: flex !important;
+  padding: 0;
+  display: flex;
   flex-direction: column;
 }
 
@@ -73,10 +75,10 @@ body.sidebar-open {
 }
 
 .manga-carousel-content-container {
+  margin-top: 80px;
   display: flex;
   flex-direction: row;
   flex: 1;
-  padding-top: 15px;
 }
 
 .manga-carousel-cover-container {
@@ -95,7 +97,7 @@ body.sidebar-open {
   flex: 1;
   margin-left: 20px;
   text-align: left !important;
-  font-family: "Ubuntu Regular", "Ubuntu Bold", sans-serif;
+  font-family: "Ubuntu", "Ubuntu", sans-serif;
   align-items: flex-start;
 }
 
@@ -128,4 +130,15 @@ body.sidebar-open {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.banner-box {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  z-index: 9999;
 }

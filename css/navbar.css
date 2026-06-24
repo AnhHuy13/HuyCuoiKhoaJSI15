@@ -1,5 +1,7 @@
 :root {
-  --navbar-animation-time: 3s;
+  --navbar-animation-time: 0.3s;
+  --navbar-color-background: rgb(44, 44, 44);
+  --active-button-navbar: rgb(253, 79, 50);
 }
 
 .sidebar {
@@ -8,7 +10,7 @@
   position: fixed;
   top: 0;
   left: 0;
-  background-color: rgb(44, 44, 44);
+  background-color: var(--navbar-color-background);
   padding: 20px 15px;
   display: flex;
   flex-direction: column;
@@ -71,7 +73,7 @@ body {
 }
 
 .nav-item.active {
-  background-color: rgb(253, 79, 50);
+  background-color: var(--active-button-navbar);
   font-weight: bold;
   border-radius: 10px;
   border: none;
@@ -86,4 +88,12 @@ body {
 
 .sidebar.open {
   transform: translateX(0);
+}
+
+.sidebar.open + .container-fluid .header-logo {
+  display: none;
+}
+
+.sidebar:not(.open) .sidebar-logo {
+  display: none;
 }
