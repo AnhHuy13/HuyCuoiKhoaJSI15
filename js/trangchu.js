@@ -1,26 +1,18 @@
-const LIMIT = 5;
+import { LayMangaChoCarousel } from "./fetch.js";
+import { ChuyenLocale } from "./utility.js";
+
 const THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO = 3000;
 
-const urlApi = `https://api.mangadex.org/manga?order[followedCount]=desc&year=2021&contentRating[]=safe&limit=${LIMIT}&includes[]=cover_art`;
+setCarouselData();
 
 function testElement(selector) {
   var element = document.querySelector(selector);
   if (element === null) {
-    console.error("!!!!!! Không tìm thấy phần tử: " + selector + " !!!!!!!!!");
+    console.error("Không tìm thấy phần tử: " + selector + " !!!!!!!!!");
     return {};
   }
   return element;
 }
-
-fetch(urlApi)
-  .then((response) => response.json())
-  .then((data) => {
-    console.log(data);
-    setCarouselData(data);
-  })
-  .catch((error) => {
-    console.error("lỗi:", error);
-  });
 
 function xuLyGiaoDienCarousel() {
   var tatCaSlides = document.querySelectorAll("#carouselExampleCaptions .carousel-item");
@@ -49,9 +41,9 @@ function xuLyGiaoDienCarousel() {
   }
 }
 
-function setCarouselData(data) {
-  const mangaArray = data?.data || [];
-
+async function setCarouselData() {
+  const mangaArray = await LayMangaChoCarousel(5);
+  console.log(mangaArray);
   mangaArray.forEach((mangaItem, index) => {
     generateMangaPage(index, mangaItem);
   });
@@ -68,12 +60,10 @@ function generateMangaPage(pageIndex, mangaItem) {
   const container = document.querySelector("#carouselExampleCaptions .carousel-inner");
   const activeClass = pageIndex === 0 ? "active" : "";
 
-  let nameTruyen = Object.values(mangaItem?.attributes?.title)[0];
-  let descTruyen = mangaItem?.attributes?.description?.en;
-  let idTruyen = mangaItem?.id;
-  const fileCoverTruyen = mangaItem?.relationships.find((item) => item.type === "cover_art")
-    ?.attributes?.fileName;
-  const linkCoverTruyen = "https://uploads.mangadex.org/covers/" + idTruyen + "/" + fileCoverTruyen;
+  let nameTruyen = mangaItem?.title;
+  let descTruyen = mangaItem?.desc;
+  let linkCoverTruyen = mangaItem?.linkFileCover;
+  let flagTruyen = mangaItem?.originalLanguage;
 
   const pageHtml = `
     <div class="carousel-item ${activeClass}">
@@ -91,10 +81,12 @@ function generateMangaPage(pageIndex, mangaItem) {
               </div>
 
               <div class="manga-carousel-text-info">
-                <h5 class="manga-carousel-title-manga">
-                  ${nameTruyen}
-                </h5>
-
+                <div class="manga-carousel-title-container">
+                  <span class="flag-icon flag-icon-${ChuyenLocale(flagTruyen)}" id="flag-icon"></span>
+                  <h5 class="manga-carousel-title-manga">
+                    ${nameTruyen}
+                  </h5>
+                </div>
                 <ul class="manga-carousel-tag"></ul>
 
                 <p class="manga-carousel-description">
@@ -112,7 +104,7 @@ function generateMangaPage(pageIndex, mangaItem) {
   const currentSlide = container.children[pageIndex];
   let ulElement = currentSlide.querySelector(".manga-carousel-tag");
   let fragment = document.createDocumentFragment();
-  let tagsArray = mangaItem?.attributes?.tags || [];
+  let tagsArray = mangaItem?.tags || [];
 
   for (let tagItem of tagsArray) {
     let liElement = document.createElement("li");

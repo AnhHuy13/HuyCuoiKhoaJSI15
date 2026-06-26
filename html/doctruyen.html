@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="../css/doctruyen.css" />
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.4.3/css/flag-icon.min.css"
+      href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"
     />
   </head>
   <body>
@@ -22,24 +22,55 @@
       </div>
 
       <div class="manga-page-controller">
-        <div class="manga-sidebar-name-container">
-          <div class="manga-sidebar-name-container-content">
-            <span class="flag-icon flag-icon-un" id="flag-icon"></span>
-            <h5 class="manga-sidebar-name-manga" id="manga-sidebar-name-manga">Tên truyện</h5>
+        <div class="manga-sidebar-start">
+          <div class="manga-sidebar-name-container">
+            <div class="manga-sidebar-name-container-content">
+              <span class="fi fi-un" id="flag-icon-manga-original"></span>
+              <h5 class="manga-sidebar-name-manga" id="manga-sidebar-name-manga">Tên truyện</h5>
+            </div>
+            <p class="manga-sidebar-chapter-name-manga" id="manga-sidebar-chapter-name-manga">
+              Tên chương ở đây...
+            </p>
           </div>
-          <p class="manga-sidebar-chapter-name-manga" id="manga-sidebar-chapter-name-manga">
-            Tên chương ở đây...
-          </p>
+          <div class="manga-sidebar-scanlation-container">
+            <p>Được dịch từ nhóm:</p>
+            <div class="manga-sidebar-scanlation-info">
+              <span class="fi fi-un" id="flag-icon-manga-scanlation"></span>
+              <h6 class="manga-sidebar-scanlation-name" id="manga-sidebar-scanlation-name">
+                Tên nhóm dịch...
+              </h6>
+            </div>
+          </div>
+          <div class="manga-sidebar-vol-switcher-container">
+            <button
+              id="manga-sidebar-previous-switch"
+              class="manga-sidebar-previous-switch"
+            ></button>
+            <div class="manga-sidebar-vol-container">
+              <p class="manga-sidebar-vol-current" class="manga-sidebar-vol-current">
+                Vol. 1 Ch. 1 Chaptername....
+              </p>
+            </div>
+            <button id="manga-sidebar-next-switch" class="manga-sidebar-next-switch"></button>
+          </div>
         </div>
-        <div class="manga-sidebar-button-container">
-          <button id="prev-page">Trang trước</button>
-          <button id="next-page">Trang sau</button>
+
+        <div class="manga-sidebar-end">
+          <div class="manga-sidebar-button-container">
+            <button id="prev-page"></button>
+            <div class="manga-sidebar-page-container">
+              <p class="manga-sidebar-page-current" class="manga-sidebar-page-current">
+                Page 0/0000
+              </p>
+            </div>
+            <button id="next-page"></button>
+          </div>
         </div>
       </div>
     </div>
 
-    <script src="../js/doctruyen/doctruyen.js"></script>
-    <script src="../js/doctruyen/sidebar-controller.js"></script>
-    r
+    <script type="module" src="../js/fetch.js"></script>
+    <script type="module" src="../js/doctruyen/UIDocTruyen.js"></script>
+    <script type="module" src="../js/doctruyen/sidebarDocTruyen.js"></script>
   </body>
 </html>

@@ -1,13 +1,19 @@
+// Test file này thì vào Url (có thể cần chạy trên liveserver)
+// http://localhost:5500/html/doctruyen.html?mangaId=418791c0-35cf-4f87-936b-acd9cddf0989&chapterId=553d4bab-1b8c-4dea-953a-90e76e3acfe4
+//
+// Nội dung phải hiện:
+// Tên Manga: Hoa Thơm Kiêu Hãnh
+// Tên Chapter: Tương Lai Của Kaoruko
+// Tên nhóm dịch: IVM
+
+import { LayArrayHinhManga } from "../fetch.js";
+
 const params = new URLSearchParams(window.location.search);
 let mangaId = params.get("mangaId");
 let chapterId = params.get("chapterId");
 let mangaCurrentPage = 0;
 let mangaMaxPage = 0;
 let mangaLinkFileArray;
-
-if (mangaId && chapterId) {
-  LayArrayHinhManga(mangaId, chapterId);
-}
 
 const slider = document.getElementById("manga-progress");
 const tooltip = document.getElementById("slider-tooltip");
@@ -29,7 +35,7 @@ function DelayAnTooltip() {
   }, 500);
 }
 
-function CapNhatSlider(pageIndex) {
+function CapNhatSliderVaCurTrang(pageIndex) {
   slider.value = pageIndex;
 
   const percent = (slider.value - slider.min) / (slider.max - slider.min) || 0;
@@ -42,6 +48,9 @@ function CapNhatSlider(pageIndex) {
   const newPos = percent * (sliderWidth - thumbWidth) + thumbWidth / 2;
 
   tooltip.style.left = newPos + "px";
+
+  document.querySelector(".manga-sidebar-page-current").textContent =
+    `Page ${mangaCurrentPage}/${mangaMaxPage}`;
 }
 
 slider.addEventListener("input", function () {
@@ -49,42 +58,32 @@ slider.addEventListener("input", function () {
   HienTrangManga(mangaCurrentPage, mangaLinkFileArray);
 
   HienTooltip();
-  CapNhatSlider(mangaCurrentPage);
+  CapNhatSliderVaCurTrang(mangaCurrentPage);
 });
 
 slider.addEventListener("change", () => {
   DelayAnTooltip();
 });
 
-async function LayArrayHinhManga(mangaId, chapterId) {
-  try {
-    const response = await fetch(`https://api.mangadex.org/at-home/server/${chapterId}`);
-    const result = await response.json();
-    console.log(result);
+Initial();
 
-    mangaLinkFileArray = DoiThanhMangaLinkFileArray(
-      result?.baseUrl,
-      result?.chapter?.hash,
-      result?.chapter?.data,
-    );
+async function Initial() {
+  if (mangaId && chapterId) {
+    const data = await LayArrayHinhManga(mangaId, chapterId);
 
-    console.table(mangaLinkFileArray);
+    if (data) {
+      console.log(data);
 
-    mangaMaxPage = result?.chapter?.data.length - 1;
-    console.log(mangaMaxPage);
-    initSlider(mangaMaxPage);
-    CapNhatSlider(mangaCurrentPage);
-    HienTrangManga(mangaCurrentPage, mangaLinkFileArray);
+      mangaMaxPage = data?.MaxPage;
+      document.querySelector(".manga-sidebar-page-current").textContent =
+        `Page ${mangaCurrentPage}/${mangaMaxPage}`;
+      mangaLinkFileArray = data?.FileArray;
 
-    HienTrangManga(mangaCurrentPage, mangaLinkFileArray);
-  } catch (err) {
-    console.log("Đã có lỗi!!! : " + err);
+      initSlider(mangaMaxPage);
+      CapNhatSliderVaCurTrang(mangaCurrentPage);
+      HienTrangManga(mangaCurrentPage, mangaLinkFileArray);
+    }
   }
-}
-
-function DoiThanhMangaLinkFileArray(baseUrl, hash, fileArray) {
-  if (!fileArray || !hash || !baseUrl) return [];
-  return fileArray.map((filename) => `${baseUrl}/data/${hash}/${filename}`);
 }
 
 function HienTrangManga(page, linkFileArray) {
@@ -106,7 +105,19 @@ function ChuyenVeTrangTruoc() {
     mangaCurrentPage--;
     HienTrangManga(mangaCurrentPage, mangaLinkFileArray);
 
-    CapNhatSlider(mangaCurrentPage);
+    CapNhatSliderVaCurTrang(mangaCurrentPage);
+    HienTooltip();
+    DelayAnTooltip();
+  }
+}
+
+function ChuyenVeTrangTiepTheo() {
+  console.log("Trang hiện tại: " + mangaCurrentPage);
+  if (mangaCurrentPage < mangaMaxPage) {
+    mangaCurrentPage++;
+    HienTrangManga(mangaCurrentPage, mangaLinkFileArray);
+
+    CapNhatSliderVaCurTrang(mangaCurrentPage);
     HienTooltip();
     DelayAnTooltip();
   }
@@ -123,18 +134,6 @@ window.addEventListener("keydown", function (e) {
     ChuyenVeTrangTruoc();
   }
 });
-
-function ChuyenVeTrangTiepTheo() {
-  console.log("Trang hiện tại: " + mangaCurrentPage);
-  if (mangaCurrentPage < mangaMaxPage) {
-    mangaCurrentPage++;
-    HienTrangManga(mangaCurrentPage, mangaLinkFileArray);
-
-    CapNhatSlider(mangaCurrentPage);
-    HienTooltip();
-    DelayAnTooltip();
-  }
-}
 
 nextPageBtn.addEventListener("click", function (e) {
   e.preventDefault();
