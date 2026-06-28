@@ -108,7 +108,7 @@ export async function LayMangaChoCarousel(limit) {
   try {
     if (limit) {
       const response = await fetch(
-        `https://api.mangadex.org/manga?order[followedCount]=desc&year=2021&contentRating[]=safe&limit=${limit}&includes[]=cover_art`,
+        `https://api.mangadex.org/manga?order[followedCount]=desc&year=2025&contentRating[]=safe&limit=${limit}&includes[]=cover_art`,
       );
       const result = await response.json();
       if (!response.ok) {
@@ -147,46 +147,42 @@ export async function LayMangaChoCarousel(limit) {
     console.error("error!!! : " + error);
   }
 }
-
 export async function LayLatestUpdate(limit) {
   try {
-    if (limit) {
-      const response = await fetch(
-        `https://api.mangadex.org/chapter?order[publishAt]=desc&includes[]=manga&includes[]=cover_art&includes[]=scanlation_group&limit=${limit}`,
-      );
-      const result = await response.json();
-      console.log(result);
+    const response = await fetch(
+      `https://api.mangadex.org/chapter?includes[]=manga&includes[]=cover_art&limit=${limit}&order[readableAt]=desc`,
+    );
+    const { data: chapters } = await response.json();
 
-      if (!response.ok) {
-        throw new Error(`error status code ${response.status}`);
-      }
+    const mangaIds = [
+      ...new Set(chapters.map((c) => c.relationships.find((r) => r.type === "manga")?.id)),
+    ];
 
-      return result?.data?.map((manga) => {
-        const mangaChain = manga?.relationships?.find((i) => i.type === "manga")?.attributes;
-        const scanlationChain = manga?.relationships?.find(
-          (i) => i.type === "scanlation_group",
-        )?.attributes;
+    const mangaResponse = await fetch(
+      `https://api.mangadex.org/manga?includes[]=cover_art&limit=${mangaIds.length}&ids[]=${mangaIds.join("&ids[]=")}`,
+    );
+    const { data: mangaData } = await mangaResponse.json();
 
-        let chapter = manga?.attributes?.chapter;
-        let volume = manga?.attributes?.volume;
+    const mangaMap = new Map();
+    mangaData.forEach((m) => {
+      const cover = m.relationships.find((r) => r.type === "cover_art")?.attributes?.fileName;
+      mangaMap.set(m.id, cover);
+    });
 
-        return {
-          titleManga: Object.values(mangaChain?.title)[0],
-          titleChapter: manga?.attributes?.title,
-          chapter: chapter,
-          volume: volume,
-          volumeChapterStr: StringVolumeAndChapter(volume, chapter),
-          translatedLanguage: ChuyenLocale(manga?.attributes?.translatedLanguage),
-          scanlationGroup: scanlationChain?.name,
-        };
-      });
-    } else {
-      throw new Error("not enough argumen (no limit)");
-    }
+    return chapters.map((chapter) => {
+      const mangaRel = chapter.relationships.find((r) => r.type === "manga");
+      const fileName = mangaMap.get(mangaRel.id);
+
+      return {
+        titleManga: Object.values(mangaRel.attributes.title || {})[0],
+        titleChapter: chapter.attributes.title,
+        coverUrl: fileName
+          ? `https://uploads.mangadex.org/covers/${mangaRel.id}/${fileName}`
+          : null,
+      };
+    });
   } catch (error) {
-    console.error("error!!! : " + error);
+    console.error("Lỗi:", error);
+    return [];
   }
 }
-
-const data = await LayLatestUpdate(5);
-console.log(data);

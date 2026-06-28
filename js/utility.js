@@ -4,12 +4,17 @@
  * @param {string} code
  * @returns {string}
  */
+
 export function ChuyenLocale(code) {
+  if (!code || typeof code !== "string") return "un";
+
   try {
     const locale = new Intl.Locale(code).maximize();
-    console.log(locale.region ? locale.region.toLowerCase() : "un");
-    return locale.region ? locale.region.toLowerCase() : "un";
-  } catch {
+    const region = locale.region?.toLowerCase();
+
+    return region || "un";
+  } catch (e) {
+    console.error("Lỗi chuyển từ Locale sang Mã Quốc gia:", code, e);
     return "un";
   }
 }

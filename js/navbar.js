@@ -12,16 +12,15 @@ function xuLySidebarAnHien() {
     sidebar.classList.toggle("open");
     body.classList.toggle("sidebar-open");
   });
-
-  document.addEventListener("click", function (event) {
-    var clickInsideSidebar = sidebar.contains(event.target);
-    var clickOnButton = btnToggle.contains(event.target);
-
-    if (!clickInsideSidebar && !clickOnButton) {
-      sidebar.classList.remove("open");
-      body.classList.remove("sidebar-open");
-    }
-  });
 }
 
+window.addEventListener("scroll", function () {
+  const navbar = document.querySelector(".navbar");
+
+  if (window.scrollY > 40) {
+    navbar.classList.add("scrolled");
+  } else {
+    navbar.classList.remove("scrolled");
+  }
+});
 xuLySidebarAnHien();

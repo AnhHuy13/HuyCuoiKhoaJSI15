@@ -89,11 +89,3 @@ body {
 .sidebar.open {
   transform: translateX(0);
 }
-
-.sidebar.open + .container-fluid .header-logo {
-  display: none;
-}
-
-.sidebar:not(.open) .sidebar-logo {
-  display: none;
-}

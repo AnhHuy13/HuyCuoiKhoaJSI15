@@ -13,8 +13,20 @@
     <link rel="stylesheet" href="../css/navbar.css" />
     <link rel="stylesheet" href="../css/trangchu.css" />
     <link rel="stylesheet" href="../css/font.css" />
+    <link rel="stylesheet" href="../css/carousel.css" />
+    <link rel="stylesheet" href="../css/header.css" />
   </head>
   <body>
+    <header class="navbar">
+      <button class="toggle-menu-btn">
+        <img src="../image/icon/menu/menu-white.svg" alt="" />
+      </button>
+      <a href="trangchu.html" class="brand-wrapper header-logo">
+        <img src="../image/logo.png" alt="logo" class="logo-navbar" />
+        <span>Manga.org</span>
+      </a>
+      <input type="text" placeholder="Search..." class="search-box" />
+    </header>
     <nav class="sidebar">
       <a href="trangchu.html" class="brand-wrapper sidebar-logo">
         <img src="../image/logo.png" alt="logo" class="logo-navbar" />
@@ -62,24 +74,13 @@
       </ul>
     </nav>
 
-    <div class="container-fluid pt-4">
+    <div id="carousel-home">
       <div id="carouselExampleCaptions" class="carousel slide">
-        <div class="banner-box">
-          <button class="toggle-menu-btn">
-            <img src="../image/icon/menu/menu-black.svg" alt="" />
-          </button>
-          <a href="trangchu.html" class="brand-wrapper header-logo">
-            <img src="../image/logo.png" alt="logo" class="logo-navbar" />
-            <span>Manga.org</span>
-          </a>
-
-          <input type="text" placeholder="Search..." class="search-box" />
-        </div>
         <div class="carousel-inner">
           <div class="carousel-item active">
             <img
               src="../image/TEST.jpg"
-              class="d-block w-100"
+              class="manga-carousel-background d-block w-100"
               id="manga-carousel-background"
               alt="..."
             />
@@ -110,7 +111,10 @@
         </div>
       </div>
     </div>
-
+    <main class="content">
+      <h3 class="lastest-heading">Mới cập nhật</h3>
+      <div class="lastest-update-container"></div>
+    </main>
     <script type="module" src="../js/trangchu.js"></script>
     <script type="module" src="../js/navbar.js"></script>
     <script type="module" src="../js/fetch.js"></script>

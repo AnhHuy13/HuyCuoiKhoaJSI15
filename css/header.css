@@ -1,0 +1,79 @@
+body.sidebar-open .header-logo {
+  display: none !important;
+}
+
+.sidebar:not(.open) .sidebar-logo {
+  display: none;
+}
+
+.banner-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.toggle-menu-btn {
+  background-color: transparent;
+  border: none;
+}
+
+.toggle-menu-btn img {
+  width: 30px;
+  height: auto;
+  margin-right: 15px;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 1000;
+
+  background: rgba(25, 26, 28, 0);
+
+  transition: all 0.3s ease;
+
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  padding: 0 20px;
+  border-bottom: 1px solid rgba(253, 79, 50, 0);
+}
+
+.navbar.scrolled {
+  background: rgba(25, 26, 28, 0.9);
+  border-bottom: 1px solid rgba(253, 79, 50, 1);
+}
+
+body.sidebar-open .navbar {
+  width: calc(100% - 250px);
+  left: 250px;
+}
+
+.search-box {
+  flex: 0 1 40%;
+
+  min-width: 150px;
+  box-sizing: border-box;
+}
+
+body.sidebar-open {
+  padding-left: 20%;
+}
+
+body.sidebar-open .banner-box {
+  justify-content: space-between;
+  align-items: center;
+}
+
+body.sidebar-open .search-box {
+  flex: 0 1 25%;
+}

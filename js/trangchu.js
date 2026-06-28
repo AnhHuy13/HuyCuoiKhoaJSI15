@@ -1,9 +1,11 @@
-import { LayMangaChoCarousel } from "./fetch.js";
+import { LayMangaChoCarousel, LayLatestUpdate } from "./fetch.js";
 import { ChuyenLocale } from "./utility.js";
+
+window.history.scrollRestoration = "manual";
 
 const THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO = 3000;
 
-setCarouselData();
+setData();
 
 function testElement(selector) {
   var element = document.querySelector(selector);
@@ -25,12 +27,14 @@ function xuLyGiaoDienCarousel() {
       var doDaiTen = h5Title.textContent.length;
       var soDongMax = 7;
 
-      if (doDaiTen > 45) {
-        h5Title.style.fontSize = "1.65rem";
-        soDongMax = 5;
-      } else if (doDaiTen > 80) {
+      if (doDaiTen > 80) {
         h5Title.style.fontSize = "1.5rem";
         soDongMax = 3;
+      } else if (doDaiTen > 45) {
+        h5Title.style.fontSize = "1.65rem";
+        soDongMax = 5;
+      } else {
+        soDongMax = 7;
       }
 
       pDesc.style.display = "-webkit-box";
@@ -41,7 +45,7 @@ function xuLyGiaoDienCarousel() {
   }
 }
 
-async function setCarouselData() {
+async function setData() {
   const mangaArray = await LayMangaChoCarousel(5);
   console.log(mangaArray);
   mangaArray.forEach((mangaItem, index) => {
@@ -54,54 +58,56 @@ async function setCarouselData() {
     interval: THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO,
     ride: "carousel",
   });
+
+  const lastestUpdateArray = await LayLatestUpdate(10);
+  console.log(lastestUpdateArray);
+
+  lastestUpdateArray.forEach((element) => {
+    generateLatestUpdate(element);
+  });
 }
 
 function generateMangaPage(pageIndex, mangaItem) {
   const container = document.querySelector("#carouselExampleCaptions .carousel-inner");
   const activeClass = pageIndex === 0 ? "active" : "";
 
-  let nameTruyen = mangaItem?.title;
-  let descTruyen = mangaItem?.desc;
-  let linkCoverTruyen = mangaItem?.linkFileCover;
+  const cleanText = (text) => {
+    const el = document.createElement("div");
+    el.textContent = text || "";
+    return el.innerHTML;
+  };
+
+  let nameTruyen = cleanText(mangaItem?.title);
+
+  let descTruyen = cleanText(mangaItem?.desc);
   let flagTruyen = mangaItem?.originalLanguage;
 
-  const pageHtml = `
+  let linkCoverTruyen = mangaItem?.linkFileCover || "";
+
+  const tempElement = document.createElement("div");
+  tempElement.innerHTML = `
     <div class="carousel-item ${activeClass}">
-            <img
-              src="${linkCoverTruyen}"
-              class="d-block w-100"
-              id="manga-carousel-background"
-              alt="..."
-            />
-
-            <div class="carousel-caption d-none d-md-block">
-              <div class="manga-carousel-content-container">
-              <div class="manga-carousel-cover-container">
-                <img src="${linkCoverTruyen}" alt="" class="manga-carousel-cover" />
-              </div>
-
-              <div class="manga-carousel-text-info">
-                <div class="manga-carousel-title-container">
-                  <span class="flag-icon flag-icon-${ChuyenLocale(flagTruyen)}" id="flag-icon"></span>
-                  <h5 class="manga-carousel-title-manga">
-                    ${nameTruyen}
-                  </h5>
-                </div>
-                <ul class="manga-carousel-tag"></ul>
-
-                <p class="manga-carousel-description">
-                  ${descTruyen}
-                </p>
-              </div>
-              </div>
-            </div>
+      <img src="${linkCoverTruyen}" class="d-block w-100" id="manga-carousel-background" alt="..." />
+      <div class="carousel-caption d-none d-md-block">
+        <div class="manga-carousel-content-container">
+          <div class="manga-carousel-cover-container">
+            <img src="${linkCoverTruyen}" alt="" class="manga-carousel-cover" />
           </div>
+          <div class="manga-carousel-text-info">
+            <div class="manga-carousel-title-container">
+              <span class="flag-icon flag-icon-${flagTruyen}" id="flag-icon"></span>
+              <h5 class="manga-carousel-title-manga">${nameTruyen}</h5>
+            </div>
+            <ul class="manga-carousel-tag"></ul>
+            <p class="manga-carousel-description">${descTruyen}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   `;
 
-  if (pageIndex === 0) container.innerHTML = "";
-  container.insertAdjacentHTML("beforeend", pageHtml);
+  const currentSlide = tempElement.firstElementChild;
 
-  const currentSlide = container.children[pageIndex];
   let ulElement = currentSlide.querySelector(".manga-carousel-tag");
   let fragment = document.createDocumentFragment();
   let tagsArray = mangaItem?.tags || [];
@@ -113,4 +119,41 @@ function generateMangaPage(pageIndex, mangaItem) {
     fragment.appendChild(liElement);
   }
   ulElement.appendChild(fragment);
+
+  if (pageIndex === 0) container.innerHTML = "";
+  container.appendChild(currentSlide);
+}
+
+function generateLatestUpdate(mangaItem) {
+  const container = document.querySelector(".lastest-update-container");
+
+  const cleanText = function (text) {
+    const el = document.createElement("div");
+    el.textContent = text || "";
+    return el.innerHTML;
+  };
+
+  const nameTruyen = cleanText(mangaItem.titleManga) || "Không có tên truyện";
+  const descTruyen = cleanText(
+    `${mangaItem.volumeChapterStr || ""} - ${mangaItem.titleChapter || ""}`,
+  );
+  const translatedLanguage = mangaItem.translatedLanguage;
+  const scanlationGroup = mangaItem.scanlationGroup || "Unknown";
+  const linkCoverTruyen = mangaItem.coverUrl || "";
+
+  const myTemplate = `
+    <div class="lastest-update-item">
+      <img src="${linkCoverTruyen}" alt="Cover" />
+      <div class="lastest-update-item-content">
+        <h6>${nameTruyen}</h6>
+        <div class="lastest-update-locale-volume">
+          <span class="fi fi-${translatedLanguage}" id="flag-icon-locale-lastest-update"></span>
+          <p class="lastest-update-vol-chap">${descTruyen}</p>
+        </div>
+        <p class="lastest-update-scanlation-group">${scanlationGroup}</p>
+      </div>
+    </div>
+  `;
+
+  container.insertAdjacentHTML("beforeend", myTemplate);
 }
