@@ -26,6 +26,7 @@
   text-decoration: none;
   padding: 0px;
   width: 100%;
+  margin-bottom: 10px;
 }
 
 .logo-navbar {
@@ -88,4 +89,10 @@ body {
 
 .sidebar.open {
   transform: translateX(0);
+}
+
+.avatar-icon {
+  width: 25px;
+  height: 25px;
+  border-radius: 360px;
 }

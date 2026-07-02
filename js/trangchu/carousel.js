@@ -1,0 +1,88 @@
+export function xuLyGiaoDienCarousel() {
+  var tatCaSlides = document.querySelectorAll("#carouselExampleCaptions .carousel-item");
+
+  for (var slide of tatCaSlides) {
+    var h5Title = slide.querySelector(".manga-carousel-title-manga");
+    var pDesc = slide.querySelector(".manga-carousel-description");
+
+    if (h5Title !== null && pDesc !== null) {
+      var doDaiTen = h5Title.textContent.length;
+      var soDongMax = 7;
+
+      if (doDaiTen > 80) {
+        h5Title.style.fontSize = "1.5rem";
+        soDongMax = 3;
+      } else if (doDaiTen > 45) {
+        h5Title.style.fontSize = "1.65rem";
+        soDongMax = 5;
+      } else if (doDaiTen > 25) {
+        h5Title.style.fontSize = "1.73rem";
+        soDongMax = 6;
+      } else {
+        soDongMax = 7;
+      }
+
+      pDesc.style.display = "-webkit-box";
+      pDesc.style.webkitBoxOrient = "vertical";
+      pDesc.style.webkitLineClamp = soDongMax.toString();
+      pDesc.style.overflow = "hidden";
+    }
+  }
+}
+
+export function generateMangaPage(pageIndex, mangaItem) {
+  const container = document.querySelector("#carouselExampleCaptions .carousel-inner");
+  const activeClass = pageIndex === 0 ? "active" : "";
+
+  const cleanText = (text) => {
+    const el = document.createElement("div");
+    el.textContent = text || "";
+    return el.innerHTML;
+  };
+
+  let nameTruyen = cleanText(mangaItem?.title);
+
+  let descTruyen = cleanText(mangaItem?.desc);
+  let flagTruyen = mangaItem?.originalLanguage;
+
+  let linkCoverTruyen = mangaItem?.linkFileCover || "";
+
+  const tempElement = document.createElement("div");
+  tempElement.innerHTML = `
+    <div class="carousel-item ${activeClass}">
+      <img src="${linkCoverTruyen}" class="d-block w-100" id="manga-carousel-background" alt="..." />
+      <div class="carousel-caption d-none d-md-block">
+        <div class="manga-carousel-content-container">
+          <div class="manga-carousel-cover-container">
+            <img src="${linkCoverTruyen}" alt="" class="manga-carousel-cover" />
+          </div>
+          <div class="manga-carousel-text-info">
+            <div class="manga-carousel-title-container">
+              <span class="flag-icon flag-icon-${flagTruyen}" id="flag-icon"></span>
+              <h5 class="manga-carousel-title-manga">${nameTruyen}</h5>
+            </div>
+            <ul class="manga-carousel-tag"></ul>
+            <p class="manga-carousel-description">${descTruyen}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const currentSlide = tempElement.firstElementChild;
+
+  let ulElement = currentSlide.querySelector(".manga-carousel-tag");
+  let fragment = document.createDocumentFragment();
+  let tagsArray = mangaItem?.tags || [];
+
+  for (let tagItem of tagsArray) {
+    let liElement = document.createElement("li");
+    liElement.textContent = tagItem?.attributes?.name?.en;
+    liElement.className = "manga-carousel-tag-item";
+    fragment.appendChild(liElement);
+  }
+  ulElement.appendChild(fragment);
+
+  if (pageIndex === 0) container.innerHTML = "";
+  container.appendChild(currentSlide);
+}

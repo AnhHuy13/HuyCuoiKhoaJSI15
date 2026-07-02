@@ -1,0 +1,17 @@
+:root {
+  --navbar-animation-time: 0.3s;
+  --menu-background-color: rgb(25, 26, 28);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif !important;
+}
+
+body {
+  padding-left: 0;
+  transition: padding-left var(--navbar-animation-time) ease-in-out;
+  background-color: var(--menu-background-color);
+}

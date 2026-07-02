@@ -1,4 +1,4 @@
-import { ChuyenLocale } from "./utility.js";
+import { ChuyenLocale, StringVolumeAndChapter, getCoverUrls } from "./utility.js";
 
 const params = new URLSearchParams(window.location.search);
 let mangaId = params.get("mangaId");
@@ -9,18 +9,6 @@ let mangaLinkFileArray;
 function DoiThanhMangaLinkFileArray(baseUrl, hash, fileArray) {
   if (!fileArray || !hash || !baseUrl) return [];
   return fileArray.map((filename) => `${baseUrl}/data/${hash}/${filename}`);
-}
-
-function StringVolumeAndChapter(volume, chapter) {
-  if (chapter && volume) {
-    return `Vol. ${volume} Ch. ${chapter}`;
-  } else if (!chapter && volume) {
-    return `Vol. ${volume}`;
-  } else if (!volume && chapter) {
-    return `Ch. ${chapter}`;
-  } else if (!volume && !chapter) {
-    return "";
-  }
 }
 
 export async function LayArrayHinhManga(mangaId, chapterId) {
@@ -147,42 +135,67 @@ export async function LayMangaChoCarousel(limit) {
     console.error("error!!! : " + error);
   }
 }
+
 export async function LayLatestUpdate(limit) {
   try {
-    const response = await fetch(
-      `https://api.mangadex.org/chapter?includes[]=manga&includes[]=cover_art&limit=${limit}&order[readableAt]=desc`,
-    );
-    const { data: chapters } = await response.json();
+    const chapterUrl = `https://api.mangadex.org/chapter?includes[]=manga&includes[]=scanlation_group&order[readableAt]=desc&limit=${limit * 10}`;
+    const chapterResponse = await fetch(chapterUrl);
+    const chapterJson = await chapterResponse.json();
+    console.log(chapterJson.data);
+    const chaptersData = chapterJson.data;
 
-    const mangaIds = [
-      ...new Set(chapters.map((c) => c.relationships.find((r) => r.type === "manga")?.id)),
-    ];
+    const uniqueChapters = [];
+    const seenMangaIds = new Set();
 
-    const mangaResponse = await fetch(
-      `https://api.mangadex.org/manga?includes[]=cover_art&limit=${mangaIds.length}&ids[]=${mangaIds.join("&ids[]=")}`,
-    );
-    const { data: mangaData } = await mangaResponse.json();
+    for (const chapter of chaptersData) {
+      const attributes = chapter.attributes;
 
-    const mangaMap = new Map();
-    mangaData.forEach((m) => {
-      const cover = m.relationships.find((r) => r.type === "cover_art")?.attributes?.fileName;
-      mangaMap.set(m.id, cover);
-    });
+      const isInvalid =
+        attributes.chapter === null || attributes.title === null || attributes.volume === null;
+      if (isInvalid) continue;
 
-    return chapters.map((chapter) => {
-      const mangaRel = chapter.relationships.find((r) => r.type === "manga");
-      const fileName = mangaMap.get(mangaRel.id);
+      const mangaRelationship = chapter.relationships.find(
+        (relationship) => relationship.type === "manga",
+      );
+      const mangaId = mangaRelationship?.id;
+
+      if (mangaId && !seenMangaIds.has(mangaId)) {
+        uniqueChapters.push({ chapter, mangaId });
+        seenMangaIds.add(mangaId);
+      }
+
+      if (uniqueChapters.length === limit) break;
+    }
+
+    const mangaIds = uniqueChapters.map((item) => item.mangaId);
+    const coverMap = await getCoverUrls(mangaIds);
+
+    return uniqueChapters.map((item) => {
+      const attributes = item.chapter.attributes;
+      const groupRelationship = item.chapter.relationships.find(
+        (relationship) => relationship.type === "scanlation_group",
+      );
+      const mangaRelationship = item.chapter.relationships.find(
+        (relationship) => relationship.type === "manga",
+      );
+
+      console.log(groupRelationship?.attributes);
 
       return {
-        titleManga: Object.values(mangaRel.attributes.title || {})[0],
-        titleChapter: chapter.attributes.title,
-        coverUrl: fileName
-          ? `https://uploads.mangadex.org/covers/${mangaRel.id}/${fileName}`
-          : null,
+        mangaId: item.mangaId,
+        chapterId: item.chapter.id,
+        titleManga: Object.values(mangaRelationship?.attributes?.title),
+        titleChapter: attributes.title,
+        chapter: attributes.chapter,
+        volume: attributes.volume,
+        volumeChapterStr: StringVolumeAndChapter(attributes.chapter, attributes.volume, false),
+        locale: ChuyenLocale(attributes.translatedLanguage),
+        scanlationGroup: groupRelationship?.attributes?.name,
+        coverUrl: coverMap[item.mangaId],
       };
     });
   } catch (error) {
-    console.error("Lỗi:", error);
+    console.error("Lỗi rồi:", error);
     return [];
   }
 }
