@@ -1,4 +1,4 @@
-import { LayThongTinChapter } from "../fetch.js";
+import { LayThongTinChapter } from "../fetch/fetchRead.js";
 import { ChuyenLocale } from "../utility.js";
 
 const params = new URLSearchParams(window.location.search);

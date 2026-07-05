@@ -9,6 +9,7 @@
   overflow: hidden;
 }
 
+#home-carousel-background,
 #manga-carousel-background {
   width: 100%;
   height: 350px;
@@ -46,6 +47,7 @@
   flex-direction: column;
 }
 
+.home-carousel-cover,
 .manga-carousel-cover {
   width: 100%;
   height: 100%;
@@ -53,6 +55,7 @@
   border-radius: 8px;
 }
 
+.home-carousel-content-container,
 .manga-carousel-content-container {
   margin-top: 80px;
   display: flex;
@@ -60,6 +63,7 @@
   flex: 1;
 }
 
+.home-carousel-cover-container,
 .manga-carousel-cover-container {
   width: 200px;
   height: 300px;
@@ -67,9 +71,11 @@
   flex-shrink: 0;
 }
 
+.home-carousel-popular-title,
 .manga-carousel-popular-title {
 }
 
+.home-carousel-text-info,
 .manga-carousel-text-info {
   display: flex;
   flex-direction: column;
@@ -80,14 +86,17 @@
   align-items: flex-start;
 }
 
+.home-carousel-title-manga,
 .manga-carousel-title-manga {
   font-weight: bold;
 }
 
+.home-carousel-description,
 .manga-carousel-description {
   font-weight: lighter;
 }
 
+.home-carousel-tag,
 .manga-carousel-tag {
   display: flex;
   flex-wrap: wrap;
@@ -97,6 +106,7 @@
   max-width: 100%;
 }
 
+.home-carousel-tag-item,
 .manga-carousel-tag-item {
   font-family: sans-serif;
   font-size: 0.625rem;

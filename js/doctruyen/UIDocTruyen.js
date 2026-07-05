@@ -6,7 +6,7 @@
 // Tên Chapter: Tương Lai Của Kaoruko
 // Tên nhóm dịch: IVM
 
-import { LayArrayHinhManga } from "../fetch.js";
+import { LayArrayHinhManga } from "../fetch/fetchRead.js";
 
 const params = new URLSearchParams(window.location.search);
 let mangaId = params.get("mangaId");

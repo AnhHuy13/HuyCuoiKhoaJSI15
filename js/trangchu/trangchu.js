@@ -1,4 +1,4 @@
-import { LayMangaChoCarousel, LayLatestUpdate } from "../fetch.js";
+import { LayMangaChoCarousel, LayLatestUpdate } from "../fetch/fetchHome.js";
 import { ChuyenLocale } from "../utility.js";
 import { xuLyGiaoDienCarousel, generateMangaPage } from "./carousel.js";
 import {
@@ -20,14 +20,12 @@ async function Init() {
   console.log("Hệ thống đang khởi tạo...");
 
   try {
-    // check xem có user đăng nhập chưa (đợi kết quả từ Promise Auth)
     const user = await isLogin();
 
     if (user) {
       const userId = user.uid;
       console.log("Đã đăng nhập với Id: " + userId);
 
-      // check xem lúc làm guest có đọc bộ truyện nào chưa để đem đi gộp
       const guestHistory = readLocalKey(LOCAL_HISTORY_KEY);
       if (guestHistory && guestHistory.length > 0) {
         console.log("Phát hiện lịch sử từ máy khách");
@@ -104,13 +102,15 @@ function generateLatestUpdate(mangaItem) {
   const translatedLanguage = mangaItem.locale;
   const scanlationGroup = mangaItem.scanlationGroup || "No Group";
   const linkCoverTruyen = mangaItem.coverUrl || "";
+  const mangaId = mangaItem.mangaId;
+  const chapterId = mangaItem.chapterId;
 
   const myTemplate = `
     <div class="lastest-update-item">
       <img src="${linkCoverTruyen}" alt="Cover" />
       <div class="lastest-update-item-content">
-        <div class="lastest-update-name-manga">${nameTruyen}</div>
-        <div class="lastest-update-locale-volume">
+        <div class="lastest-update-name-manga" onclick="window.location.href='../../html/manga.html?mangaId=${mangaId}'">${nameTruyen}</div>
+        <div class="lastest-update-locale-volume" onclick="window.location.href='/html/doctruyen.html?mangaId=${mangaId}&chapterId=${chapterId}'">
           <span class="fi fi-${translatedLanguage}" id="flag-icon-locale-lastest-update"></span>
           <span class="lastest-update-vol-chap">${descTruyen}</span>
         </div>

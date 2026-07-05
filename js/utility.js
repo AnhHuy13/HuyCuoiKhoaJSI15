@@ -88,3 +88,115 @@ export async function getCoverUrls(mangaIds) {
 
   return coverUrlMap;
 }
+
+/**
+ * Làm cho chữ bự nhất có thể mà không bị overflow
+ * Chỉ áp dụng cho phần tử con đầu tiên của container
+ * @param {string|HTMLElement} containerSelector
+ * @param {string|null} newText
+ * @param {boolean} autoResize
+ * @param {number} resizeScale
+ */
+export function fitTextToBox(containerSelector, newText = null, autoResize = false, options = {}) {
+  const container =
+    typeof containerSelector === "string"
+      ? document.querySelector(containerSelector)
+      : containerSelector;
+
+  if (!container) {
+    console.error("fitTextToBox: container not found", containerSelector);
+    return null;
+  }
+
+  const textEl = container.firstElementChild;
+  if (!textEl) {
+    console.error("fitTextToBox: no child element found inside container", container);
+    return null;
+  }
+
+  if (newText !== null && newText !== undefined) {
+    textEl.innerText = String(newText);
+  }
+
+  const config =
+    typeof options === "number"
+      ? {
+          minSize: 12,
+          maxSize: 72,
+          scale: options,
+          lineHeight: 1.1,
+          maxHeight: null,
+        }
+      : {
+          minSize: 12,
+          maxSize: 72,
+          scale: 1,
+          lineHeight: 1.1,
+          maxHeight: null,
+          ...options,
+        };
+
+  const resizeText = () => {
+    textEl.style.display = "block";
+    textEl.style.whiteSpace = "normal";
+    textEl.style.wordBreak = "break-word";
+    textEl.style.overflowWrap = "anywhere";
+    textEl.style.lineHeight = `${config.lineHeight}`;
+    textEl.style.margin = "0";
+    textEl.style.padding = "0";
+    textEl.style.width = "100%";
+
+    const minSize = Math.max(12, config.minSize || 12);
+    const maxSize = Math.max(minSize + 1, config.maxSize || 72);
+    const containerWidth = container.clientWidth || container.getBoundingClientRect().width || 300;
+    const containerHeight =
+      container.clientHeight ||
+      parseFloat(getComputedStyle(container).maxHeight) ||
+      container.getBoundingClientRect().height ||
+      120;
+    const maxHeight = Math.max(24, config.maxHeight || containerHeight);
+
+    let bestSize = minSize;
+    let low = minSize;
+    let high = maxSize;
+
+    while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      textEl.style.fontSize = `${mid}px`;
+
+      const fitsWidth = textEl.scrollWidth <= containerWidth + 1;
+      const fitsHeight = textEl.scrollHeight <= maxHeight + 1;
+
+      if (fitsWidth && fitsHeight) {
+        bestSize = mid;
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+    }
+
+    const finalSize = Math.max(minSize, bestSize);
+    const scaledSize = Math.max(minSize, Math.floor(finalSize * config.scale));
+    textEl.style.fontSize = `${scaledSize}px`;
+    return scaledSize;
+  };
+
+  const finalSize = resizeText();
+
+  if (!autoResize || typeof ResizeObserver === "undefined") {
+    return finalSize;
+  }
+
+  let scheduled = false;
+  const resizeObserver = new ResizeObserver(() => {
+    if (scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(() => {
+      resizeText();
+      scheduled = false;
+    });
+  });
+
+  resizeObserver.observe(container);
+  return resizeObserver;
+}

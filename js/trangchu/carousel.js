@@ -2,8 +2,8 @@ export function xuLyGiaoDienCarousel() {
   var tatCaSlides = document.querySelectorAll("#carouselExampleCaptions .carousel-item");
 
   for (var slide of tatCaSlides) {
-    var h5Title = slide.querySelector(".manga-carousel-title-manga");
-    var pDesc = slide.querySelector(".manga-carousel-description");
+    var h5Title = slide.querySelector(".home-carousel-title-manga");
+    var pDesc = slide.querySelector(".home-carousel-description");
 
     if (h5Title !== null && pDesc !== null) {
       var doDaiTen = h5Title.textContent.length;
@@ -50,19 +50,19 @@ export function generateMangaPage(pageIndex, mangaItem) {
   const tempElement = document.createElement("div");
   tempElement.innerHTML = `
     <div class="carousel-item ${activeClass}">
-      <img src="${linkCoverTruyen}" class="d-block w-100" id="manga-carousel-background" alt="..." />
+      <img src="${linkCoverTruyen}" class="d-block w-100" id="home-carousel-background" alt="..." />
       <div class="carousel-caption d-none d-md-block">
-        <div class="manga-carousel-content-container">
-          <div class="manga-carousel-cover-container">
-            <img src="${linkCoverTruyen}" alt="" class="manga-carousel-cover" />
+        <div class="home-carousel-content-container">
+          <div class="home-carousel-cover-container">
+            <img src="${linkCoverTruyen}" alt="" class="home-carousel-cover" />
           </div>
-          <div class="manga-carousel-text-info">
-            <div class="manga-carousel-title-container">
+          <div class="home-carousel-text-info">
+            <div class="home-carousel-title-container">
               <span class="flag-icon flag-icon-${flagTruyen}" id="flag-icon"></span>
-              <h5 class="manga-carousel-title-manga">${nameTruyen}</h5>
+              <h5 class="home-carousel-title-manga">${nameTruyen}</h5>
             </div>
-            <ul class="manga-carousel-tag"></ul>
-            <p class="manga-carousel-description">${descTruyen}</p>
+            <ul class="home-carousel-tag"></ul>
+            <p class="home-carousel-description">${descTruyen}</p>
           </div>
         </div>
       </div>
@@ -71,14 +71,14 @@ export function generateMangaPage(pageIndex, mangaItem) {
 
   const currentSlide = tempElement.firstElementChild;
 
-  let ulElement = currentSlide.querySelector(".manga-carousel-tag");
+  let ulElement = currentSlide.querySelector(".home-carousel-tag");
   let fragment = document.createDocumentFragment();
   let tagsArray = mangaItem?.tags || [];
 
   for (let tagItem of tagsArray) {
     let liElement = document.createElement("li");
     liElement.textContent = tagItem?.attributes?.name?.en;
-    liElement.className = "manga-carousel-tag-item";
+    liElement.className = "home-carousel-tag-item";
     fragment.appendChild(liElement);
   }
   ulElement.appendChild(fragment);

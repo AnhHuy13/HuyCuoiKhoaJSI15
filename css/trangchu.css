@@ -69,6 +69,7 @@ body {
 
 .lastest-update-name-manga,
 .lastest-update-vol-chap {
+  cursor: pointer;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -82,6 +83,7 @@ body {
 }
 
 .lastest-update-locale-volume {
+  cursor: pointer;
   display: flex;
   align-items: baseline;
   gap: 5px;
