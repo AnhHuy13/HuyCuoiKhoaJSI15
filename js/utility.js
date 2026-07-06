@@ -200,3 +200,7 @@ export function fitTextToBox(containerSelector, newText = null, autoResize = fal
   resizeObserver.observe(container);
   return resizeObserver;
 }
+
+export function vietHoaChuCaiDauTien(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}

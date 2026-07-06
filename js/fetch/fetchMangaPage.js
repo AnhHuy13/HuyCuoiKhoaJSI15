@@ -1,38 +1,44 @@
 export async function LayThongTinManga(mangaId) {
   try {
-    const response = await fetch(
-      `https://api.mangadex.org/manga/${mangaId}?includes[]=cover_art&includes[]=author`,
-    );
+    const url = `https://api.mangadex.org/manga/${mangaId}?includes[]=cover_art&includes[]=author&includes[]=artist`;
+    const response = await fetch(url);
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: Không tìm thấy truyện`);
     }
 
     const result = await response.json();
-    console.log(result);
+    const data = result?.data;
+    const attr = data?.attributes;
+    const rels = data?.relationships || [];
 
-    const dataChain = result?.data?.attributes;
-    const tags =
-      dataChain?.tags?.map((tag) => ({
-        name: tag?.attributes?.name?.en || "Unknown",
-        id: tag?.id,
-      })) || [];
+    const author = rels.find((r) => r.type === "author")?.attributes?.name;
+    const artist = rels.find((r) => r.type === "artist")?.attributes?.name;
+    const coverFileName = rels.find((r) => r.type === "cover_art")?.attributes?.fileName;
 
     return {
-      mangaId: mangaId,
-      title: Object.values(dataChain?.title)[0],
-      englishTitle: dataChain?.altTitles?.find((item) => item.en)?.en,
-      author: result?.data?.relationships?.find((relationship) => relationship.type === "author")
-        ?.attributes?.name,
-      cover:
-        "https://uploads.mangadex.org/covers/" +
-        mangaId +
-        "/" +
-        (result?.data?.relationships?.find((i) => i.type === "cover_art")?.attributes?.fileName ??
-          ""),
-      tags: tags,
+      mangaId,
+      title: Object.values(attr?.title || {})[0],
+      englishTitle: attr?.altTitles?.find((item) => item.en)?.en,
+      altTitles: attr?.altTitles || [],
+
+      relations: {
+        author: author || "Unknown",
+        artist: artist || "Unknown",
+      },
+
+      externalLinks: attr?.links || {},
+
+      cover: coverFileName ? `https://uploads.mangadex.org/covers/${mangaId}/${coverFileName}` : "",
+      tags:
+        attr?.tags?.map((tag) => ({
+          name: tag?.attributes?.name?.en || "Unknown",
+          id: tag?.id,
+        })) || [],
+      status: attr?.status,
+      desc: attr?.description?.en || attr?.description?.ja || "No description available",
     };
   } catch (error) {
-    console.error("Lỗi : ", error);
+    console.error("Lỗi rồi: ", error);
   }
 }

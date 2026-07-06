@@ -15,3 +15,17 @@ body {
   transition: padding-left var(--navbar-animation-time) ease-in-out;
   background-color: var(--menu-background-color);
 }
+
+.content {
+  margin-bottom: 10px;
+  margin-left: 30px;
+}
+
+.manga-desc {
+  color: white;
+}
+
+.main-content {
+  display: grid;
+  grid-template-rows: 30% 70%;
+}
