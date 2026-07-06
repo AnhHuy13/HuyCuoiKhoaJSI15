@@ -5,11 +5,27 @@
  * @returns {string}
  */
 
+const ngonNguMapping = {
+  "es-la": "mx", // tiếng tây ban nha latinh
+  "ja-ro": "jp", // tiếng nhật latinh (romaji)
+  "ko-ro": "kr", // tiếng hàn latinh (romaji)
+  "zh-ro": "cn", // tiếng trung latinh (romaji)
+  "zh-hk": "hk", // tiếng trung hồng kông
+  "zh-hans": "cn", // tiếng trung giản thể
+  "zh-hant": "tw", // tiếng trung phồn thể
+  "pt-br": "br", // tiếng bồ đào nha brazil
+};
+
 export function ChuyenLocale(code) {
   if (!code || typeof code !== "string") return "un";
 
+  const normalizedCode = code.trim().toLowerCase();
+  if (ngonNguMapping[normalizedCode]) {
+    return ngonNguMapping[normalizedCode];
+  }
+
   try {
-    const locale = new Intl.Locale(code).maximize();
+    const locale = new Intl.Locale(normalizedCode).maximize();
     const region = locale.region?.toLowerCase();
 
     return region || "un";

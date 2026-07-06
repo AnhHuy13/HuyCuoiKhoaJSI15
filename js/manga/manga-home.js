@@ -75,8 +75,14 @@ function renderExternalButtons(links, keys) {
     .filter((k) => links[k])
     .map((k) => {
       const config = LINK_CONFIG[k] || { label: k, domain: "google.com" };
+      const rawLink = links[k];
+      const href =
+        typeof rawLink === "string" && rawLink.match(/^https?:\/\//i)
+          ? rawLink
+          : `https://${rawLink.replace(/^\/\//, "")}`;
+
       return `
-      <a href="${links[k]}" target="_blank" class="btn-ext">
+      <a href="${href}" target="_blank" rel="noopener noreferrer" class="btn-ext">
         <img src="https://icons.duckduckgo.com/ip3/${config.domain}.ico" alt="icon">
         <span>${config.label}</span>
       </a>`;

@@ -49,18 +49,6 @@ export async function LayLatestUpdate(limit) {
   let seenMangaIds = new Set();
   let offset = 0;
   const BATCH_SIZE = 50;
-
-  const ngonNguMapping = {
-    "es-la": "mx", // tiếng tây ban nha latinh
-    "ja-ro": "jp", // tiếng nhật latinh (romaji)
-    "ko-ro": "kr", // tiếng hàn latinh (romaji)
-    "zh-ro": "cn", // tiếng trung latinh (romaji)
-    "zh-hk": "hk", // tiếng trung hồng kông
-    "zh-hans": "cn", // tiếng trung giản thể
-    "zh-hant": "tw", // tiếng trung phồn thể
-    "pt-br": "br", // tiếng bồ đào nha brazil
-  };
-
   try {
     while (uniqueChapters.length < limit && offset < 500) {
       const chapterUrl = `https://api.mangadex.org/chapter?includes[]=manga&includes[]=scanlation_group&order[readableAt]=desc&limit=${BATCH_SIZE}&offset=${offset}&contentRating[]=safe&contentRating[]=suggestive`;
@@ -103,9 +91,7 @@ export async function LayLatestUpdate(limit) {
         volume: attributes.volume,
         volumeChapterStr: StringVolumeAndChapter(attributes.chapter, attributes.volume, false),
         originalLanguage: attributes.translatedLanguage,
-        locale:
-          ngonNguMapping[attributes.translatedLanguage] ||
-          ChuyenLocale(attributes.translatedLanguage),
+        locale: ChuyenLocale(attributes.translatedLanguage),
         scanlationGroup: groupRelationship?.attributes?.name,
         coverUrl: coverMap[item.mangaId],
       };

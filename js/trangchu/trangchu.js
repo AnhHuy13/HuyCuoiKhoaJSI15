@@ -109,8 +109,8 @@ function generateLatestUpdate(mangaItem) {
     <div class="lastest-update-item">
       <img src="${linkCoverTruyen}" alt="Cover" />
       <div class="lastest-update-item-content">
-        <div class="lastest-update-name-manga" onclick="window.location.href='../../html/manga.html?mangaId=${mangaId}'">${nameTruyen}</div>
-        <div class="lastest-update-locale-volume" onclick="window.location.href='/html/doctruyen.html?mangaId=${mangaId}&chapterId=${chapterId}'">
+        <div class="lastest-update-name-manga" onclick="window.location.href='manga.html?mangaId=${mangaId}'">${nameTruyen}</div>
+        <div class="lastest-update-locale-volume" onclick="window.location.href='doctruyen.html?mangaId=${mangaId}&chapterId=${chapterId}'">
           <span class="fi fi-${translatedLanguage}" id="flag-icon-locale-lastest-update"></span>
           <span class="lastest-update-vol-chap">${descTruyen}</span>
         </div>
