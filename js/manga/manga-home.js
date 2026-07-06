@@ -2,6 +2,7 @@ import { ChuyenLocale, vietHoaChuCaiDauTien } from "../utility.js";
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import { LayThongTinManga } from "../fetch/fetchMangaPage.js";
 import { SetDataCarousel } from "./manga-carousel.js";
+import { LayDanhSachChapter } from "../fetch/fetchMangaPage.js";
 
 const LINK_CONFIG = {
   raw: { label: "Official Raw", domain: "mangadex.org" },
@@ -15,6 +16,68 @@ const LINK_CONFIG = {
   ap: { label: "Anime-Planet", domain: "anime-planet.com" },
   kt: { label: "Kitsu", domain: "kitsu.io" },
 };
+
+export async function RenderChapterList(mangaId) {
+  const data = await LayDanhSachChapter(mangaId);
+  const container = document.getElementById("chapter-list-container");
+  if (!data) return;
+
+  let html = "";
+
+  // 1. Duyệt qua từng Volume
+  for (const [vol, chapters] of Object.entries(data)) {
+    html += `<div class="volume-header d-flex justify-content-between">
+                <span>${vol === "No Volume" ? "No Volume" : "Volume " + vol}</span>
+                <span class="chapter-count">${Object.keys(chapters).length} Chapters <i class="bi bi-chevron-down"></i></span>
+             </div>`;
+
+    // 2. Duyệt qua từng số Chapter trong Volume đó
+    for (const [chapNum, versions] of Object.entries(chapters)) {
+      if (versions.length === 1) {
+        // TRƯỜNG HỢP 1: Chỉ có 1 bản dịch (Render dòng đơn)
+        html += renderChapterRow(versions[0], false);
+      } else {
+        // TRƯỜNG HỢP 2: Nhiều bản dịch (Render có nút sổ xuống)
+        html += `
+          <div class="chapter-group-wrapper">
+            <div class="chapter-row group-parent" onclick="this.parentElement.classList.toggle('is-open')">
+               <div class="chap-info">
+                  <i class="bi bi-eye"></i>
+                  <span class="chap-num">Chapter ${chapNum}</span>
+               </div>
+               <div class="chap-meta-right"><i class="bi bi-chevron-down"></i></div>
+            </div>
+            <div class="chapter-subs">
+               ${versions.map((v, index) => renderChapterRow(v, true, index === versions.length - 1)).join("")}
+            </div>
+          </div>`;
+      }
+    }
+  }
+  container.innerHTML = html;
+}
+
+// Hàm render từng dòng nhỏ
+function renderChapterRow(v, isSubRow, isLastSub = false) {
+  return `
+    <div class="chapter-row ${isSubRow ? "sub-row" : ""} ${isLastSub ? "last-sub" : ""}">
+      <div class="chap-info">
+        <i class="bi bi-eye"></i>
+        <span class="fi fi-${v.countryCode}"></span>
+        <span class="chap-text">
+            <b>Ch. ${v.chapter}</b> ${v.title ? "- " + v.title : ""}
+        </span>
+      </div>
+      <div class="chap-meta">
+        <div class="meta-item"><i class="bi bi-people"></i> ${v.groupName}</div>
+        <div class="meta-item"><i class="bi bi-person"></i> <span class="user-link">${v.uploader}</span></div>
+      </div>
+      <div class="chap-time">
+        <div class="meta-item"><i class="bi bi-clock"></i> ${v.publishDate}</div>
+        <div class="meta-item"><i class="bi bi-chat-dots"></i> 0</div>
+      </div>
+    </div>`;
+}
 
 export function SetDataMangaDetails(info) {
   if (!info) return;
@@ -89,14 +152,3 @@ function renderExternalButtons(links, keys) {
     })
     .join("");
 }
-
-// Logic khởi chạy khi load trang
-window.addEventListener("DOMContentLoaded", async () => {
-  const params = new URLSearchParams(window.location.search);
-  const mangaId = params.get("mangaId");
-  if (!mangaId) return;
-
-  const info = await LayThongTinManga(mangaId);
-  SetDataCarousel(info);
-  SetDataMangaDetails(info);
-});

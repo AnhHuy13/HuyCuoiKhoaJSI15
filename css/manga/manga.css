@@ -131,6 +131,112 @@ body {
   padding-left: 0 !important;
 }
 
+/* --- Cấu trúc chung của danh sách Chapter --- */
+#chapter-list-container {
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+/* Tiêu đề Volume */
+.volume-header {
+  background-color: #1e1f22;
+  padding: 10px 15px;
+  font-weight: 700;
+  border-bottom: 1px solid #333;
+  margin-top: 15px;
+}
+
+/* Một dòng chapter */
+.chapter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 150px;
+  padding: 10px 15px;
+  background-color: var(--bg-color);
+  border-bottom: 1px solid #282a2e;
+  align-items: center;
+  transition: background 0.2s;
+  cursor: pointer;
+  position: relative;
+}
+
+.chapter-row:hover {
+  background-color: #2b2d31;
+}
+
+.chap-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chap-text {
+  font-size: 0.95rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chap-meta,
+.chap-time {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.user-link {
+  color: #5865f2;
+} /* Màu xanh giống MangaDex */
+
+/* --- XỬ LÝ NHIỀU BẢN DỊCH (Tree View) --- */
+.chapter-subs {
+  display: none; /* Mặc định đóng */
+}
+
+.chapter-group-wrapper.is-open .chapter-subs {
+  display: block;
+}
+
+.sub-row {
+  background-color: #151618;
+  padding-left: 50px; /* Đẩy vào để nhường chỗ cho đường kẻ */
+}
+
+/* Đường kẻ hình chữ L */
+.sub-row::before {
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background-color: #3d4046;
+}
+
+.sub-row::after {
+  content: "";
+  position: absolute;
+  left: 25px;
+  top: 20px; /* Vị trí dấu gạch ngang của chữ L */
+  width: 15px;
+  height: 2px;
+  background-color: #3d4046;
+}
+
+/* Chương cuối của một nhóm thì cắt thanh dọc đi */
+.sub-row.last-sub::before {
+  height: 20px;
+}
+
+/* Icon mắt, người, đồng hồ */
+.bi {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.group-parent {
+  background-color: #202225;
+  font-weight: 700;
+}
+
 @media (max-width: 992px) {
   .main-content-grid {
     grid-template-columns: 100%;
