@@ -1,6 +1,8 @@
 :root {
   --navbar-animation-time: 0.3s;
-  --menu-background-color: rgb(25, 26, 28);
+  --bg-color: rgb(25, 26, 28);
+  --tag-bg: #2a2c30;
+  --border-color: #3d4046;
 }
 
 * {
@@ -11,21 +13,135 @@
 }
 
 body {
+  background-color: var(--bg-color);
+  color: white;
   padding-left: 0;
   transition: padding-left var(--navbar-animation-time) ease-in-out;
-  background-color: var(--menu-background-color);
 }
 
 .content {
-  margin-bottom: 10px;
   margin-left: 30px;
+  margin-top: 25px;
+  margin-bottom: 60px;
 }
 
 .manga-desc {
+  color: #e0e0e0;
+  font-size: 1rem;
+  line-height: 1.8;
+  text-align: justify;
+  max-width: 96%;
+  margin-bottom: 40px;
+}
+
+.main-content-grid {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  gap: 45px;
+  width: 100%;
+}
+
+.manga-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.manga-sidebar h6 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #ffffff;
+}
+
+.manga-badge-dark {
+  background-color: var(--tag-bg);
+  color: #efefef;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  display: inline-block;
+  margin-right: 6px;
+  margin-bottom: 8px;
+}
+
+.btn-ext {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: var(--tag-bg);
+  border: 1px solid var(--border-color);
+  color: white;
+  text-decoration: none !important;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-ext:hover {
+  background-color: var(--border-color);
+  transform: translateY(-2px);
   color: white;
 }
 
-.main-content {
-  display: grid;
-  grid-template-rows: 30% 70%;
+.btn-ext img {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+.alt-titles-list {
+  border-top: 1px solid #333;
+}
+
+.alt-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px solid #282a2e;
+}
+
+.alt-text {
+  font-size: 0.9rem;
+  color: #bbbbbb;
+  line-height: 1.4;
+}
+
+.fi {
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.manga-main-info {
+}
+
+#chapter-list-container {
+  width: 100%;
+}
+
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.col-6 {
+  padding-left: 0 !important;
+}
+
+@media (max-width: 992px) {
+  .main-content-grid {
+    grid-template-columns: 100%;
+  }
+
+  .content {
+    margin-left: 15px;
+    padding-right: 15px;
+  }
+
+  .manga-desc {
+    max-width: 100%;
+  }
 }
