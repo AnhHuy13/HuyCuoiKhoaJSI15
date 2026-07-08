@@ -74,10 +74,7 @@ export async function LayThongTinChapter(chapterId) {
           volumeChapterStr: StringVolumeAndChapter(chapterChain?.chapter, chapterChain?.volume),
         },
         mangaInfo: {
-          name:
-            mangaChain?.altTitles?.find((item) => item.vi)?.vi ??
-            mangaChain?.title?.vi ??
-            Object.values(mangaChain?.title)[0],
+          name: Object.values(mangaChain?.title)[0],
           originalLanguage: (ChuyenLocale(mangaChain?.originalLanguage) || "un").toLowerCase(),
         },
         scanlationInfo: {

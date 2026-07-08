@@ -1,8 +1,6 @@
 import { ChuyenLocale, vietHoaChuCaiDauTien } from "../utility.js";
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
-import { LayThongTinManga } from "../fetch/fetchMangaPage.js";
-import { SetDataCarousel } from "./manga-carousel.js";
-import { LayDanhSachChapter } from "../fetch/fetchMangaPage.js";
+import { LayThongTinManga, LayDanhSachChapter } from "../fetch/fetchMangaPage.js";
 
 const LINK_CONFIG = {
   raw: { label: "Official Raw", domain: "mangadex.org" },
@@ -12,80 +10,162 @@ const LINK_CONFIG = {
   ebj: { label: "eBookJapan", domain: "ebookjapan.yahoo.co.jp" },
   mal: { label: "MyAnimeList", domain: "myanimelist.net" },
   al: { label: "AniList", domain: "anilist.co" },
-  mu: { label: "MangaUpdates", domain: "mangaupdates.com" },
-  ap: { label: "Anime-Planet", domain: "anime-planet.com" },
+  mu: { label: "MangaUpdates", domain: "www.mangaupdates.com" }, // Fix domain cho icon
+  ap: { label: "Anime-Planet", domain: "www.anime-planet.com" },
   kt: { label: "Kitsu", domain: "kitsu.io" },
 };
 
+let currentOffset = 0;
+const limit = 50;
+let currentOrder = "desc";
+let listenersAttached = false; // Cờ bảo vệ để tránh gán trùng lặp sự kiện
+
 export async function RenderChapterList(mangaId) {
-  const data = await LayDanhSachChapter(mangaId);
+  const response = await LayDanhSachChapter(mangaId, currentOffset, limit, currentOrder);
+  if (!response) return;
+
+  const { total, groupedData } = response;
   const container = document.getElementById("chapter-list-container");
-  if (!data) return;
 
-  let html = "";
+  const sortText = document.getElementById("sort-text");
+  const sortIcon = document.getElementById("sort-icon");
+  if (sortText) {
+    sortText.textContent = currentOrder === "desc" ? "Descending" : "Ascending";
+  }
+  if (sortIcon) {
+    sortIcon.className = currentOrder === "desc" ? "bi bi-sort-down" : "bi bi-sort-up";
+  }
 
-  // 1. Duyệt qua từng Volume
-  for (const [vol, chapters] of Object.entries(data)) {
-    html += `<div class="volume-header d-flex justify-content-between">
-                <span>${vol === "No Volume" ? "No Volume" : "Volume " + vol}</span>
-                <span class="chapter-count">${Object.keys(chapters).length} Chapters <i class="bi bi-chevron-down"></i></span>
-             </div>`;
+  const totalPages = Math.ceil(total / limit) || 1;
+  const currentPage = Math.floor(currentOffset / limit) + 1;
 
-    // 2. Duyệt qua từng số Chapter trong Volume đó
-    for (const [chapNum, versions] of Object.entries(chapters)) {
+  const pageInfo = document.getElementById("page-info");
+  if (pageInfo) {
+    pageInfo.textContent = `${currentPage} / ${totalPages}`;
+  }
+
+  const btnPrev = document.getElementById("prev-page");
+  const btnNext = document.getElementById("next-page");
+
+  if (btnPrev) {
+    btnPrev.disabled = currentOffset === 0;
+  }
+  if (btnNext) {
+    btnNext.disabled = currentOffset + limit >= total;
+  }
+
+  let html = ``;
+
+  const sortedVolumes = Object.keys(groupedData).sort((a, b) => {
+    if (a === "No Volume") return 1;
+    if (b === "No Volume") return -1;
+    return currentOrder === "desc" ? parseFloat(b) - parseFloat(a) : parseFloat(a) - parseFloat(b);
+  });
+
+  for (const vol of sortedVolumes) {
+    const chaptersInVol = groupedData[vol];
+    html += `<div class="volume-header"><span>${vol === "No Volume" ? "No Volume" : "Volume " + vol}</span></div>`;
+
+    const sortedChapterNums = Object.keys(chaptersInVol).sort((a, b) => {
+      const numA = parseFloat(a) || 0;
+      const numB = parseFloat(b) || 0;
+      return currentOrder === "desc" ? numB - numA : numA - numB;
+    });
+
+    for (const chapNum of sortedChapterNums) {
+      const versions = chaptersInVol[chapNum];
+
       if (versions.length === 1) {
-        // TRƯỜNG HỢP 1: Chỉ có 1 bản dịch (Render dòng đơn)
-        html += renderChapterRow(versions[0], false);
+        html += renderChapterRow(versions[0], false, false, mangaId);
       } else {
-        // TRƯỜNG HỢP 2: Nhiều bản dịch (Render có nút sổ xuống)
         html += `
-          <div class="chapter-group-wrapper">
-            <div class="chapter-row group-parent" onclick="this.parentElement.classList.toggle('is-open')">
+          <div class="chapter-group-wrapper is-open"> 
+            <div class="chapter-row group-parent">
                <div class="chap-info">
                   <i class="bi bi-eye"></i>
                   <span class="chap-num">Chapter ${chapNum}</span>
                </div>
-               <div class="chap-meta-right"><i class="bi bi-chevron-down"></i></div>
             </div>
             <div class="chapter-subs">
-               ${versions.map((v, index) => renderChapterRow(v, true, index === versions.length - 1)).join("")}
+               ${versions
+                 .map((v, index) =>
+                   renderChapterRow(v, true, index === versions.length - 1, mangaId),
+                 )
+                 .join("")}
             </div>
           </div>`;
       }
     }
   }
+
   container.innerHTML = html;
+  attachEventListeners(mangaId);
 }
 
-// Hàm render từng dòng nhỏ
-function renderChapterRow(v, isSubRow, isLastSub = false) {
+function renderChapterRow(v, isSubRow, isLastSub = false, mangaId) {
+  const readUrl = `doctruyen.html?mangaId=${mangaId}&chapterId=${v.id}`;
+
   return `
-    <div class="chapter-row ${isSubRow ? "sub-row" : ""} ${isLastSub ? "last-sub" : ""}">
+    <a href="${readUrl}" class="chapter-row ${isSubRow ? "sub-row" : ""} ${isLastSub ? "last-sub" : ""}">
       <div class="chap-info">
-        <i class="bi bi-eye"></i>
+        <i class="bi bi-eye-fill"></i>
         <span class="fi fi-${v.countryCode}"></span>
-        <span class="chap-text">
-            <b>Ch. ${v.chapter}</b> ${v.title ? "- " + v.title : ""}
-        </span>
+        <div class="chap-text-box">
+            <span class="chap-main-text"><b>Ch. ${v.chapter}</b> ${v.title ? "- " + v.title : ""}</span>
+        </div>
       </div>
       <div class="chap-meta">
-        <div class="meta-item"><i class="bi bi-people"></i> ${v.groupName}</div>
-        <div class="meta-item"><i class="bi bi-person"></i> <span class="user-link">${v.uploader}</span></div>
+        <span class="meta-item"><i class="bi bi-people-fill"></i> ${v.groupName}</span>
+        <span class="meta-item uploader"><i class="bi bi-person-fill"></i> ${v.uploader}</span>
       </div>
       <div class="chap-time">
-        <div class="meta-item"><i class="bi bi-clock"></i> ${v.publishDate}</div>
-        <div class="meta-item"><i class="bi bi-chat-dots"></i> 0</div>
+        <span class="meta-item"><i class="bi bi-clock-fill"></i> ${v.publishDate}</span>
       </div>
-    </div>`;
+    </a>`;
 }
 
+function attachEventListeners(mangaId) {
+  if (listenersAttached) return; // Nếu đã gán rồi thì không gán lại nữa
+
+  const btnSort = document.getElementById("btn-toggle-sort");
+  const btnPrev = document.getElementById("prev-page");
+  const btnNext = document.getElementById("next-page");
+
+  if (btnSort) {
+    btnSort.addEventListener("click", async () => {
+      currentOrder = currentOrder === "desc" ? "asc" : "desc";
+      currentOffset = 0; // Quay về trang đầu khi đổi thứ tự sắp xếp
+      console.log("Đang đổi thứ tự sang:", currentOrder);
+      await RenderChapterList(mangaId);
+    });
+  }
+
+  if (btnPrev) {
+    btnPrev.addEventListener("click", async () => {
+      if (currentOffset > 0) {
+        currentOffset -= limit;
+        await RenderChapterList(mangaId);
+      }
+    });
+  }
+
+  if (btnNext) {
+    btnNext.addEventListener("click", async () => {
+      currentOffset += limit;
+      await RenderChapterList(mangaId);
+    });
+  }
+
+  listenersAttached = true;
+}
+/**
+ * RENDER CHI TIẾT MANGA (30% SIDEBAR & DESC)
+ */
 export function SetDataMangaDetails(info) {
   if (!info) return;
 
-  // 1. Description (70%)
   document.querySelector(".manga-desc").innerHTML = marked.parse(info.desc || "");
 
-  // 2. Sidebar (30%)
   const genres = info.tags
     .filter((t) => t.attributes.group === "genre")
     .map((t) => t.attributes.name.en);
@@ -99,26 +179,21 @@ export function SetDataMangaDetails(info) {
       <div class="col-6"><h6>Author</h6><span class="manga-badge-dark">${info.relations.author}</span></div>
       <div class="col-6"><h6>Artist</h6><span class="manga-badge-dark">${info.relations.artist}</span></div>
     </div>
-
     <div class="sidebar-section mb-4">
       <div class="row">
         <div class="col-6"><h6>Genres</h6><div class="d-flex flex-wrap gap-1">${genres.map((g) => `<span class="manga-badge-dark">${g}</span>`).join("")}</div></div>
         <div class="col-6"><h6>Themes</h6><div class="d-flex flex-wrap gap-1">${themes.map((t) => `<span class="manga-badge-dark">${t}</span>`).join("")}</div></div>
       </div>
     </div>
-
     <div class="mb-4"><h6>Demographic</h6><span class="manga-badge-dark">${vietHoaChuCaiDauTien(info.demographic || "None")}</span></div>
-
     <div class="mb-4">
       <h6>Read or Buy</h6>
       <div class="d-flex flex-wrap gap-2">${renderExternalButtons(info.externalLinks, ["raw", "en", "bw", "amz", "ebj"])}</div>
     </div>
-
     <div class="mb-4">
       <h6>Track</h6>
       <div class="d-flex flex-wrap gap-2">${renderExternalButtons(info.externalLinks, ["mal", "al", "mu", "ap", "kt"])}</div>
     </div>
-
     <div class="mt-4">
       <h6>Alternative Titles</h6>
       <div class="alt-titles-list">
@@ -137,6 +212,7 @@ function renderExternalButtons(links, keys) {
   return keys
     .filter((k) => links[k])
     .map((k) => {
+      // ĐÃ FIX: Sử dụng đúng LINK_CONFIG
       const config = LINK_CONFIG[k] || { label: k, domain: "google.com" };
       const rawLink = links[k];
       const href =

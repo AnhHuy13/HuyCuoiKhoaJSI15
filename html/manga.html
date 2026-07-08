@@ -149,6 +149,21 @@
         <aside class="manga-sidebar"></aside>
 
         <section class="manga-main-info">
+          <div class="chapter-controls d-flex justify-content-between align-items-center">
+            <button id="btn-toggle-sort" class="btn-sort">
+              <i id="sort-icon" class="bi bi-sort-down"></i> <span id="sort-text">Descending</span>
+            </button>
+            <div class="pagination-controls d-flex align-items-center">
+              <button id="prev-page" class="btn-page" disabled>
+                <i class="bi bi-chevron-left"></i>
+              </button>
+              <span class="page-info" id="page-info">1 / 1</span>
+              <button id="next-page" class="btn-page" disabled>
+                <i class="bi bi-chevron-right"></i>
+              </button>
+            </div>
+          </div>
+
           <div id="chapter-list-container"></div>
         </section>
       </div>
@@ -160,5 +175,6 @@
     <script type="module" src="../js/manga/manga.js"></script>
     <script type="module" src="../js/manga/manga-carousel.js"></script>
     <script type="module" src="../js/manga/manga-home.js"></script>
+    <script type="module" src="../js/fetch/fetchSearch.js"></script>
   </body>
 </html>

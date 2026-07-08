@@ -12,7 +12,7 @@ async function AddData() {
 
   const originalLanguage = data?.mangaInfo?.originalLanguage;
   const nameManga = data?.mangaInfo?.name;
-  const chapterName = data?.chapterInfo?.name;
+  const chapterName = data?.chapterInfo?.name || "";
   const translatedLanguage = data?.chapterInfo?.translatedLanguage;
   const scanlationGroup = data?.scanlationInfo?.name;
   const volumeChapterStr = data?.chapterInfo?.volumeChapterStr;

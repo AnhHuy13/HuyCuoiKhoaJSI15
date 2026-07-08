@@ -1,8 +1,11 @@
 :root {
   --navbar-animation-time: 0.3s;
   --bg-color: rgb(25, 26, 28);
-  --tag-bg: #2a2c30;
+  --surface-color: #2a2c30;
   --border-color: #3d4046;
+  --accent-blue: #5865f2;
+  --text-main: #ffffff;
+  --text-muted: #bbbbbb;
 }
 
 * {
@@ -14,8 +17,10 @@
 
 body {
   background-color: var(--bg-color);
-  color: white;
-  padding-left: 0;
+  color: var(--text-main);
+  padding: 0;
+  margin: 0;
+  width: 100%;
   transition: padding-left var(--navbar-animation-time) ease-in-out;
 }
 
@@ -23,8 +28,8 @@ body {
   margin-left: 30px;
   margin-top: 25px;
   margin-bottom: 60px;
+  max-width: calc(100% - 60px);
 }
-
 .manga-desc {
   color: #e0e0e0;
   font-size: 1rem;
@@ -37,7 +42,7 @@ body {
 .main-content-grid {
   display: grid;
   grid-template-columns: 30% 70%;
-  gap: 45px;
+  gap: 30px;
   width: 100%;
 }
 
@@ -51,11 +56,16 @@ body {
   font-size: 1.05rem;
   font-weight: 700;
   margin-bottom: 12px;
-  color: #ffffff;
+  color: #fff;
+}
+
+.manga-main-info {
+  width: 100%;
+  min-width: 0;
 }
 
 .manga-badge-dark {
-  background-color: var(--tag-bg);
+  background-color: var(--surface-color);
   color: #efefef;
   padding: 6px 14px;
   border-radius: 6px;
@@ -69,7 +79,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
-  background-color: var(--tag-bg);
+  background-color: var(--surface-color);
   border: 1px solid var(--border-color);
   color: white;
   text-decoration: none !important;
@@ -77,13 +87,12 @@ body {
   border-radius: 6px;
   font-size: 0.85rem;
   margin-bottom: 8px;
-  transition: all 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .btn-ext:hover {
   background-color: var(--border-color);
   transform: translateY(-2px);
-  color: white;
 }
 
 .btn-ext img {
@@ -95,7 +104,6 @@ body {
 .alt-titles-list {
   border-top: 1px solid #333;
 }
-
 .alt-item {
   display: flex;
   align-items: center;
@@ -104,91 +112,109 @@ body {
   border-bottom: 1px solid #282a2e;
 }
 
-.alt-text {
-  font-size: 0.9rem;
-  color: #bbbbbb;
-  line-height: 1.4;
+.chapter-controls {
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+  margin-bottom: 10px;
 }
 
-.fi {
-  border-radius: 2px;
-  flex-shrink: 0;
+.btn-sort,
+.btn-page {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.manga-main-info {
+.btn-sort:hover,
+.btn-page:not(:disabled):hover {
+  background: #3d4046;
+}
+.btn-page:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.page-info {
+  font-size: 0.85rem;
+  margin: 0 10px;
+  color: var(--text-muted);
 }
 
-#chapter-list-container {
-  width: 100%;
-}
-
-.row {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-}
-
-.col-6 {
-  padding-left: 0 !important;
-}
-
-/* --- Cấu trúc chung của danh sách Chapter --- */
-#chapter-list-container {
-  margin-top: 20px;
-  border-radius: 8px;
-}
-
-/* Tiêu đề Volume */
 .volume-header {
   background-color: #1e1f22;
-  padding: 10px 15px;
+  padding: 12px 15px;
   font-weight: 700;
   border-bottom: 1px solid #333;
-  margin-top: 15px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 4px 4px 0 0;
 }
 
-/* Một dòng chapter */
 .chapter-row {
   display: grid;
-  grid-template-columns: 1fr 1fr 150px;
+  grid-template-columns: 1.5fr 1fr 130px;
+  gap: 15px;
   padding: 10px 15px;
   background-color: var(--bg-color);
   border-bottom: 1px solid #282a2e;
   align-items: center;
-  transition: background 0.2s;
   cursor: pointer;
+  min-width: 0;
   position: relative;
+
+  text-decoration: none !important;
+  color: inherit !important;
 }
 
 .chapter-row:hover {
   background-color: #2b2d31;
+  color: white !important;
 }
 
 .chap-info {
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
-.chap-text {
-  font-size: 0.95rem;
-  white-space: nowrap;
+.chap-text-box {
+  min-width: 0;
+  flex: 1;
+}
+
+.chap-main-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  word-break: break-word;
+  font-size: 0.95rem;
+  line-height: 1.3;
 }
 
 .chap-meta,
 .chap-time {
   font-size: 0.85rem;
-  color: #aaa;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .user-link {
-  color: #5865f2;
-} /* Màu xanh giống MangaDex */
+  color: var(--accent-blue);
+  text-decoration: none;
+}
 
-/* --- XỬ LÝ NHIỀU BẢN DỊCH (Tree View) --- */
-.chapter-subs {
-  display: none; /* Mặc định đóng */
+.user-link:hover {
+  text-decoration: underline;
 }
 
 .chapter-group-wrapper.is-open .chapter-subs {
@@ -197,44 +223,48 @@ body {
 
 .sub-row {
   background-color: #151618;
-  padding-left: 50px; /* Đẩy vào để nhường chỗ cho đường kẻ */
+  padding-left: 45px;
 }
 
-/* Đường kẻ hình chữ L */
 .sub-row::before {
   content: "";
   position: absolute;
-  left: 25px;
+  left: 22px;
   top: 0;
   width: 2px;
   height: 100%;
-  background-color: #3d4046;
+  background-color: var(--border-color);
 }
 
 .sub-row::after {
   content: "";
   position: absolute;
-  left: 25px;
-  top: 20px; /* Vị trí dấu gạch ngang của chữ L */
-  width: 15px;
+  left: 22px;
+  top: 22px;
+  width: 12px;
   height: 2px;
-  background-color: #3d4046;
+  background-color: var(--border-color);
 }
 
-/* Chương cuối của một nhóm thì cắt thanh dọc đi */
 .sub-row.last-sub::before {
-  height: 20px;
+  height: 22px;
 }
 
-/* Icon mắt, người, đồng hồ */
 .bi {
-  font-size: 0.9rem;
   opacity: 0.7;
+  font-size: 0.9rem;
+}
+.fi {
+  border-radius: 2px;
+  flex-shrink: 0;
 }
 
-.group-parent {
-  background-color: #202225;
-  font-weight: 700;
+.row {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+.col-6 {
+  padding-left: 0 !important;
 }
 
 @media (max-width: 992px) {
@@ -242,12 +272,17 @@ body {
     grid-template-columns: 100%;
   }
 
+  .chapter-row {
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+  }
+
+  .chap-meta {
+    display: none;
+  }
+
   .content {
     margin-left: 15px;
     padding-right: 15px;
-  }
-
-  .manga-desc {
-    max-width: 100%;
   }
 }

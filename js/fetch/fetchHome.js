@@ -19,6 +19,7 @@ export async function LayMangaChoCarousel(limit) {
             manga?.attributes?.altTitles?.find((item) => item.vi)?.vi ??
             Object.values(manga?.attributes?.title)[0] ??
             "Chưa có tên bộ truyện",
+          id: manga?.id,
 
           desc:
             manga?.attributes?.description?.vi ??

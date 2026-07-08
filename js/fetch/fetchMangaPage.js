@@ -47,38 +47,43 @@ function formatTimeAgo(dateString) {
   return "Just now";
 }
 
-export async function LayDanhSachChapter(mangaId, offset = 0) {
+export async function LayDanhSachChapter(mangaId, offset = 0, limit = 50, order = "desc") {
   try {
-    const url = `https://api.mangadex.org/manga/${mangaId}/feed?limit=500&offset=${offset}&includes[]=scanlation_group&includes[]=user&order[volume]=desc&order[chapter]=desc&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`;
+    const url = `https://api.mangadex.org/manga/${mangaId}/feed?limit=${limit}&offset=${offset}&includes[]=scanlation_group&includes[]=user&order[volume]=${order}&order[chapter]=${order}&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`;
 
     const response = await fetch(url);
     const result = await response.json();
-    const rawChapters = result.data;
 
-    const groupedData = {};
-    rawChapters.forEach((ch) => {
-      const attr = ch.attributes;
-      const rels = ch.relationships;
-      const vol = attr.volume || "No Volume";
-      const chapNum = attr.chapter || "0";
-
-      if (!groupedData[vol]) groupedData[vol] = {};
-      if (!groupedData[vol][chapNum]) groupedData[vol][chapNum] = [];
-
-      groupedData[vol][chapNum].push({
-        id: ch.id,
-        title: attr.title || "",
-        chapter: attr.chapter,
-        language: attr.translatedLanguage,
-        countryCode: ChuyenLocale(attr.translatedLanguage),
-        groupName: rels.find((r) => r.type === "scanlation_group")?.attributes?.name || "No Group",
-        uploader: rels.find((r) => r.type === "user")?.attributes?.username || "Unknown",
-        publishDate: formatTimeAgo(attr.publishDate),
-      });
-    });
-    return groupedData;
+    return {
+      total: result.total, // Tổng số chapter để làm phân trang
+      groupedData: groupChapters(result.data),
+    };
   } catch (e) {
-    console.error("Lỗi lấy chapter:", e);
+    console.error(e);
     return null;
   }
+}
+
+function groupChapters(rawChapters) {
+  const groupedData = {};
+  rawChapters.forEach((ch) => {
+    const attr = ch.attributes;
+    const rels = ch.relationships;
+    const vol = attr.volume || "No Volume";
+    const chapNum = attr.chapter || "0";
+
+    if (!groupedData[vol]) groupedData[vol] = {};
+    if (!groupedData[vol][chapNum]) groupedData[vol][chapNum] = [];
+
+    groupedData[vol][chapNum].push({
+      id: ch.id,
+      title: attr.title || "",
+      chapter: attr.chapter,
+      countryCode: ChuyenLocale(attr.translatedLanguage),
+      groupName: rels.find((r) => r.type === "scanlation_group")?.attributes?.name || "No Group",
+      uploader: rels.find((r) => r.type === "user")?.attributes?.username || "Unknown",
+      publishDate: formatTimeAgo(attr.publishDate),
+    });
+  });
+  return groupedData;
 }
