@@ -105,7 +105,7 @@ function generateLatestUpdate(mangaItem) {
   const mangaId = mangaItem.mangaId;
   const chapterId = mangaItem.chapterId;
 
-  const myTemplate = `
+  const Template = `
     <div class="lastest-update-item">
       <img src="${linkCoverTruyen}" alt="Cover" />
       <div class="lastest-update-item-content">
@@ -122,5 +122,7 @@ function generateLatestUpdate(mangaItem) {
     </div>
   `;
 
-  container.insertAdjacentHTML("beforeend", myTemplate);
+  container.insertAdjacentHTML("beforeend", Template);
 }
+
+function generateSelfPublishedUpdate(mangaItem) {}

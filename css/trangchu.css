@@ -109,12 +109,12 @@ body {
 /* recommended */
 /* =========== */
 
-.recommend-heading {
+.self-published-heading {
   color: white;
   margin-top: 17px;
 }
 
-.recommend-container {
+.self-published-container {
   display: grid;
 
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
@@ -123,11 +123,11 @@ body {
   width: 100%;
 }
 
-.recommend-item-container {
+.self-published-item-container {
   max-width: 250px;
 }
 
-.recommend-item-image {
+.self-published-item-image {
   position: relative;
   width: 250px;
   height: 350px;
@@ -141,7 +141,7 @@ body {
   grid-template-rows: 80% 20%;
 }
 
-.recommend-item-image::before {
+.self-published-item-image::before {
   content: "";
   position: absolute;
   top: 0;
@@ -153,7 +153,7 @@ body {
   pointer-events: none;
 }
 
-.recommend-item-desc {
+.self-published-item-desc {
   top: 0;
   left: 0;
   opacity: 0;
@@ -169,16 +169,16 @@ body {
   grid-row: 1 / 2;
 }
 
-.recommend-item-container:hover .recommend-item-image::before {
+.self-published-item-container:hover .self-published-item-image::before {
   background: rgba(0, 0, 0, 0.7);
 }
 
-.recommend-item-container:hover .recommend-item-desc,
-.recommend-item-container:hover .recommend-item-btn {
+.self-published-item-container:hover .self-published-item-desc,
+.self-published-item-container:hover .self-published-item-btn {
   opacity: 1;
 }
 
-.recommend-item-btn {
+.self-published-item-btn {
   display: flex;
   flex-direction: row;
   transition: opacity 0.3s ease;
@@ -189,7 +189,7 @@ body {
   margin-bottom: 5px;
 }
 
-.recommend-item-read-btn {
+.self-published-item-read-btn {
   background-color: rgb(255, 103, 64);
   max-height: 40px;
   width: 90px;
@@ -205,7 +205,7 @@ body {
   font-size: 18px;
 }
 
-.recommend-item-info-btn {
+.self-published-item-info-btn {
   background-color: rgba(79, 79, 79);
   width: 38px;
   height: 38px;
@@ -213,30 +213,30 @@ body {
   border-radius: 360px;
 }
 
-.recommend-item-info-btn img {
+.self-published-item-info-btn img {
 }
 
-/* thanh trượt trong recommend-item-desc */
+/* thanh trượt trong self-published-item-desc */
 
-.recommend-item-desc::-webkit-scrollbar {
+.self-published-item-desc::-webkit-scrollbar {
   width: 6px;
 }
 
-.recommend-item-desc::-webkit-scrollbar-track {
+.self-published-item-desc::-webkit-scrollbar-track {
   background: rgba(0, 0, 0, 0.2);
   border-radius: 3px;
 }
 
-.recommend-item-desc::-webkit-scrollbar-thumb {
+.self-published-item-desc::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.3);
   border-radius: 3px;
 }
 
-.recommend-item-desc::-webkit-scrollbar-thumb:hover {
+.self-published-item-desc::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.5);
 }
 
-.recommend-item-name-manga {
+.self-published-item-name-manga {
   width: 100%;
   color: white;
   display: -webkit-box;

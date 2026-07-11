@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="../css/header.css" />
   </head>
   <body class="sidebar-open">
+    <div class="search-overlay" id="search-overlay"></div>
     <header class="navbar">
       <button class="toggle-menu-btn">
         <img src="../image/icon/menu/menu-white.svg" alt="" />
@@ -29,7 +30,35 @@
         <img src="../image/logo.png" alt="logo" class="logo-navbar" />
         <span>Manga.org</span>
       </a>
-      <input type="text" placeholder="Search..." class="search-box" />
+
+      <div class="search-box-container">
+        <input type="text" placeholder="Search..." class="search-box" id="search-box" />
+        <div class="search-query-container">
+          <ul class="item-query-list" id="item-query-list">
+            <li class="item-query">
+              <div class="item-query-image"></div>
+              <div class="item-query-info">
+                <h1 class="item-query-name">
+                  Backstabbed in a Backwater Dungeon: My Trusted Companions Tried to Kill Me, But
+                  Thanks to the Gift of an Unlimited Gacha I Got LVL 9999 Friends and Am Out For
+                  Revenge on My Former Party Members and the World.
+                </h1>
+                <div class="item-query-stat">
+                  <img src="../image/icon/star/star-f56540.svg" alt="" />
+                  <p class="item-query-star-text">000</p>
+                  <img src="../image/icon/bookmark.svg" alt="" />
+                  <p class="item-query-bookmark-text">000</p>
+                  <img src="" alt="" />
+                </div>
+                <div class="item-query-status-container">
+                  <div class="item-query-status-dot"></div>
+                  <div class="item-query-status">Cancelled</div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </header>
     <nav class="sidebar open">
       <a href="trangchu.html" class="brand-wrapper sidebar-logo">
@@ -120,11 +149,11 @@
     <main class="content">
       <h3 class="lastest-heading">Mới cập nhật</h3>
       <div class="lastest-update-container"></div>
-      <h3 class="recommend-heading">Đề xuất</h3>
-      <div class="recommend-container">
-        <div class="recommend-item-container">
-          <div class="recommend-item-image">
-            <div class="recommend-item-desc" id="recommend-item-desc">
+      <h3 class="self-published-heading">Cá nhân tự xuất bản</h3>
+      <div class="self-published-container">
+        <div class="self-published-item-container">
+          <div class="self-published-item-image">
+            <div class="self-published-item-desc" id="self-published-item-desc">
               <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                 incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
@@ -134,17 +163,17 @@
                 deserunt mollit anim id est laborum.
               </p>
             </div>
-            <div class="recommend-item-btn">
-              <button class="recommend-item-read-btn" id="recommend-item-read-btn">
+            <div class="self-published-item-btn">
+              <button class="self-published-item-read-btn" id="self-published-item-read-btn">
                 <img src="../image/icon/book.svg" alt="" />
                 Read
               </button>
-              <button class="recommend-item-info-btn" id="recommend-item-info-btn">
+              <button class="self-published-item-info-btn" id="self-published-item-info-btn">
                 <img src="../image/icon/arrow/arrow_forward.svg" alt="" />
               </button>
             </div>
           </div>
-          <div class="recommend-item-name-manga" id="recommend-item-name-manga">
+          <div class="self-published-item-name-manga" id="self-published-item-name-manga">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
             incididunt ut labore et dolore magna aliqua.
           </div>
@@ -157,6 +186,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
     <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/header.js"></script>
     <script type="module" src="../js/trangchu/carousel.js"></script>
     <script type="module" src="../js/trangchu/trangchu.js"></script>
     <script type="module" src="../js/navbar.js"></script>

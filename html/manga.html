@@ -34,7 +34,34 @@
         <img src="../image/logo.png" alt="logo" class="logo-navbar" />
         <span>Manga.org</span>
       </a>
-      <input type="text" placeholder="Search..." class="search-box" />
+      <div class="search-box-container">
+        <input type="text" placeholder="Search..." class="search-box" id="search-box" />
+        <div class="search-query-container">
+          <ul class="item-query-list" id="item-query-list">
+            <li class="item-query">
+              <div class="item-query-image"></div>
+              <div class="item-query-info">
+                <h1 class="item-query-name">
+                  Backstabbed in a Backwater Dungeon: My Trusted Companions Tried to Kill Me, But
+                  Thanks to the Gift of an Unlimited Gacha I Got LVL 9999 Friends and Am Out For
+                  Revenge on My Former Party Members and the World.
+                </h1>
+                <div class="item-query-stat">
+                  <img src="../image/icon/star/star-f56540.svg" alt="" />
+                  <p class="item-query-star-text">000</p>
+                  <img src="../image/icon/bookmark.svg" alt="" />
+                  <p class="item-query-bookmark-text">000</p>
+                  <img src="" alt="" />
+                </div>
+                <div class="item-query-status-container">
+                  <div class="item-query-status-dot"></div>
+                  <div class="item-query-status">Cancelled</div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
     </header>
 
     <nav class="sidebar open">
@@ -150,9 +177,16 @@
 
         <section class="manga-main-info">
           <div class="chapter-controls d-flex justify-content-between align-items-center">
-            <button id="btn-toggle-sort" class="btn-sort">
-              <i id="sort-icon" class="bi bi-sort-down"></i> <span id="sort-text">Descending</span>
-            </button>
+            <div class="d-flex gap-2">
+              <button id="btn-toggle-sort" class="btn-sort">
+                <i id="sort-icon" class="bi bi-sort-down"></i>
+                <span id="sort-text">Descending</span>
+              </button>
+              <select id="filter-lang" class="btn-sort" style="outline: none">
+                <option value="all">All Languages</option>
+              </select>
+            </div>
+
             <div class="pagination-controls d-flex align-items-center">
               <button id="prev-page" class="btn-page" disabled>
                 <i class="bi bi-chevron-left"></i>

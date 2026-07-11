@@ -11,8 +11,6 @@ export async function LayMangaChoCarousel(limit) {
         throw new Error(`error status code ${response.status}`);
       }
 
-      console.log(result);
-
       return result?.data?.map((manga) => {
         return {
           title:
@@ -81,8 +79,6 @@ export async function LayLatestUpdate(limit) {
         (relationship) => relationship.type === "manga",
       );
 
-      console.log(groupRelationship?.attributes);
-
       return {
         mangaId: item.mangaId,
         chapterId: item.chapter.id,
@@ -102,3 +98,36 @@ export async function LayLatestUpdate(limit) {
     return [];
   }
 }
+
+export async function fetchLatestSelfPublishedManga(limit) {
+  const url = `https://api.mangadex.org/manga?includedTags[]=891cf039-b895-47f0-9229-bef4c96eccd4&order[createdAt]=desc&limit=${limit}&includes[]=cover_art`;
+
+  const response = await fetch(url);
+  const json = await response.json();
+  if (!json.data || json.data.length === 0) return [];
+
+  const mangaIds = json.data.map((m) => m.id);
+  const statsUrl = `https://api.mangadex.org/statistics/manga?manga[]=${mangaIds.join("&manga[]=")}`;
+  const statsResponse = await fetch(statsUrl);
+  const statsJson = await statsResponse.json();
+
+  return json.data.map((manga) => {
+    const stats = statsJson.statistics[manga.id];
+    const coverRel = manga.relationships.find((rel) => rel.type === "cover_art");
+    const fileName = coverRel?.attributes?.fileName;
+
+    return {
+      id: manga.id,
+      title: manga.attributes.title.en || Object.values(manga.attributes.title)[0],
+      coverUrl: fileName
+        ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}.256.jpg`
+        : "default.jpg",
+      rating: stats?.rating?.average || 0,
+      follows: stats?.follows || 0,
+      createdAt: manga.attributes.createdAt,
+    };
+  });
+}
+
+console.log("self-published:");
+console.log(await fetchLatestSelfPublishedManga(10));

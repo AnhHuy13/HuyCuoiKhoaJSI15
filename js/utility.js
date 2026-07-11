@@ -35,6 +35,17 @@ export function ChuyenLocale(code) {
   }
 }
 
+export function changeStatusToColor(status) {
+  const statusColors = {
+    ongoing: "#008000",
+    completed: "#008000",
+    hiatus: "#ffa500",
+    cancelled: "#ff0000",
+    default: "#808080",
+  };
+  return statusColors[status?.toLowerCase()] || statusColors.default;
+}
+
 /**
  * Để Volume và Chapter cho dễ nhìn
  * thành "Vol. {volume} Ch. {chapter}"
