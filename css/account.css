@@ -1,0 +1,27 @@
+/* ==========================================================================
+   CSS TRƠN HOÀN TOÀN (BẢN SKELETON GỐC)
+   Kế thừa biến, reset font và hiệu ứng trượt của body từ hệ thống trang chủ.
+   ========================================================================== */
+
+:root {
+  --navbar-animation-time: 0.3s;
+  --menu-background-color: rgb(25, 26, 28);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif !important;
+}
+
+body {
+  padding-left: 0;
+  transition: padding-left var(--navbar-animation-time) ease-in-out;
+  background-color: var(--menu-background-color);
+}
+
+/* Khung ngoài của thẻ <main class="account-page"> - Trống để bạn tự thiết lập */
+.account-page {
+  /* Bắt đầu viết các thuộc tính CSS của riêng bạn tại đây */
+}

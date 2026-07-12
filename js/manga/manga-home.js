@@ -1,6 +1,7 @@
 import { ChuyenLocale, vietHoaChuCaiDauTien } from "../utility.js";
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import { LayThongTinManga, LayDanhSachChapter } from "../fetch/fetchMangaPage.js";
+import { initLanguageSelector, filterByLanguage } from "../doctruyen/locLangDocTruyen.js";
 
 const LINK_CONFIG = {
   raw: { label: "Official Raw", domain: "mangadex.org" },
@@ -26,6 +27,21 @@ export async function RenderChapterList(mangaId) {
 
   const { total, groupedData } = response;
   const container = document.getElementById("chapter-list-container");
+  if (!container) return;
+
+  const uniqueCountries = new Set();
+  Object.values(groupedData).forEach((vol) => {
+    Object.values(vol).forEach((versions) => {
+      versions.forEach((v) => {
+        if (v.countryCode) uniqueCountries.add(v.countryCode);
+      });
+    });
+  });
+
+  initLanguageSelector(uniqueCountries, async () => {
+    currentOffset = 0;
+    await RenderChapterList(mangaId);
+  });
 
   const sortText = document.getElementById("sort-text");
   const sortIcon = document.getElementById("sort-icon");
@@ -64,7 +80,8 @@ export async function RenderChapterList(mangaId) {
 
   for (const vol of sortedVolumes) {
     const chaptersInVol = groupedData[vol];
-    html += `<div class="volume-header"><span>${vol === "No Volume" ? "No Volume" : "Volume " + vol}</span></div>`;
+    let volHtml = "";
+    let hasChaptersInVol = false;
 
     const sortedChapterNums = Object.keys(chaptersInVol).sort((a, b) => {
       const numA = parseFloat(a) || 0;
@@ -74,11 +91,14 @@ export async function RenderChapterList(mangaId) {
 
     for (const chapNum of sortedChapterNums) {
       const versions = chaptersInVol[chapNum];
+      const filteredVersions = filterByLanguage(versions);
+      if (filteredVersions.length === 0) continue;
 
-      if (versions.length === 1) {
-        html += renderChapterRow(versions[0], false, false, mangaId);
+      hasChaptersInVol = true;
+      if (filteredVersions.length === 1) {
+        volHtml += renderChapterRow(filteredVersions[0], false, false, mangaId);
       } else {
-        html += `
+        volHtml += `
           <div class="chapter-group-wrapper is-open"> 
             <div class="chapter-row group-parent">
                <div class="chap-info">
@@ -87,14 +107,19 @@ export async function RenderChapterList(mangaId) {
                </div>
             </div>
             <div class="chapter-subs">
-               ${versions
+               ${filteredVersions
                  .map((v, index) =>
-                   renderChapterRow(v, true, index === versions.length - 1, mangaId),
+                   renderChapterRow(v, true, index === filteredVersions.length - 1, mangaId),
                  )
                  .join("")}
             </div>
           </div>`;
       }
+    }
+
+    if (hasChaptersInVol) {
+      html += `<div class="volume-header"><span>${vol === "No Volume" ? "No Volume" : "Volume " + vol}</span></div>`;
+      html += volHtml;
     }
   }
 

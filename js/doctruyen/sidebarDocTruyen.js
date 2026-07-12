@@ -20,11 +20,24 @@ async function AddData() {
   document.getElementById("flag-icon-manga-original").className = `fi fi-${originalLanguage}`;
 
   document.getElementById("manga-sidebar-name-manga").textContent = nameManga;
-  document.getElementById("manga-sidebar-chapter-name-manga").textContent = chapterName;
+
+  if (chapterName) {
+    document.getElementById("manga-sidebar-chapter-name-manga").textContent = chapterName;
+  } else {
+    document.getElementById("manga-sidebar-chapter-name-manga").textContent =
+      "Unknown chapter name";
+    document.getElementById("manga-sidebar-chapter-name-manga").style = "font-style: italic; font-weight: 200; color:lightgray;";
+  }
 
   document.getElementById("flag-icon-manga-scanlation").className = `fi fi-${translatedLanguage}`;
 
-  document.getElementById("manga-sidebar-scanlation-name").textContent = scanlationGroup;
+  if (scanlationGroup) {
+    document.getElementById("manga-sidebar-scanlation-name").textContent = scanlationGroup;
+  } else {
+    document.getElementById("manga-sidebar-scanlation-name").textContent = "Unknown chapter name";
+    document.getElementById("manga-sidebar-scanlation-name").style =
+      "font-style: italic; font-weight: 200; color:lightgray;";
+  }
 
   document.querySelector(".manga-sidebar-vol-current").textContent =
     `${volumeChapterStr} ${chapterName}`;

@@ -1,36 +1,54 @@
-/**
- * Chuyển từ mã Locale sang mã Quốc gia
- * Nếu Locale không hợp lệ hoặc không đổi được thì chuyển về 'un'
- * @param {string} code
- * @returns {string}
- */
-
-const ngonNguMapping = {
-  "es-la": "mx", // tiếng tây ban nha latinh
-  "ja-ro": "jp", // tiếng nhật latinh (romaji)
-  "ko-ro": "kr", // tiếng hàn latinh (romaji)
-  "zh-ro": "cn", // tiếng trung latinh (romaji)
-  "zh-hk": "hk", // tiếng trung hồng kông
-  "zh-hans": "cn", // tiếng trung giản thể
-  "zh-hant": "tw", // tiếng trung phồn thể
-  "pt-br": "br", // tiếng bồ đào nha brazil
+const languageToCountryMap = {
+  "es-la": "mx", // Tiếng Tây Ban Nha Latinh
+  "ja-ro": "jp", // Tiếng Nhật Latinh (Romaji)
+  "ko-ro": "kr", // Tiếng Hàn Latinh (Romaji)
+  "zh-ro": "cn", // Tiếng Trung Latinh (Romaji)
+  "zh-hk": "hk", // Tiếng Trung Hồng Kông
+  "zh-hans": "cn", // Tiếng Trung Giản thể
+  "zh-hant": "tw", // Tiếng Trung Phồn thể
+  "pt-br": "br", // Tiếng Bồ Đào Nha Brazil
 };
+
+const countryToLanguageMap = {
+  vn: "vi", // Tiếng Việt
+  us: "en-US", // Tiếng Anh (Mỹ)
+  gb: "en-GB", // Tiếng Anh (Anh)
+  jp: "ja", // Tiếng Nhật
+  kr: "ko", // Tiếng Hàn
+  br: "pt-BR", // Tiếng Bồ Đào Nha (Brazil)
+  ua: "uk", // Tiếng Ukraina
+  eg: "ar-EG", // Tiếng Ả Rập (Ai Cập)
+  cn: "zh-CN", // Tiếng Trung (Giản thể)
+  hk: "zh-HK", // Tiếng Trung (Hồng Kông)
+  tw: "zh-TW", // Tiếng Trung (Đài Loan)
+  mx: "es-MX", // Tiếng Tây Ban Nha (Mexico)
+};
+
+export function getLanguageName(code) {
+  if (!code || typeof code !== "string") return "Unknown";
+  const normalized = code.trim().toLowerCase();
+  const localeCode = countryToLanguageMap[normalized] || normalized;
+  try {
+    const displayNames = new Intl.DisplayNames(["en"], { type: "language" });
+    const name = displayNames.of(localeCode) || code.toUpperCase();
+    return name.split("(")[0].trim();
+  } catch (e) {
+    return code.toUpperCase();
+  }
+}
 
 export function ChuyenLocale(code) {
   if (!code || typeof code !== "string") return "un";
+  const normalized = code.trim().toLowerCase();
 
-  const normalizedCode = code.trim().toLowerCase();
-  if (ngonNguMapping[normalizedCode]) {
-    return ngonNguMapping[normalizedCode];
+  if (languageToCountryMap[normalized]) {
+    return languageToCountryMap[normalized];
   }
 
   try {
-    const locale = new Intl.Locale(normalizedCode).maximize();
-    const region = locale.region?.toLowerCase();
-
-    return region || "un";
+    const locale = new Intl.Locale(normalized).maximize();
+    return locale.region ? locale.region.toLowerCase() : "un";
   } catch (e) {
-    console.error("Lỗi chuyển từ Locale sang Mã Quốc gia:", code, e);
     return "un";
   }
 }
