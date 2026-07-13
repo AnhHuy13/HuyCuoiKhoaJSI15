@@ -99,8 +99,8 @@ export async function LayLatestUpdate(limit) {
   }
 }
 
-export async function fetchLatestSelfPublishedManga(limit) {
-  const url = `https://api.mangadex.org/manga?includedTags[]=891cf039-b895-47f0-9229-bef4c96eccd4&order[createdAt]=desc&limit=${limit}&includes[]=cover_art`;
+export async function fetchLatestSelfPublishedManga(limit, offset = 0) {
+  const url = `https://api.mangadex.org/manga?includedTags[]=891cf039-b895-47f0-9229-bef4c96eccd4&order[createdAt]=desc&limit=${limit}&offset=${offset}&includes[]=cover_art`;
 
   const response = await fetch(url);
   const json = await response.json();
@@ -118,6 +118,7 @@ export async function fetchLatestSelfPublishedManga(limit) {
 
     return {
       id: manga.id,
+      desc: Object.values(manga.attributes.description)[0],
       title: manga.attributes.title.en || Object.values(manga.attributes.title)[0],
       coverUrl: fileName
         ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}.256.jpg`

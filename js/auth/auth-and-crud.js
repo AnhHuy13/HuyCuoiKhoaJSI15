@@ -264,7 +264,9 @@ export async function initUserOnFirebase(user) {
       const defaultProfile = {
         name: user.displayName || "New member",
         email: user.email || "",
-        avatar: user.photoURL || "../../image/catgirl-default-avatar.jpg",
+        avatar:
+          user.photoURL ||
+          "https://res.cloudinary.com/rimebiqz/image/upload/co_rgb:000000,l_text:Arial_20_bold_normal_left:DEFAULT%250AAVATAR%2520/fl_layer_apply,fl_no_overflow,g_center,x_-50,y_19/defaul-avatar-1_yl9xfo.jpg",
         banner: "default-banner.jpg",
         age: null,
         manga_history: [],

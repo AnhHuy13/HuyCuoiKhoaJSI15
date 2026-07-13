@@ -2,6 +2,7 @@ const activePage = (() => {
   const path = window.location.pathname.toLowerCase();
   if (path.endsWith("trangchu.html") || path.endsWith("/")) return "home";
   if (path.endsWith("manga.html")) return "manga";
+  if (path.endsWith("account.html")) return "account"; // Bổ sung trường hợp cho trang tài khoản
   return "";
 })();
 
@@ -9,10 +10,10 @@ const headerMarkup = `
   <div class="search-overlay" id="search-overlay"></div>
   <header class="navbar">
     <button class="toggle-menu-btn">
-      <img src="../image/icon/menu/menu-white.svg" alt="" />
+      <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914463/menu-white_qko9j7.svg" alt="" />
     </button>
     <a href="trangchu.html" class="brand-wrapper header-logo">
-      <img src="../image/logo.png" alt="logo" class="logo-navbar" />
+      <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914526/logo_wp43wq.png" alt="logo" class="logo-navbar" />
       <span>Manga.org</span>
     </a>
 
@@ -25,9 +26,9 @@ const headerMarkup = `
             <div class="item-query-info">
               <h1 class="item-query-name"></h1>
               <div class="item-query-stat">
-                <img src="../image/icon/star/star-f56540.svg" alt="" />
+                <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914434/star-f56540_khyczc.svg" alt="" />
                 <p class="item-query-star-text"></p>
-                <img src="../image/icon/bookmark.svg" alt="" />
+                <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914412/bookmark_khfizj.svg" alt="" />
                 <p class="item-query-bookmark-text"></p>
                 <img src="" alt="" />
               </div>
@@ -44,47 +45,46 @@ const headerMarkup = `
 
   <nav class="sidebar open">
     <a href="trangchu.html" class="brand-wrapper sidebar-logo">
-      <img src="../image/logo.png" alt="logo" class="logo-navbar" />
+      <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914526/logo_wp43wq.png" alt="logo" class="logo-navbar" />
       <span>Manga.org</span>
     </a>
 
     <ul class="nav-list">
-      <li class="nav-item ${activePage === "home" ? "active" : ""}">
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiRo5RsazUIy3LPn-DG57NPTKgVyRcUqqJODFRmkEdbg&s=10"
-          alt="Profile"
-          class="avatar-icon"
-          id="avatar-icon"
-        />
-        <a href="account.html">Tài khoản của bạn</a>
-      </li>
-      <li class="nav-item ${activePage === "home" ? "active" : ""}">
-        <img src="../image/icon/home/home-white.svg" alt="icon" class="icon-nav-link" />
-        <a href="trangchu.html">Trang chủ</a>
-      </li>
-      <li class="nav-item ${activePage === "manga" ? "active" : ""}">
-        <img src="../image/icon/bookmark.svg" alt="icon" class="icon-nav-link" />
-        <a href="trangchu.html">Yêu thích</a>
-      </li>
-      <li class="nav-item">
-        <a href="trangchu.html">Cập nhật</a>
-      </li>
-      <li class="nav-item">
-        <a href="trangchu.html">Thư viện</a>
-      </li>
-      <li class="nav-item">
-        <a href="trangchu.html">Lịch sử đọc</a>
-      </li>
-      <li class="nav-item">
-        <img src="../image/icon/book.svg" alt="icon" class="icon-nav-link" />
-        <a href="trangchu.html">Sách</a>
-      </li>
-      <li class="nav-item">
-        <a href="trangchu.html">Sách mới gần đây</a>
-      </li>
-      <li class="nav-item">
-        <a href="trangchu.html">Sách mới cập nhật</a>
-      </li>
+        <li class="nav-item ${activePage === "home" ? "active" : ""}">
+            <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914483/home-white_tt5hfs.svg" alt="icon" class="icon-nav-link" />
+            <a href="trangchu.html">Trang chủ</a>
+        </li>
+        <li class="nav-item ${activePage === "manga" ? "active" : ""}">
+            <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914412/bookmark_khfizj.svg" alt="icon" class="icon-nav-link" />
+            <a href="trangchu.html">Yêu thích</a>
+        </li>
+        <li class="nav-item">
+            <a href="trangchu.html">Thư viện</a>
+        </li>
+        <li class="nav-item">
+            <a href="trangchu.html">Lịch sử đọc</a>
+        </li>
+        <li class="nav-item">
+            <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914416/book_ro0m5e.svg" alt="icon" class="icon-nav-link" />
+            <a href="trangchu.html">Sách</a>
+        </li>
+        <li class="nav-item">
+            <a href="trangchu.html">Sách mới gần đây</a>
+        </li>
+        <li class="nav-item">
+            <a href="trangchu.html">Sách mới cập nhật</a>
+        </li>
+
+        <!-- Thêm class nav-item-bottom và kiểm tra activePage ở đây -->
+        <li class="nav-item nav-item-bottom ${activePage === "account" ? "active" : ""}"> 
+            <img
+                src="https://res.cloudinary.com/rimebiqz/image/upload/co_rgb:000000,l_text:Arial_20_bold_normal_left:DEFAULT%250AAVATAR%2520/fl_layer_apply,fl_no_overflow,g_center,x_-50,y_19/defaul-avatar-1_yl9xfo.jpg"
+                alt="Profile"
+                class="avatar-icon"
+                id="avatar-icon"
+            />
+            <a href="account.html">Tài khoản của bạn</a>
+        </li>
     </ul>
   </nav>
 `;

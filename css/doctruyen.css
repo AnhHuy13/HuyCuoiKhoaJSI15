@@ -219,14 +219,14 @@
 }
 
 #manga-page {
-  transition: opacity 0.4s ease-in-out;
+  transition: opacity 0.2s ease-in-out;
   opacity: 1;
   background: black;
   min-height: 200px;
 }
 
 .manga-sidebar-previous-switch {
-  background-image: url(../image/icon/arrow/arrow_back.svg);
+  background-image: url(https://res.cloudinary.com/rimebiqz/image/upload/v1783914498/arrow_back_ipzfsb.svg);
   background-color: transparent;
   border: none;
   background-repeat: no-repeat;
@@ -236,7 +236,7 @@
 }
 
 .manga-sidebar-next-switch {
-  background-image: url(../image/icon/arrow/arrow_forward.svg);
+  background-image: url(https://res.cloudinary.com/rimebiqz/image/upload/v1783914499/arrow_forward_xt30ao.svg);
   background-color: transparent;
   border: none;
   background-repeat: no-repeat;
@@ -273,7 +273,7 @@
 }
 
 #prev-page {
-  background-image: url(../image/icon/arrow/arrow_back.svg);
+  background-image: url(https://res.cloudinary.com/rimebiqz/image/upload/v1783914498/arrow_back_ipzfsb.svg);
   background-color: transparent;
   border: none;
   background-repeat: no-repeat;
@@ -283,7 +283,7 @@
 }
 
 #next-page {
-  background-image: url(../image/icon/arrow/arrow_forward.svg);
+  background-image: url(https://res.cloudinary.com/rimebiqz/image/upload/v1783914499/arrow_forward_xt30ao.svg);
   background-color: transparent;
   border: none;
   background-repeat: no-repeat;

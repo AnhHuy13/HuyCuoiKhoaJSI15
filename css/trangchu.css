@@ -105,9 +105,9 @@ body {
   gap: 5px;
 }
 
-/* =========== */
-/* recommended */
-/* =========== */
+/* ============== */
+/* self-published */
+/* ==============*/
 
 .self-published-heading {
   color: white;
@@ -131,7 +131,6 @@ body {
   position: relative;
   width: 250px;
   height: 350px;
-  background-image: url(../image/TestImage.jpeg);
   background-size: cover;
   background-position: center;
   border-radius: 8px;
@@ -216,7 +215,71 @@ body {
 .self-published-item-info-btn img {
 }
 
+/* ======================================= */
+/* self-published horizontal scroll slider */
+/* ======================================= */
+
+.self-published-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+.self-published-container {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  flex: 1;
+  min-width: 0;
+  padding-bottom: 10px;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.self-published-container::-webkit-scrollbar {
+  display: none;
+}
+
+.self-published-item-container {
+  flex: 0 0 250px;
+  width: 250px;
+}
+
+.self-pub-arrow-btn {
+  background-color: rgba(44, 44, 44, 0.8);
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.self-pub-arrow-btn:hover {
+  background-color: rgb(255, 103, 64);
+}
+
+.self-pub-arrow-btn img {
+  width: 20px;
+  height: 20px;
+}
+
+.pagination-arrow-prev {
+  transform: rotate(180deg);
+}
+
+/* ========================================== */
 /* thanh trượt trong self-published-item-desc */
+/* ========================================== */
 
 .self-published-item-desc::-webkit-scrollbar {
   width: 6px;

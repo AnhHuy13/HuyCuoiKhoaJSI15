@@ -1,8 +1,3 @@
-/* ==========================================================================
-   CSS TRƠN HOÀN TOÀN (BẢN SKELETON GỐC)
-   Kế thừa biến, reset font và hiệu ứng trượt của body từ hệ thống trang chủ.
-   ========================================================================== */
-
 :root {
   --navbar-animation-time: 0.3s;
   --menu-background-color: rgb(25, 26, 28);
@@ -21,7 +16,38 @@ body {
   background-color: var(--menu-background-color);
 }
 
-/* Khung ngoài của thẻ <main class="account-page"> - Trống để bạn tự thiết lập */
 .account-page {
-  /* Bắt đầu viết các thuộc tính CSS của riêng bạn tại đây */
+  padding-top: 60px;
+}
+
+.banner-profile {
+  background-image: url(https://res.cloudinary.com/rimebiqz/image/upload/v1783914533/banner_qvydzf.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 350px;
+  position: relative;
+}
+
+.avatar {
+  position: absolute;
+  border-radius: 50%;
+  width: 200px;
+  height: 200px;
+  bottom: -120px;
+  left: 60px;
+  border: 2px solid white;
+}
+
+.name-container {
+  position: absolute;
+  bottom: -105px;
+  left: 280px;
+  color: white;
+}
+
+.name-account {
+  font-size: 35px;
+  font-weight: bold;
 }

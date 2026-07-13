@@ -52,9 +52,9 @@ function InsertItemQuery(mangaList) {
             ${data.title}
           </h1>
           <div class="item-query-stat">
-            <img src="../image/icon/star/star-f56540.svg" alt="" />
+            <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914434/star-f56540_khyczc.svg" alt="" />
             <p class="item-query-star-text">${data.rating}</p>
-            <img src="../image/icon/bookmark.svg" alt="" />
+            <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914412/bookmark_khfizj.svg" alt="" />
             <p class="item-query-bookmark-text">${data.follows}</p>
             <img src="" alt="" />
           </div>

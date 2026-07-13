@@ -64,6 +64,74 @@ export function changeStatusToColor(status) {
   return statusColors[status?.toLowerCase()] || statusColors.default;
 }
 
+// **********************
+//
+//          cache
+//
+//************************** */
+
+export function layDuLieuCache(key, ttlMs) {
+  try {
+    const cachedData = localStorage.getItem(key);
+    if (!cachedData) return null;
+
+    const parsed = JSON.parse(cachedData);
+    if (Date.now() - parsed.timestamp < ttlMs) {
+      return parsed.data;
+    }
+    localStorage.removeItem(key);
+  } catch (error) {
+    console.error(error);
+  }
+  return null;
+}
+
+export function luuDuLieuCache(key, data) {
+  try {
+    const cacheObject = {
+      timestamp: Date.now(),
+      data: data,
+    };
+    localStorage.setItem(key, JSON.stringify(cacheObject));
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+/**
+ * Tải dữ liệu từ bộ nhớ đệm (cache) hoặc gọi API từ máy chủ, sau đó vẽ danh sách lên giao diện.
+ *
+ * @param {Object} thamSo - Đối tượng cấu hình.
+ * @param {string} thamSo.key - Khóa định danh duy nhất để lưu trữ dữ liệu trong localStorage.
+ * @param {number} thamSo.ttlMs - Thời gian tồn tại của cache tính bằng mili giây.
+ * @param {function(): Promise<any[]>} thamSo.fetchFn - Hàm bất đồng bộ gọi API để tải dữ liệu mới từ máy chủ.
+ * @param {string} thamSo.containerSelector - Chuỗi truy vấn CSS (CSS Selector) của thẻ HTML chứa danh sách.
+ * @param {function(any): void} thamSo.renderItemFn - Hàm thực hiện vẽ giao diện cho từng mục dữ liệu đơn lẻ.
+ * @returns {Promise<void>}
+ */
+export async function taiVaXuLyDanhSach({ key, ttlMs, fetchFn, containerSelector, renderItemFn }) {
+  try {
+    let data = layDuLieuCache(key, ttlMs);
+
+    if (!data) {
+      data = await fetchFn();
+      if (data && data.length > 0) {
+        luuDuLieuCache(key, data);
+      }
+    }
+
+    if (data && data.length > 0) {
+      const container = document.querySelector(containerSelector);
+      if (container) {
+        container.innerHTML = "";
+        data.forEach((item) => renderItemFn(item));
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 /**
  * Để Volume và Chapter cho dễ nhìn
  * thành "Vol. {volume} Ch. {chapter}"

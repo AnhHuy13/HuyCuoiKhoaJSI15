@@ -26,7 +26,8 @@ async function AddData() {
   } else {
     document.getElementById("manga-sidebar-chapter-name-manga").textContent =
       "Unknown chapter name";
-    document.getElementById("manga-sidebar-chapter-name-manga").style = "font-style: italic; font-weight: 200; color:lightgray;";
+    document.getElementById("manga-sidebar-chapter-name-manga").style =
+      "font-style: italic; font-weight: 200; color:lightgray;";
   }
 
   document.getElementById("flag-icon-manga-scanlation").className = `fi fi-${translatedLanguage}`;
