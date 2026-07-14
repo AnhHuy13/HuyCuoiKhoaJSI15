@@ -1,8 +1,10 @@
+// --- KHÔNG DÙNG IMPORT TĨNH Ở ĐÂU FILE ĐỂ TRÁNH LỖI CRASH GIAO DIỆN ---
+
 const activePage = (() => {
   const path = window.location.pathname.toLowerCase();
   if (path.endsWith("trangchu.html") || path.endsWith("/")) return "home";
   if (path.endsWith("manga.html")) return "manga";
-  if (path.endsWith("account.html")) return "account"; // Bổ sung trường hợp cho trang tài khoản
+  if (path.endsWith("account.html")) return "account";
   return "";
 })();
 
@@ -75,7 +77,6 @@ const headerMarkup = `
             <a href="trangchu.html">Sách mới cập nhật</a>
         </li>
 
-        <!-- Thêm class nav-item-bottom và kiểm tra activePage ở đây -->
         <li class="nav-item nav-item-bottom ${activePage === "account" ? "active" : ""}"> 
             <img
                 src="https://res.cloudinary.com/rimebiqz/image/upload/co_rgb:000000,l_text:Arial_20_bold_normal_left:DEFAULT%250AAVATAR%2520/fl_layer_apply,fl_no_overflow,g_center,x_-50,y_19/defaul-avatar-1_yl9xfo.jpg"
@@ -89,4 +90,28 @@ const headerMarkup = `
   </nav>
 `;
 
+// Lệnh này được chạy ngay lập tức khi file được tải, đảm bảo giao diện luôn hiển thị
 document.body.insertAdjacentHTML("afterbegin", headerMarkup);
+
+// Sử dụng Dynamic Import (nhập khẩu động) để xử lý logic người dùng một cách an toàn
+async function updateNavbarAvatar() {
+  try {
+    // Chỉ nạp file auth khi cần thiết, nếu file lỗi hoặc sai đường dẫn, nó sẽ rơi vào khối catch thay vì làm sập trang
+    const { isLogin, readFirebaseKey } = await import("../database/firebase.js");
+
+    const user = await isLogin();
+    const avatarIcon = document.getElementById("avatar-icon");
+    if (!avatarIcon) return;
+
+    if (user) {
+      const dbAvatar = await readFirebaseKey(user.uid, "avatar");
+      if (dbAvatar) {
+        avatarIcon.src = dbAvatar;
+      }
+    }
+  } catch (error) {
+    console.warn("Không thể tải thông tin avatar động (Vẫn giữ avatar mặc định):", error);
+  }
+}
+
+updateNavbarAvatar();

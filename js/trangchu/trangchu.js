@@ -3,15 +3,12 @@ import {
   LayLatestUpdate,
   fetchLatestSelfPublishedManga,
 } from "../fetch/fetchHome.js";
-import { ChuyenLocale, layDuLieuCache, luuDuLieuCache, taiVaXuLyDanhSach } from "../utility.js";
+import { ChuyenLocale } from "../utility.js";
 import { xuLyGiaoDienCarousel, generateMangaPage } from "./carousel.js";
-import {
-  isLogin,
-  readLocalKey,
-  createSimpleLocalKey,
-  syncGuestHistoryToFirebase,
-  deleteLocalKey,
-} from "../auth/auth-and-crud.js";
+
+import { isLogin, syncGuestHistoryToFirebase, initUserOnFirebase } from "../database/firebase.js";
+import { readLocalKey, createSimpleLocalKey, deleteLocalKey } from "../database/localStorage.js";
+
 window.history.scrollRestoration = "manual";
 
 const THOI_GIAN_LUOT_QUA_CAROUSEL_TIEP_THEO = 3000;
@@ -22,72 +19,130 @@ const CACHE_KEY_CAROUSEL = "cache_home_carousel";
 const CACHE_KEY_LATEST = "cache_home_latest";
 const CACHE_KEY_SELF_PUBLISHED = "cache_home_self_published";
 
-// Cấu hình tải gối đầu cho mục tự xuất bản
 let selfPubOffset = 0;
-const LIMIT_SELF_PUBLISHED = 16; // Tải mỗi đợt 16 truyện theo sơ đồ
+const LIMIT_SELF_PUBLISHED = 16;
 let isSelfPubLoading = false;
 let hasMoreSelfPub = true;
 
-setData();
-Init();
+function localLuuCache(key, data) {
+  try {
+    const cacheObj = {
+      timestamp: Date.now(),
+      data: data,
+    };
+    localStorage.setItem(key, JSON.stringify(cacheObj));
+    console.log(`[Cache] Đã ghi nhận dữ liệu vào bộ nhớ đệm: ${key}`);
+  } catch (error) {
+    console.warn("[Cache] Không thể lưu bộ nhớ đệm cục bộ:", error);
+  }
+}
+
+function localLayCache(key, ttlMs) {
+  try {
+    const rawData = localStorage.getItem(key);
+    if (!rawData) return null;
+
+    const cacheObj = JSON.parse(rawData);
+    const thoiGianDaQua = Date.now() - cacheObj.timestamp;
+
+    if (thoiGianDaQua > ttlMs) {
+      console.log(`[Cache] Dữ liệu đệm quá hạn: ${key}`);
+      localStorage.removeItem(key);
+      return null;
+    }
+
+    console.log(`[Cache] Sử dụng dữ liệu đệm thành công cho: ${key}`);
+    return cacheObj.data;
+  } catch (error) {
+    console.warn("[Cache] Không thể phân tích dữ liệu đệm:", error);
+    return null;
+  }
+}
+
+function updateProgress(percentage, text) {
+  const progressBar = document.getElementById("load-progress");
+  const loadingText = document.querySelector(".loading-text");
+  if (progressBar) {
+    progressBar.style.width = `${percentage}%`;
+  }
+  if (loadingText && text) {
+    loadingText.textContent = text;
+  }
+}
+
+function hideLoadingScreen() {
+  const loadingScreen = document.getElementById("loading-screen");
+  if (loadingScreen) {
+    loadingScreen.classList.add("fade-out");
+  }
+}
+
+async function onPageLoad() {
+  try {
+    updateProgress(30, "Đang nạp dữ liệu...");
+
+    await Promise.all([setCarouselData(), setLatestUpdateData(), setSelfPublishedData()]);
+
+    updateProgress(100, "Hoàn tất!");
+    hideLoadingScreen();
+
+    Init()
+      .then(() => {
+        console.log("[Auth] Đã hoàn thành kiểm tra tài khoản và đồng bộ chạy ngầm.");
+      })
+      .catch((err) => {
+        console.warn("[Auth] Lỗi chạy ngầm auth:", err);
+      });
+  } catch (error) {
+    console.error("Gặp lỗi khi nạp trang:", error);
+    hideLoadingScreen();
+  }
+}
+
+onPageLoad();
 
 async function Init() {
   console.log("Hệ thống đang khởi tạo...");
-
   try {
     const user = await isLogin();
-
     if (user) {
       const userId = user.uid;
       console.log("Đã đăng nhập với Id: " + userId);
 
+      await initUserOnFirebase(user);
+
       const guestHistory = readLocalKey(LOCAL_HISTORY_KEY);
       if (guestHistory && guestHistory.length > 0) {
-        console.log("Phát hiện lịch sử từ máy khách");
-
+        console.log("Phát hiện lịch sử từ khách vãng lai, tiến hành sáp nhập...");
         const isSyncSuccess = await syncGuestHistoryToFirebase(userId, guestHistory);
         if (isSyncSuccess) {
           deleteLocalKey(LOCAL_HISTORY_KEY);
           console.log("Đồng bộ hoàn tất, đã dọn dẹp bộ nhớ máy khách");
         }
       }
-
-      // Dự định: Thiết lập hiển thị giao diện cho người dùng đã đăng nhập
-      // HienThiGiaoDienUser(user);
     } else {
       console.log("Người dùng hiện tại là khách vãng lai");
       createSimpleLocalKey(LOCAL_HISTORY_KEY, JSON.stringify([]));
-
-      // Dự định: Thiết lập hiển thị giao diện cho khách vãng lai
-      // HienThiGiaoDienGuest();
     }
-    console.log("hoàn tất check");
   } catch (error) {
     console.error("Lỗi khởi tạo ứng dụng: " + error);
   }
 }
 
-function testElement(selector) {
-  var element = document.querySelector(selector);
-  if (element === null) {
-    console.error("Không tìm thấy phần tử: " + selector + " !!!!!!!!!");
-    return {};
-  }
-  return element;
-}
-
-async function setData() {
-  // 1. CAROUSEL (Cơ chế đặc biệt được giữ riêng độc lập)
-  let mangaArray = layDuLieuCache(CACHE_KEY_CAROUSEL, CACHE_TTL_MS);
+async function setCarouselData() {
+  let mangaArray = localLayCache(CACHE_KEY_CAROUSEL, CACHE_TTL_MS);
 
   if (!mangaArray) {
     mangaArray = await LayMangaChoCarousel(5);
     if (mangaArray && mangaArray.length > 0) {
-      luuDuLieuCache(CACHE_KEY_CAROUSEL, mangaArray);
+      localLuuCache(CACHE_KEY_CAROUSEL, mangaArray);
     }
   }
 
   if (mangaArray && mangaArray.length > 0) {
+    const container = document.querySelector("#carouselExampleCaptions .carousel-inner");
+    if (container) container.innerHTML = "";
+
     mangaArray.forEach((mangaItem, index) => {
       generateMangaPage(index, mangaItem);
     });
@@ -99,36 +154,47 @@ async function setData() {
       ride: "carousel",
     });
   }
+}
 
-  // 2. DANH SÁCH MỚI CẬP NHẬT (Sử dụng hàm tối giản)
-  await taiVaXuLyDanhSach({
-    key: CACHE_KEY_LATEST,
-    ttlMs: CACHE_TTL_MS,
-    fetchFn: () => LayLatestUpdate(10),
-    containerSelector: ".lastest-update-container",
-    renderItemFn: generateLatestUpdate,
-  });
+async function setLatestUpdateData() {
+  const container = document.querySelector(".lastest-update-container");
+  if (container) container.innerHTML = "";
 
-  // 3. DANH SÁCH TRUYỆN TỰ XUẤT BẢN (Tải 16 phần tử đầu tiên và kích hoạt slider cuộn)
+  let latestData = localLayCache(CACHE_KEY_LATEST, CACHE_TTL_MS);
+
+  if (!latestData) {
+    latestData = await LayLatestUpdate(10);
+    if (latestData && latestData.length > 0) {
+      localLuuCache(CACHE_KEY_LATEST, latestData);
+    }
+  }
+
+  if (latestData && latestData.length > 0) {
+    latestData.forEach((item) => {
+      generateLatestUpdate(item);
+    });
+  }
+}
+
+async function setSelfPublishedData() {
   const container = document.querySelector(".self-published-container");
-  if (container) container.innerHTML = ""; // Đảm bảo container trống trước khi nạp lần đầu
+  if (container) container.innerHTML = "";
 
   await taiThemSelfPublished();
   khoiTaoSliderSelfPublished();
 }
 
-// Hàm tải gối đầu nối tiếp dữ liệu tự xuất bản
 async function taiThemSelfPublished() {
   if (isSelfPubLoading || !hasMoreSelfPub) return;
   isSelfPubLoading = true;
 
   const cacheKeyTrangThai = `${CACHE_KEY_SELF_PUBLISHED}_offset_${selfPubOffset}`;
-  let data = layDuLieuCache(cacheKeyTrangThai, CACHE_TTL_MS);
+  let data = localLayCache(cacheKeyTrangThai, CACHE_TTL_MS);
 
   if (!data) {
     data = await fetchLatestSelfPublishedManga(LIMIT_SELF_PUBLISHED, selfPubOffset);
     if (data && data.length > 0) {
-      luuDuLieuCache(cacheKeyTrangThai, data);
+      localLuuCache(cacheKeyTrangThai, data);
     }
   }
 
@@ -137,28 +203,23 @@ async function taiThemSelfPublished() {
     if (container) {
       data.forEach((item) => generateSelfPublishedUpdate(item));
     }
-
-    selfPubOffset += data.length; // Cập nhật offset mới cho lần gọi tiếp theo
+    selfPubOffset += data.length;
 
     if (data.length < LIMIT_SELF_PUBLISHED) {
-      hasMoreSelfPub = false; // Ngăn chặn gọi tiếp nếu máy chủ đã hết dữ liệu
+      hasMoreSelfPub = false;
     }
   } else {
     hasMoreSelfPub = false;
   }
-
   isSelfPubLoading = false;
 }
 
-// Khởi tạo hoạt động của nút bấm cuộn mượt và sự kiện theo dõi thanh cuộn
 function khoiTaoSliderSelfPublished() {
   const container = document.querySelector(".self-published-container");
   const prevBtn = document.querySelector("#btn-self-pub-prev");
   const nextBtn = document.querySelector("#btn-self-pub-next");
 
   if (!container) return;
-
-  // Lượng cuộn ngang (Cuộn 3 thẻ mỗi lượt bấm: 3 * (250px rộng + 15px khoảng cách) = 795px)
   const scrollAmount = 795;
 
   if (prevBtn) {
@@ -173,9 +234,7 @@ function khoiTaoSliderSelfPublished() {
     });
   }
 
-  // Lắng nghe sự kiện cuộn ngang của thanh slider để tự động kích hoạt lazy load
   container.addEventListener("scroll", () => {
-    // Nếu khoảng cách còn lại từ điểm cuộn đến mép phải nhỏ hơn 600px thì bắt đầu tải đợt tiếp theo
     const nearEnd = container.scrollWidth - container.scrollLeft - container.clientWidth < 600;
     if (nearEnd) {
       taiThemSelfPublished();
@@ -238,7 +297,7 @@ function generateSelfPublishedUpdate(mangaItem) {
   const nameTruyen = cleanText(mangaItem.title) || "Không có tên truyện";
   const descTruyen = cleanText(mangaItem.desc);
   const imageTruyen = mangaItem.coverUrl;
-  const mangaId = mangaItem.id; // Đã sửa lỗi tham chiếu ID
+  const mangaId = mangaItem.id;
 
   const Template = `
     <div class="self-published-item-container">

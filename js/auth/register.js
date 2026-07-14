@@ -1,5 +1,13 @@
-const auth = firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+import { app } from "../firebase-config.js";
+
+const auth = getAuth(app);
+const googleProvider = new GoogleAuthProvider();
 
 function showMessage(elementId, message, type) {
   const messages = document.querySelectorAll(".message");
@@ -13,11 +21,10 @@ function showMessage(elementId, message, type) {
 }
 
 function dangKyTaiKhoan(email, password) {
-  auth
-    .createUserWithEmailAndPassword(email.trim(), password.trim())
+  createUserWithEmailAndPassword(auth, email.trim(), password.trim())
     .then(() => {
       alert("Đăng ký thành công!");
-      window.location.href = "../html/auth/dangnhap.html";
+      window.location.href = "./dangnhap.html";
     })
     .catch((error) => {
       switch (error.code) {
@@ -36,6 +43,16 @@ function dangKyTaiKhoan(email, password) {
     });
 }
 
+function dangNhapGoogle() {
+  signInWithPopup(auth, googleProvider)
+    .then(() => {
+      window.location.href = "../trangchu.html";
+    })
+    .catch((error) => {
+      console.error("Lỗi Google:", error.message);
+    });
+}
+
 function checkValidateforSignUp() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -50,13 +67,13 @@ function checkValidateforSignUp() {
   dangKyTaiKhoan(email, password);
 }
 
-function dangNhapGoogle() {
-  auth
-    .signInWithPopup(googleProvider)
-    .then(() => {
-      window.location.href = "../html/trangchu.html";
-    })
-    .catch((error) => {
-      console.error("Lỗi Google:", error.message);
-    });
+// Lắng nghe sự kiện trực tiếp không dùng "onclick" trong HTML
+const registerBtn = document.querySelector(".login-btn");
+if (registerBtn) {
+  registerBtn.addEventListener("click", checkValidateforSignUp);
+}
+
+const googleBtn = document.querySelector(".btn-google");
+if (googleBtn) {
+  googleBtn.addEventListener("click", dangNhapGoogle);
 }

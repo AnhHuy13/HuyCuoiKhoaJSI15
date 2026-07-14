@@ -138,3 +138,58 @@ input:focus {
   color: rgb(212, 66, 40);
   text-decoration: none;
 }
+
+/* Modal Popup Overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: none; /* Ẩn mặc định */
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box {
+  width: 90%;
+  max-width: 28.125em; /* 450px */
+  background-color: rgb(25, 26, 30);
+  padding: 2em;
+  border-radius: 0.3125em;
+  border-top: 0.3125em solid rgb(253, 79, 50);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.modal-title h2 {
+  color: #eee;
+  font-size: 1.5rem;
+  margin-bottom: 0.2em;
+  text-align: left;
+}
+
+.modal-title p {
+  color: #aaa;
+  font-size: 0.85rem;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3125em;
+}
+
+.modal-body label {
+  color: #eee;
+  font-size: 0.9rem;
+  margin-top: 0.5em;
+}

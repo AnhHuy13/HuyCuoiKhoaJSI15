@@ -21,7 +21,14 @@
     <link rel="stylesheet" href="../css/header.css" />
   </head>
   <body class="sidebar-open">
-    <script type="module" src="../js/layout/headerNavbar.js"></script>
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-content">
+        <p class="loading-text">Đang kết nối hệ thống...</p>
+        <div class="progress-container">
+          <div class="progress-bar" id="load-progress"></div>
+        </div>
+      </div>
+    </div>
 
     <div id="carousel-home">
       <div id="carouselExampleCaptions" class="carousel slide">
@@ -95,6 +102,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
 
     <script type="module" src="../js/firebase-config.js"></script>
+    <script type="module" src="../js/layout/headerNavbar.js"></script>
     <script type="module" src="../js/header.js"></script>
     <script type="module" src="../js/trangchu/carousel.js"></script>
     <script type="module" src="../js/trangchu/trangchu.js"></script>

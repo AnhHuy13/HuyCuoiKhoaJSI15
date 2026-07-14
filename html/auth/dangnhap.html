@@ -29,7 +29,7 @@
           <input type="password" id="password" />
           <div id="password-login-message" class="message"></div>
 
-          <button class="login-btn" onclick="checkValidateforSignIn()">Đăng nhập</button>
+          <button class="login-btn">Đăng nhập</button>
         </div>
 
         <div class="or">hoặc</div>
@@ -44,10 +44,31 @@
         </div>
       </div>
     </div>
+
+    <div id="setup-profile-modal" class="modal-overlay">
+      <div class="modal-box">
+        <div class="modal-title">
+          <h2>Hoàn thiện hồ sơ</h2>
+          <p>Vui lòng chọn Tên hiển thị và ID cá nhân của bạn</p>
+        </div>
+        <div class="modal-body">
+          <label for="modal-name">Tên hiển thị (Biệt danh):</label>
+          <input type="text" id="modal-name" placeholder="Ví dụ: Otaku Đẹp Trai" />
+          <div id="modal-name-error" class="message"></div>
+
+          <label for="modal-custom-id">ID cá nhân (Chữ thường, viết liền, không dấu):</label>
+          <input type="text" id="modal-custom-id" placeholder="Ví dụ: otaku123" />
+          <div id="modal-custom-id-error" class="message"></div>
+
+          <button id="modal-save-btn" class="login-btn">Xác nhận & Vào trang chủ</button>
+        </div>
+      </div>
+    </div>
+
     <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
 
-    <script src="../../js/firebase-config.js"></script>
-    <script src="../../js/auth/login.js"></script>
+    <script type="module" src="../../js/firebase-config.js"></script>
+    <script type="module" src="../../js/auth/login.js"></script>
   </body>
 </html>
