@@ -1,5 +1,6 @@
 import { LayThongTinChapter } from "../fetch/fetchRead.js";
-import { ChuyenLocale } from "../utility.js";
+import { ChuyenLocale } from "../helper/utility.js";
+import { layCache, luuCache } from "../helper/cacheHelper.js";
 
 const params = new URLSearchParams(window.location.search);
 let chapterId = params.get("chapterId");
@@ -7,8 +8,18 @@ let chapterId = params.get("chapterId");
 AddData();
 
 async function AddData() {
-  const data = await LayThongTinChapter(chapterId);
-  console.log(data);
+  const nameCacheKey = `cache_manga_detail_reader_${chapterId}`;
+  const CACHE_TTL_3_NGAY = 24 * 3 * 60 * 60 * 1000;
+
+  let data = layCache(nameCacheKey, CACHE_TTL_3_NGAY);
+
+  if (!data) {
+    console.log("không có cache để hiện thông tin lên sidebar");
+    data = await LayThongTinChapter(chapterId);
+    if (data) {
+      luuCache(nameCacheKey, data);
+    }
+  }
 
   const originalLanguage = data?.mangaInfo?.originalLanguage;
   const nameManga = data?.mangaInfo?.name;

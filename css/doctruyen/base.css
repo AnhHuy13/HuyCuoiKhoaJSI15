@@ -1,0 +1,56 @@
+/* ================================== */
+/*   CẤU HÌNH BIẾN & THIẾT LẬP CHUNG  */
+/* ================================== */
+
+:root {
+  --background-color: rgb(25, 26, 28);
+  --sidebar-background-color: rgb(44, 44, 44);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif !important;
+}
+
+/* ================================== */
+/*         BỐ CỤC KHUNG CHÍNH         */
+/* ================================== */
+
+.manga-container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Khung chứa ảnh khóa cứng để cố định thanh trượt ở đáy */
+.manga-page-container {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--background-color);
+  padding: 0;
+  overflow: hidden;
+  height: 100vh;
+}
+
+#manga-viewer {
+  width: 100%;
+  background-color: var(--background-color);
+}
+
+/* ================================== */
+/*             ANIMATIONS             */
+/* ================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

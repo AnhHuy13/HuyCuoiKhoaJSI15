@@ -1,4 +1,4 @@
-import { ChuyenLocale, StringVolumeAndChapter, getCoverUrls } from "../utility.js";
+import { ChuyenLocale, StringVolumeAndChapter, getCoverUrls } from "../helper/utility.js";
 
 export async function LayMangaChoCarousel(limit) {
   try {
@@ -129,6 +129,3 @@ export async function fetchLatestSelfPublishedManga(limit, offset = 0) {
     };
   });
 }
-
-console.log("self-published:");
-console.log(await fetchLatestSelfPublishedManga(10));

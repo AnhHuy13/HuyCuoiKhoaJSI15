@@ -270,9 +270,39 @@ export async function logoutFirebase() {
   }
 }
 
-//=============================================================================
-// 4. BÍ DANH (ALIAS) - ĐƯỢC GIỮ LẠI ĐỂ TƯƠNG THÍCH HOÀN TOÀN VỚI CODE CŨ KHÁC
-//=============================================================================
+/**
+ * Helper đọc toàn bộ danh sách tài liệu từ một đường dẫn bộ sưu tập (Collection/Subcollection) bất kỳ.
+ * @param {...string} pathSegments - Các phần tử tạo nên đường dẫn (ví dụ: "users", userId, "favorite", "reading")
+ */
+export async function readAnyCollection(...pathSegments) {
+  try {
+    const colRef = collection(db, ...pathSegments);
+    const querySnapshot = await getDocs(colRef);
+    const list = [];
+    querySnapshot.forEach((doc) => {
+      list.push({ id: doc.id, ...doc.data() });
+    });
+    return list;
+  } catch (error) {
+    console.error("Lỗi khi đọc danh sách tại:", pathSegments.join("/"), error);
+    return [];
+  }
+}
+
+/**
+ * Helper đọc thông tin của một tài liệu (Document) bất kỳ dựa trên đường dẫn linh hoạt.
+ * @param {...string} pathSegments - Các phần tử tạo nên đường dẫn (ví dụ: "users", userId, "favorite", "reading", mangaId)
+ */
+export async function readAnyDoc(...pathSegments) {
+  try {
+    const docRef = doc(db, ...pathSegments);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : null;
+  } catch (error) {
+    console.error("Lỗi khi đọc tài liệu tại:", pathSegments.join("/"), error);
+    return null;
+  }
+}
 
 export async function createFirebaseKey(userId, nameKey, newValue) {
   return await updateUserFields(userId, { [nameKey]: newValue });

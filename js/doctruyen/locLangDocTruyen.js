@@ -1,4 +1,4 @@
-import { ChuyenLocale, getLanguageName } from "../utility.js";
+import { ChuyenLocale, getLanguageName } from "../helper/utility.js";
 
 export let currentLanguage = "all";
 let isFirstLoad = true;
@@ -18,18 +18,12 @@ function detectBrowserLanguage() {
  * @param {Function} onChangeCallback - Hàm callback gọi lại khi người dùng đổi ngôn ngữ
  */
 export function initLanguageSelector(uniqueCountries, onChangeCallback) {
-  if (isFirstLoad) {
-    const detectedCountry = detectBrowserLanguage();
-    if (uniqueCountries.has(detectedCountry)) {
-      currentLanguage = detectedCountry;
-    } else {
-      currentLanguage = "all";
-    }
-    isFirstLoad = false;
-  }
-
   const selectLang = document.getElementById("filter-lang");
   if (!selectLang) return;
+
+  if (selectLang.options.length > 1) {
+    return;
+  }
 
   selectLang.innerHTML = `<option value="all">All Languages</option>`;
   Array.from(uniqueCountries)
@@ -41,15 +35,13 @@ export function initLanguageSelector(uniqueCountries, onChangeCallback) {
       selectLang.appendChild(option);
     });
 
-  if (!uniqueCountries.has(currentLanguage)) {
-    currentLanguage = "all";
-  }
-  selectLang.value = currentLanguage;
+  currentLanguage = "all";
+  selectLang.value = "all";
 
-  selectLang.addEventListener("change", (e) => {
+  selectLang.onchange = (e) => {
     currentLanguage = e.target.value;
     onChangeCallback(currentLanguage);
-  });
+  };
 }
 
 /**

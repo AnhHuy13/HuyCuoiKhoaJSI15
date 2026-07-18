@@ -1,4 +1,4 @@
-import { ChuyenLocale } from "../utility.js";
+import { ChuyenLocale } from "../helper/utility.js";
 
 export async function LayThongTinManga(mangaId) {
   try {
@@ -49,7 +49,7 @@ function formatTimeAgo(dateString) {
 
 export async function LayDanhSachChapter(mangaId, offset = 0, limit = 50, order = "desc") {
   try {
-    const url = `https://api.mangadex.org/manga/${mangaId}/feed?limit=${limit}&offset=${offset}&includes[]=scanlation_group&includes[]=user&order[volume]=${order}&order[chapter]=${order}&contentRating[]=safe&contentRating[]=suggestive&contentRating[]=erotica&contentRating[]=pornographic`;
+    const url = `https://api.mangadex.org/manga/${mangaId}/feed?limit=${limit}&offset=${offset}&includes[]=scanlation_group&includes[]=user&order[volume]=${order}&order[chapter]=${order}&contentRating[]=safe&contentRating[]=suggestive&`;
 
     const response = await fetch(url);
     const result = await response.json();

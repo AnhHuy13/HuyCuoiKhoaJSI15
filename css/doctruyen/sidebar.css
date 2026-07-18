@@ -1,129 +1,13 @@
-:root {
-  --background-color: rgb(25, 26, 28);
-  --sidebar-background-color: rgb(44, 44, 44);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Ubuntu", sans-serif !important;
-}
-
-.manga-container {
-  display: flex;
-  flex-direction: row;
-}
-
-.manga-page-container {
-  flex: 3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--background-color);
-}
-
-.manga-page {
-  display: block;
-  max-width: 100%;
-  max-height: 100vh;
-  height: auto;
-  width: auto;
-  object-fit: contain;
-}
-
-.manga-container {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-}
-
-.manga-page-container {
-  flex: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: var(--background-color);
-  padding: 10px;
-}
-
-.manga-page {
-  flex: 1;
-  max-width: 100%;
-  max-height: calc(100vh - 50px);
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-
-#manga-progress {
-  -webkit-appearance: none;
-  width: 90%;
-  height: 6px;
-  background: #3d4044;
-  outline: none;
-  cursor: pointer;
-  border-radius: 5px;
-  background: linear-gradient(to right, #2ecc71 var(--value), #3d4044 var(--value));
-}
-
-#manga-progress::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 15px;
-  height: 25px;
-  background: #cccccc;
-  border-radius: 2px;
-  cursor: pointer;
-}
-
-#manga-progress::-webkit-slider-thumb:hover {
-  background: #ffffff;
-}
-
-.manga-page-controller {
-  flex: 1;
-  background-color: var(--sidebar-background-color);
-  display: flex;
-  flex-direction: column;
-}
-
-.slider-container {
-  position: relative;
-  width: 90%;
-  display: flex;
-  justify-content: center;
-  margin-top: 10px;
-}
-
-#slider-tooltip {
-  position: absolute;
-  top: -40px;
-  background: #333;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  pointer-events: none;
-  white-space: nowrap;
-
-  opacity: 0;
-  transition: opacity 0.3s ease;
-
-  left: 0;
-  transform: translateX(20%);
-}
-
-#slider-tooltip.show {
-  opacity: 1;
-}
-
-/* =====================*/
-/*       sidebar        */
+/* ================================== */
+/*          SIDEBAR ĐIỀU KHIỂN        */
+/* ================================== */
 
 .manga-page-controller {
   flex: 1;
   background-color: var(--sidebar-background-color);
   border-left: 2px solid rgb(61, 64, 68);
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 
@@ -164,9 +48,7 @@
   margin-top: 3px;
 }
 
-/*================*/
-/* scanlation     */
-
+/* Scanlation */
 .manga-sidebar-scanlation-container {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -194,9 +76,7 @@
   margin-bottom: 4px;
 }
 
-/* =================*/
-/* switch vol       */
-
+/* Switch Volume/Chapter */
 .manga-sidebar-vol-switcher-container {
   display: flex;
   flex-direction: row;
@@ -216,13 +96,6 @@
   align-items: center;
   display: flex;
   justify-content: center;
-}
-
-#manga-page {
-  transition: opacity 0.2s ease-in-out;
-  opacity: 1;
-  background: black;
-  min-height: 200px;
 }
 
 .manga-sidebar-previous-switch {
@@ -254,14 +127,37 @@
   width: 100%;
   text-align: center;
   margin: 0;
-
   line-height: 22px;
   display: block;
 }
 
-/* ================= */
-/* switch page       */
+/* Bộ chọn chế độ đọc Webtoon / Trang đơn */
+.manga-sidebar-mode-container {
+  padding: 8px 12px;
+  border-bottom: 2px solid rgb(61, 64, 68);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
+.manga-sidebar-mode-container p {
+  color: lightgray;
+  font-size: 13px;
+  margin: 0;
+}
+
+#reading-mode-select {
+  background-color: rgb(37, 40, 43);
+  color: white;
+  border: 1.5px solid black;
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Điều hướng chuyển trang thủ công dưới đáy sidebar */
 .manga-sidebar-button-container {
   display: flex;
   flex-direction: row;
@@ -296,66 +192,92 @@
   color: white;
 }
 
-.gap-modal {
-  margin: auto;
-  inset: 0px;
-  border: none;
-  border-radius: 8px;
-  background-color: #1a1a1a;
-  color: white;
-  padding: 0;
-  width: 400px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-}
-.gap-modal::backdrop {
-  background: rgba(0, 0, 0, 0.8);
-}
-.gap-content {
-  padding: 25px;
-  text-align: center;
-}
-.gap-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-}
-#close-gap-x {
-  background: none;
-  border: none;
-  color: white;
+/* ================================== */
+/*   TÙY CHỈNH CHƯƠNG DROPDOWN SIDEBAR */
+/* ================================== */
+
+.manga-sidebar-vol-container {
+  position: relative;
   cursor: pointer;
-  font-size: 1.5rem;
+  user-select: none;
 }
-#gap-numbers {
-  margin: 20px 0;
-  color: #fff;
-  letter-spacing: 5px;
-}
-.gap-actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 30px;
-  gap: 10px;
-}
-.gap-actions button {
-  padding: 10px 15px;
+
+.manga-sidebar-vol-dropdown {
+  display: none;
+  position: absolute;
+
+  top: 100%;
+  margin-top: 5px;
+
+  left: -1.5px;
+  width: calc(100% + 3px);
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: rgb(37, 40, 43);
+  border: 1.5px solid black;
   border-radius: 5px;
-  border: none;
-  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.6);
+  text-align: left;
+}
+
+.manga-sidebar-vol-dropdown.show {
+  display: block;
+}
+
+/* Tiêu đề Volume ngăn cách */
+.dropdown-volume-group-header {
+  background-color: rgb(25, 26, 28);
+  color: #a0a0a0;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: bold;
+  border-bottom: 1.5px solid rgb(61, 64, 68);
+  pointer-events: none;
+}
+
+/* Từng dòng chương truyện */
+.dropdown-chapter-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  border-bottom: 1px solid rgb(50, 53, 56);
+  transition: background-color 0.15s;
+}
+
+.dropdown-chapter-item:hover {
+  background-color: rgb(61, 64, 68);
+}
+
+/* Đánh dấu chương đang được active đọc */
+.dropdown-chapter-item.active {
+  background-color: rgba(46, 204, 113, 0.2);
+  border-left: 3px solid #2ecc71;
   font-weight: bold;
 }
-#gap-back-title {
-  background: none;
-  color: #ff6740;
+
+.dropdown-chapter-item .fi {
+  margin-right: 8px;
+  font-size: 13px;
+  flex-shrink: 0;
 }
-#gap-cancel {
-  background: #ff6740;
-  color: white;
-  flex: 1;
+
+.dropdown-chapter-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
-#gap-continue {
-  background: #3d3d3d;
-  color: white;
-  flex: 1;
+
+/* Định dạng thanh cuộn mượt cho dropdown */
+.manga-sidebar-vol-dropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.manga-sidebar-vol-dropdown::-webkit-scrollbar-thumb {
+  background: rgb(61, 64, 68);
+  border-radius: 3px;
 }

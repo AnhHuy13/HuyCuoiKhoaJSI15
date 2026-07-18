@@ -1,4 +1,4 @@
-import { ChuyenLocale, StringVolumeAndChapter } from "../utility.js";
+import { ChuyenLocale, StringVolumeAndChapter } from "../helper/utility.js";
 
 const params = new URLSearchParams(window.location.search);
 let mangaId = params.get("mangaId");
@@ -51,19 +51,23 @@ export async function LayThongTinChapter(chapterId) {
       );
       const result = await response.json();
 
-      console.log(result);
-
       if (!response.ok) {
         throw new Error(`error, status code: ${response.status}`);
       }
 
       const chapterChain = result?.data?.attributes;
-      const mangaChain = result?.data?.relationships?.find(
-        (item) => item.type === "manga",
-      )?.attributes;
+      const mangaRelationship = result?.data?.relationships?.find((item) => item.type === "manga");
+      const mangaChain = mangaRelationship?.attributes;
       const scanlationChain = result?.data?.relationships?.find(
         (item) => item.type === "scanlation_group",
       )?.attributes;
+
+      const tags = mangaChain?.tags || [];
+      const isLongStrip = tags.some(
+        (tag) =>
+          tag.id === "3e2b8dae-350e-4ab8-a907727d55a4" ||
+          tag.attributes?.name?.en?.toLowerCase() === "long strip",
+      );
 
       return {
         chapterInfo: {
@@ -74,8 +78,9 @@ export async function LayThongTinChapter(chapterId) {
           volumeChapterStr: StringVolumeAndChapter(chapterChain?.chapter, chapterChain?.volume),
         },
         mangaInfo: {
-          name: Object.values(mangaChain?.title)[0],
+          name: Object.values(mangaChain?.title || {})[0] || "Unknown Manga",
           originalLanguage: (ChuyenLocale(mangaChain?.originalLanguage) || "un").toLowerCase(),
+          isLongStrip: isLongStrip,
         },
         scanlationInfo: {
           name: scanlationChain?.name,

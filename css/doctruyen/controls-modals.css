@@ -1,0 +1,137 @@
+/* ================================== */
+/*   THANH TRƯỢT TIẾN TRÌNH & TOOLTIP  */
+/* ================================== */
+
+.slider-container {
+  position: relative;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  height: 25px;
+  z-index: 10;
+}
+
+#manga-progress {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: #3d4044;
+  outline: none;
+  cursor: pointer;
+  border-radius: 5px;
+  background: linear-gradient(to right, #2ecc71 var(--value), #3d4044 var(--value));
+}
+
+#manga-progress::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 25px;
+  background: #cccccc;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+#manga-progress::-webkit-slider-thumb:hover {
+  background: #ffffff;
+}
+
+#slider-tooltip {
+  position: absolute;
+  top: -40px;
+  background: #333;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  pointer-events: none;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  left: 0;
+  transform: translateX(-50%);
+}
+
+#slider-tooltip.show {
+  opacity: 1;
+}
+
+/* ================================== */
+/*            CHAPTER GAP DIALOG      */
+/* ================================== */
+
+.gap-modal {
+  margin: auto;
+  inset: 0px;
+  border: none;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  color: white;
+  padding: 0;
+  width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+}
+
+.gap-modal::backdrop {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.gap-content {
+  padding: 25px;
+  text-align: center;
+}
+
+.gap-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+#close-gap-x {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.5rem;
+}
+
+#gap-numbers {
+  margin: 20px 0;
+  color: #fff;
+  letter-spacing: 5px;
+}
+
+.gap-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+  gap: 10px;
+}
+
+.gap-actions button {
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#gap-back-title {
+  background: none;
+  color: #ff6740;
+}
+
+#gap-cancel {
+  background: #ff6740;
+  color: white;
+  flex: 1;
+}
+
+#gap-continue {
+  background: #3d3d3d;
+  color: white;
+  flex: 1;
+}

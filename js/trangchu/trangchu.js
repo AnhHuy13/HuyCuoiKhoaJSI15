@@ -3,11 +3,13 @@ import {
   LayLatestUpdate,
   fetchLatestSelfPublishedManga,
 } from "../fetch/fetchHome.js";
-import { ChuyenLocale } from "../utility.js";
+import { ChuyenLocale } from "../helper/utility.js";
 import { xuLyGiaoDienCarousel, generateMangaPage } from "./carousel.js";
 
 import { isLogin, syncGuestHistoryToFirebase, initUserOnFirebase } from "../database/firebase.js";
 import { readLocalKey, createSimpleLocalKey, deleteLocalKey } from "../database/localStorage.js";
+
+import { luuCache, layCache } from "../helper/cacheHelper.js";
 
 window.history.scrollRestoration = "manual";
 
@@ -23,41 +25,6 @@ let selfPubOffset = 0;
 const LIMIT_SELF_PUBLISHED = 16;
 let isSelfPubLoading = false;
 let hasMoreSelfPub = true;
-
-function localLuuCache(key, data) {
-  try {
-    const cacheObj = {
-      timestamp: Date.now(),
-      data: data,
-    };
-    localStorage.setItem(key, JSON.stringify(cacheObj));
-    console.log(`[Cache] Đã ghi nhận dữ liệu vào bộ nhớ đệm: ${key}`);
-  } catch (error) {
-    console.warn("[Cache] Không thể lưu bộ nhớ đệm cục bộ:", error);
-  }
-}
-
-function localLayCache(key, ttlMs) {
-  try {
-    const rawData = localStorage.getItem(key);
-    if (!rawData) return null;
-
-    const cacheObj = JSON.parse(rawData);
-    const thoiGianDaQua = Date.now() - cacheObj.timestamp;
-
-    if (thoiGianDaQua > ttlMs) {
-      console.log(`[Cache] Dữ liệu đệm quá hạn: ${key}`);
-      localStorage.removeItem(key);
-      return null;
-    }
-
-    console.log(`[Cache] Sử dụng dữ liệu đệm thành công cho: ${key}`);
-    return cacheObj.data;
-  } catch (error) {
-    console.warn("[Cache] Không thể phân tích dữ liệu đệm:", error);
-    return null;
-  }
-}
 
 function updateProgress(percentage, text) {
   const progressBar = document.getElementById("load-progress");
@@ -77,11 +44,76 @@ function hideLoadingScreen() {
   }
 }
 
+async function doiAnhGiaoDienTaiXong() {
+  const images = [];
+
+  document.querySelectorAll("#carouselExampleCaptions .carousel-inner img").forEach((img) => {
+    images.push(img);
+  });
+
+  const latestImgs = document.querySelectorAll(
+    ".lastest-update-container .lastest-update-item img",
+  );
+  for (let i = 0; i < Math.min(latestImgs.length, 4); i++) {
+    images.push(latestImgs[i]);
+  }
+
+  const selfPubDivs = document.querySelectorAll(
+    ".self-published-container .self-published-item-image",
+  );
+  const selfPubUrls = [];
+  for (let i = 0; i < Math.min(selfPubDivs.length, 4); i++) {
+    const bg = selfPubDivs[i].style.backgroundImage;
+    const match = bg.match(/url\(["']?([^"']*)["']?\)/);
+    if (match && match[1]) {
+      selfPubUrls.push(match[1]);
+    }
+  }
+
+  if (images.length === 0 && selfPubUrls.length === 0) return;
+
+  let loadedCount = 0;
+  const total = images.length + selfPubUrls.length;
+
+  return new Promise((resolve) => {
+    function checkComplete() {
+      loadedCount++;
+      if (loadedCount >= total) {
+        resolve();
+      }
+    }
+
+    images.forEach((img) => {
+      if (img.complete) {
+        checkComplete();
+      } else {
+        img.addEventListener("load", checkComplete);
+        img.addEventListener("error", checkComplete);
+      }
+    });
+
+    selfPubUrls.forEach((url) => {
+      const tempImg = new Image();
+      tempImg.src = url;
+      if (tempImg.complete) {
+        checkComplete();
+      } else {
+        tempImg.onload = checkComplete;
+        tempImg.onerror = checkComplete;
+      }
+    });
+  });
+}
+
 async function onPageLoad() {
   try {
     updateProgress(30, "Đang nạp dữ liệu...");
 
     await Promise.all([setCarouselData(), setLatestUpdateData(), setSelfPublishedData()]);
+
+    updateProgress(75, "Đang tải hình ảnh giao diện...");
+
+    await doiAnhGiaoDienTaiXong();
 
     updateProgress(100, "Hoàn tất!");
     hideLoadingScreen();
@@ -130,12 +162,12 @@ async function Init() {
 }
 
 async function setCarouselData() {
-  let mangaArray = localLayCache(CACHE_KEY_CAROUSEL, CACHE_TTL_MS);
+  let mangaArray = layCache(CACHE_KEY_CAROUSEL, CACHE_TTL_MS);
 
   if (!mangaArray) {
     mangaArray = await LayMangaChoCarousel(5);
     if (mangaArray && mangaArray.length > 0) {
-      localLuuCache(CACHE_KEY_CAROUSEL, mangaArray);
+      luuCache(CACHE_KEY_CAROUSEL, mangaArray);
     }
   }
 
@@ -160,12 +192,12 @@ async function setLatestUpdateData() {
   const container = document.querySelector(".lastest-update-container");
   if (container) container.innerHTML = "";
 
-  let latestData = localLayCache(CACHE_KEY_LATEST, CACHE_TTL_MS);
+  let latestData = layCache(CACHE_KEY_LATEST, CACHE_TTL_MS);
 
   if (!latestData) {
     latestData = await LayLatestUpdate(10);
     if (latestData && latestData.length > 0) {
-      localLuuCache(CACHE_KEY_LATEST, latestData);
+      luuCache(CACHE_KEY_LATEST, latestData);
     }
   }
 
@@ -189,12 +221,12 @@ async function taiThemSelfPublished() {
   isSelfPubLoading = true;
 
   const cacheKeyTrangThai = `${CACHE_KEY_SELF_PUBLISHED}_offset_${selfPubOffset}`;
-  let data = localLayCache(cacheKeyTrangThai, CACHE_TTL_MS);
+  let data = layCache(cacheKeyTrangThai, CACHE_TTL_MS);
 
   if (!data) {
     data = await fetchLatestSelfPublishedManga(LIMIT_SELF_PUBLISHED, selfPubOffset);
     if (data && data.length > 0) {
-      localLuuCache(cacheKeyTrangThai, data);
+      luuCache(cacheKeyTrangThai, data);
     }
   }
 

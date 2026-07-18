@@ -1,0 +1,86 @@
+/* ================================== */
+/*   CHẾ ĐỘ TRANG ĐƠN (PAGINATED)     */
+/* ================================== */
+
+.manga-viewer-paginated {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  height: calc(100vh - 50px);
+  overflow: hidden;
+}
+
+/* Ẩn tất cả các trang ảnh khác */
+.manga-viewer-paginated .reader-image {
+  display: none;
+}
+
+/* Chỉ hiển thị trang đang đọc hoạt động */
+.manga-viewer-paginated .reader-image.active {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 50px);
+  object-fit: contain;
+  margin: auto;
+  opacity: 1;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+/* Ẩn nút chuyển tiếp chương ở chế độ trang đơn */
+.manga-viewer-paginated .webtoon-next-chapter-btn {
+  display: none;
+}
+
+/* ================================== */
+/*   CHẾ ĐỘ WEBTOON (CUỘN DỌC)        */
+/* ================================== */
+
+.manga-viewer-webtoon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  overflow-y: auto; /* Cho phép cuộn dọc độc lập */
+  flex: 1;
+  height: calc(100vh - 50px);
+  scroll-behavior: smooth;
+}
+
+/* Định dạng ảnh cuộn mượt nối tiếp không khoảng cách */
+.manga-viewer-webtoon .reader-image {
+  display: block;
+  max-width: 800px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* Nút chuyển tiếp chương ở cuối trang Webtoon */
+.manga-viewer-webtoon .webtoon-next-chapter-btn {
+  display: block;
+  margin: 40px auto;
+  padding: 12px 35px;
+  background-color: #2ecc71;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.manga-viewer-webtoon .webtoon-next-chapter-btn:hover {
+  background-color: #27ae60;
+}
+
+/* Tùy chỉnh thanh cuộn Webtoon */
+.manga-viewer-webtoon::-webkit-scrollbar {
+  width: 8px;
+}
+
+.manga-viewer-webtoon::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}

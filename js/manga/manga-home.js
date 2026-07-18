@@ -1,7 +1,8 @@
-import { ChuyenLocale, vietHoaChuCaiDauTien } from "../utility.js";
+import { ChuyenLocale, vietHoaChuCaiDauTien } from "../helper/utility.js";
 import { marked } from "https://cdn.jsdelivr.net/npm/marked/lib/marked.esm.js";
 import { LayThongTinManga, LayDanhSachChapter } from "../fetch/fetchMangaPage.js";
 import { initLanguageSelector, filterByLanguage } from "../doctruyen/locLangDocTruyen.js";
+import { layCache, luuCache } from "../helper/cacheHelper.js";
 
 const LINK_CONFIG = {
   raw: { label: "Official Raw", domain: "mangadex.org" },
@@ -11,18 +12,29 @@ const LINK_CONFIG = {
   ebj: { label: "eBookJapan", domain: "ebookjapan.yahoo.co.jp" },
   mal: { label: "MyAnimeList", domain: "myanimelist.net" },
   al: { label: "AniList", domain: "anilist.co" },
-  mu: { label: "MangaUpdates", domain: "www.mangaupdates.com" }, // Fix domain cho icon
+  mu: { label: "MangaUpdates", domain: "www.mangaupdates.com" },
   ap: { label: "Anime-Planet", domain: "www.anime-planet.com" },
   kt: { label: "Kitsu", domain: "kitsu.io" },
 };
 
+const CACHE_TTL_CHAPTERS_MS = 15 * 60 * 1000; // Cache danh sách chương trong 15 phút
 let currentOffset = 0;
 const limit = 50;
 let currentOrder = "desc";
-let listenersAttached = false; // Cờ bảo vệ để tránh gán trùng lặp sự kiện
+let listenersAttached = false;
 
 export async function RenderChapterList(mangaId) {
-  const response = await LayDanhSachChapter(mangaId, currentOffset, limit, currentOrder);
+  // Tạo khoá cache động dựa trên mangaId, offset, limit và cách sắp xếp
+  const cacheKey = `cache_chapters_${mangaId}_offset_${currentOffset}_limit_${limit}_order_${currentOrder}`;
+  let response = layCache(cacheKey, CACHE_TTL_CHAPTERS_MS);
+
+  if (!response) {
+    response = await LayDanhSachChapter(mangaId, currentOffset, limit, currentOrder);
+    if (response) {
+      luuCache(cacheKey, response);
+    }
+  }
+
   if (!response) return;
 
   const { total, groupedData } = response;
@@ -150,7 +162,7 @@ function renderChapterRow(v, isSubRow, isLastSub = false, mangaId) {
 }
 
 function attachEventListeners(mangaId) {
-  if (listenersAttached) return; // Nếu đã gán rồi thì không gán lại nữa
+  if (listenersAttached) return;
 
   const btnSort = document.getElementById("btn-toggle-sort");
   const btnPrev = document.getElementById("prev-page");
@@ -159,7 +171,7 @@ function attachEventListeners(mangaId) {
   if (btnSort) {
     btnSort.addEventListener("click", async () => {
       currentOrder = currentOrder === "desc" ? "asc" : "desc";
-      currentOffset = 0; // Quay về trang đầu khi đổi thứ tự sắp xếp
+      currentOffset = 0;
       console.log("Đang đổi thứ tự sang:", currentOrder);
       await RenderChapterList(mangaId);
     });
@@ -183,9 +195,7 @@ function attachEventListeners(mangaId) {
 
   listenersAttached = true;
 }
-/**
- * RENDER CHI TIẾT MANGA (30% SIDEBAR & DESC)
- */
+
 export function SetDataMangaDetails(info) {
   if (!info) return;
 
@@ -237,7 +247,6 @@ function renderExternalButtons(links, keys) {
   return keys
     .filter((k) => links[k])
     .map((k) => {
-      // ĐÃ FIX: Sử dụng đúng LINK_CONFIG
       const config = LINK_CONFIG[k] || { label: k, domain: "google.com" };
       const rawLink = links[k];
       const href =

@@ -1,190 +1,239 @@
-import { ChuyenLocale } from "../utility.js";
-import { LayDanhSachChapter } from "../fetch/fetchMangaPage.js";
-import { LayArrayHinhManga } from "../fetch/fetchRead.js";
-
-const params = new URLSearchParams(window.location.search);
-export const mangaId = params.get("mangaId");
-export const chapterId = params.get("chapterId");
-
-let mangaCurrentPage = 0;
-let mangaMaxPage = 0;
-let mangaLinkFileArray = [];
-let allChaptersInLanguage = [];
-let isLoadingContext = true;
+import { state } from "./readerState.js";
+import { FirstRender, RenderViewer, HienTrangManga, CapNhatSliderVaCurTrang } from "./readerUI.js";
+import { LoadChapterContext, ChuyenHuongDenChapterLanCan } from "./readerNavigation.js";
+import { LayArrayHinhManga, LayThongTinChapter } from "../fetch/fetchRead.js";
+import { layCache, luuCache } from "../helper/cacheHelper.js";
 
 const slider = document.getElementById("manga-progress");
 const tooltip = document.getElementById("slider-tooltip");
 const gapDialog = document.getElementById("chapter-gap-dialog");
-const imgElement = document.querySelector("#manga-page");
+const modeSelect = document.getElementById("reading-mode-select");
+const viewer = document.getElementById("manga-viewer");
 
 export async function initializeReader() {
-  if (!mangaId || !chapterId) return;
+  if (!state.mangaId || !state.chapterId) return;
 
-  const data = await LayArrayHinhManga(mangaId, chapterId);
+  const nameCacheKey = `cache_manga_detail_reader_${state.chapterId}`;
+  const CACHE_TTL_3_NGAY = 24 * 3 * 60 * 60 * 1000;
+  let chapterData = layCache(nameCacheKey, CACHE_TTL_3_NGAY);
+
+  if (!chapterData) {
+    chapterData = await LayThongTinChapter(state.chapterId);
+    if (chapterData) {
+      luuCache(nameCacheKey, chapterData);
+    }
+  }
+
+  state.isLongStrip = chapterData?.mangaInfo?.isLongStrip || false;
+  state.originalLanguage = (chapterData?.mangaInfo?.originalLanguage || "").toLowerCase();
+
+  const isWebtoonSuggest =
+    state.isLongStrip ||
+    state.originalLanguage === "ko" ||
+    state.originalLanguage === "kr" ||
+    state.originalLanguage === "zh" ||
+    state.originalLanguage === "cn" ||
+    state.originalLanguage === "zh-hk";
+
+  const userChoice = localStorage.getItem("manga_reading_mode") || "auto";
+  if (modeSelect) {
+    modeSelect.value = userChoice;
+  }
+
+  if (userChoice === "auto") {
+    state.currentMode = isWebtoonSuggest ? "webtoon" : "paginated";
+  } else {
+    state.currentMode = userChoice;
+  }
+
+  const data = await LayArrayHinhManga(state.mangaId, state.chapterId);
   if (data) {
-    mangaMaxPage = data.MaxPage;
-    mangaLinkFileArray = data.FileArray;
-    initSlider(mangaMaxPage);
-    CapNhatSliderVaCurTrang(0);
-    HienTrangManga(0);
+    state.mangaMaxPage = data.MaxPage;
+    state.mangaLinkFileArray = data.FileArray;
+
+    FirstRender(ChuyenVeTrangTiepTheo);
+    RenderViewer();
   }
 
   await LoadChapterContext();
+
+  // Gọi hàm khởi tạo dữ liệu và sự kiện cho dropdown sau khi load xong context
+  InitChapterDropdown();
+
   bindReaderEvents();
 }
 
-async function LoadChapterContext() {
-  isLoadingContext = true;
-
-  try {
-    const res = await fetch(`https://api.mangadex.org/chapter/${chapterId}`);
-    const currentChapterObj = await res.json();
-    const currentLang = currentChapterObj.data.attributes.translatedLanguage;
-    const targetCountryCode = ChuyenLocale(currentLang);
-
-    const feed = await LayDanhSachChapter(mangaId, 0, 500, "asc");
-    if (!feed) return;
-
-    const flatList = [];
-    Object.values(feed.groupedData).forEach((vol) => {
-      Object.values(vol).forEach((versions) => {
-        versions.forEach((v) => {
-          if (v.countryCode === targetCountryCode) {
-            flatList.push(v);
-          }
-        });
-      });
-    });
-
-    allChaptersInLanguage = flatList.sort((a, b) => {
-      const numA = parseFloat(a.chapter) || 0;
-      const numB = parseFloat(b.chapter) || 0;
-      return numA - numB;
-    });
-
-    console.log("Context loaded. Total chapters in this language:", allChaptersInLanguage.length);
-  } finally {
-    isLoadingContext = false;
-  }
-}
-
-function GetNeighborChapterId(direction) {
-  if (isLoadingContext) return "LOADING";
-
-  const currentIndex = allChaptersInLanguage.findIndex((c) => c.id === chapterId);
-  if (currentIndex === -1) return null;
-
-  let targetIndex = currentIndex + direction;
-  while (
-    targetIndex >= 0 &&
-    targetIndex < allChaptersInLanguage.length &&
-    allChaptersInLanguage[targetIndex].chapter === allChaptersInLanguage[currentIndex].chapter
-  ) {
-    targetIndex += direction;
-  }
-
-  const neighbor = allChaptersInLanguage[targetIndex];
-  if (!neighbor) return null;
-
-  const currentNum = parseFloat(allChaptersInLanguage[currentIndex].chapter);
-  const neighborNum = parseFloat(neighbor.chapter);
-  if (Math.abs(neighborNum - currentNum) > 1.1) {
-    HienGapModal(currentNum, neighborNum, neighbor.id);
-    return "STOP_BY_GAP";
-  }
-
-  return neighbor.id;
-}
-
-function ChuyenHuongDenChapter(newId) {
-  console.log("Redirecting to chapter:", newId);
-  window.location.href = `doctruyen.html?mangaId=${mangaId}&chapterId=${newId}`;
-}
-
-function ChuyenVeTrangTiepTheo() {
-  if (mangaCurrentPage < mangaMaxPage) {
-    mangaCurrentPage++;
-    HienTrangManga(mangaCurrentPage);
-    CapNhatSliderVaCurTrang(mangaCurrentPage);
+export function ChuyenVeTrangTiepTheo() {
+  if (state.currentMode === "webtoon") {
+    ChuyenHuongDenChapterLanCan(1);
     return;
   }
 
-  const nextId = GetNeighborChapterId(1);
-  if (nextId === "LOADING") return;
-  if (nextId && nextId !== "STOP_BY_GAP") {
-    ChuyenHuongDenChapter(nextId);
-  } else if (!nextId) {
-    window.location.href = `manga.html?mangaId=${mangaId}`;
-  }
-}
-
-function ChuyenVeTrangTruoc() {
-  if (mangaCurrentPage > 0) {
-    mangaCurrentPage--;
-    HienTrangManga(mangaCurrentPage);
-    CapNhatSliderVaCurTrang(mangaCurrentPage);
+  if (state.mangaCurrentPage < state.mangaMaxPage) {
+    state.mangaCurrentPage++;
+    HienTrangManga(state.mangaCurrentPage);
+    CapNhatSliderVaCurTrang(state.mangaCurrentPage);
     return;
   }
 
-  const prevId = GetNeighborChapterId(-1);
-  if (prevId === "LOADING") return;
-  if (prevId && prevId !== "STOP_BY_GAP") {
-    ChuyenHuongDenChapter(prevId);
-  }
+  ChuyenHuongDenChapterLanCan(1);
 }
 
-async function HienTrangManga(page) {
-  if (!mangaLinkFileArray[page]) return;
+export function ChuyenVeTrangTruoc() {
+  if (state.currentMode === "webtoon") {
+    ChuyenHuongDenChapterLanCan(-1);
+    return;
+  }
 
-  imgElement.style.opacity = 0;
-  const loadNewPage = new Promise((resolve) => {
-    imgElement.onload = () => resolve();
-    imgElement.src = mangaLinkFileArray[page];
+  if (state.mangaCurrentPage > 0) {
+    state.mangaCurrentPage--;
+    HienTrangManga(state.mangaCurrentPage);
+    CapNhatSliderVaCurTrang(state.mangaCurrentPage);
+    return;
+  }
+
+  ChuyenHuongDenChapterLanCan(-1);
+}
+
+// KHỞI TẠO DROPDOWN DANH SÁCH CHƯƠNG NHÓM THEO VOLUME
+function InitChapterDropdown() {
+  const dropdown = document.getElementById("manga-vol-dropdown");
+  const volContainer = document.getElementById("manga-vol-container");
+  if (!dropdown || !volContainer) return;
+
+  // 1. Phân nhóm các chương cùng ngôn ngữ theo Volume
+  const groupedByVolume = {};
+  state.allChaptersInLanguage.forEach((ch) => {
+    const vol = ch.volume || "No Volume";
+    if (!groupedByVolume[vol]) {
+      groupedByVolume[vol] = [];
+    }
+    groupedByVolume[vol].push(ch);
   });
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  await loadNewPage;
-  imgElement.style.opacity = 1;
-}
+  // 2. Sắp xếp thứ tự các Volume tăng dần
+  const sortedVols = Object.keys(groupedByVolume).sort((a, b) => {
+    if (a === "No Volume") return 1;
+    if (b === "No Volume") return -1;
+    return parseFloat(a) - parseFloat(b);
+  });
 
-function initSlider(maxPage) {
-  if (!slider) return;
-  slider.min = 0;
-  slider.max = maxPage;
-  slider.value = 0;
-}
+  // 3. Tiến hành sinh mã HTML
+  let html = "";
+  sortedVols.forEach((vol) => {
+    const titleStr = vol === "No Volume" ? "No Volume" : `Volume ${vol}`;
+    html += `<div class="dropdown-volume-group-header">${titleStr}</div>`;
 
-function CapNhatSliderVaCurTrang(pageIndex) {
-  if (!slider) return;
-  slider.value = pageIndex;
-  const percent = (pageIndex / slider.max) * 100 || 0;
-  slider.style.setProperty("--value", `${percent}%`);
-  tooltip.innerText = "Trang: " + (pageIndex + 1);
+    groupedByVolume[vol].forEach((ch) => {
+      const isActive = ch.id === state.chapterId ? "active" : "";
+      const flagClass = ch.countryCode ? `fi fi-${ch.countryCode}` : "fi fi-un";
+      const titleText = ch.title ? `- ${ch.title}` : "";
+      const readUrl = `doctruyen.html?mangaId=${state.mangaId}&chapterId=${ch.id}`;
 
-  const sliderWidth = slider.offsetWidth;
-  const newPos = (percent / 100) * (sliderWidth - 15) + 7.5;
-  tooltip.style.left = `${newPos}px`;
+      // SỬA LỖI: Định dạng lại hiển thị để không xuất hiện chữ "Vol. No Volume"
+      const volStr = vol === "No Volume" || !vol ? "" : `Vol. ${vol} `;
+      const displayText = `${volStr}Ch. ${ch.chapter} ${titleText}`;
 
-  const pageLabel = document.querySelector(".manga-sidebar-page-current");
-  if (pageLabel) {
-    pageLabel.textContent = `Page ${pageIndex + 1}/${mangaMaxPage + 1}`;
-  }
+      html += `
+        <a href="${readUrl}" class="dropdown-chapter-item ${isActive}">
+          <span class="${flagClass}"></span>
+          <span class="dropdown-chapter-text">${displayText}</span>
+        </a>
+      `;
+    });
+  });
+
+  dropdown.innerHTML = html;
+
+  // 4. Sự kiện click mở/đóng danh sách
+  volContainer.addEventListener("click", (e) => {
+    dropdown.classList.toggle("show");
+    e.stopPropagation();
+  });
+
+  // Đóng dropdown khi click ra ngoài vùng hiển thị
+  document.addEventListener("click", () => {
+    dropdown.classList.remove("show");
+  });
 }
 
 function bindReaderEvents() {
   if (slider) {
     slider.addEventListener("input", function () {
-      mangaCurrentPage = parseInt(this.value, 10);
-      HienTrangManga(mangaCurrentPage);
-      CapNhatSliderVaCurTrang(mangaCurrentPage);
+      state.isDraggingSlider = true;
+      state.mangaCurrentPage = parseInt(this.value, 10);
+
+      if (state.currentMode === "webtoon") {
+        const images = viewer.querySelectorAll(".reader-image");
+        const targetImg = images[state.mangaCurrentPage];
+        if (targetImg) {
+          const containerOffset = viewer.getBoundingClientRect().top;
+          const imgOffset = targetImg.getBoundingClientRect().top;
+          const absoluteImgTop = imgOffset - containerOffset + viewer.scrollTop;
+
+          viewer.scrollTo({
+            top: absoluteImgTop,
+            behavior: "auto",
+          });
+        }
+        CapNhatSliderVaCurTrang(state.mangaCurrentPage);
+      } else {
+        HienTrangManga(state.mangaCurrentPage);
+        CapNhatSliderVaCurTrang(state.mangaCurrentPage);
+      }
+
       tooltip.classList.add("show");
       clearTimeout(tooltip.timer);
     });
 
     slider.addEventListener("change", () => {
+      state.isDraggingSlider = false;
       tooltip.timer = setTimeout(() => tooltip.classList.remove("show"), 800);
     });
   }
+
+  viewer?.addEventListener("scroll", () => {
+    if (state.currentMode !== "webtoon" || state.isDraggingSlider) return;
+
+    const images = viewer.querySelectorAll(".reader-image");
+    if (images.length === 0) return;
+
+    const containerRect = viewer.getBoundingClientRect();
+    let currentVisibleIndex = 0;
+    let minDiff = Infinity;
+
+    images.forEach((img, index) => {
+      const rect = img.getBoundingClientRect();
+      const diff = Math.abs(rect.top - containerRect.top);
+      if (diff < minDiff) {
+        minDiff = diff;
+        currentVisibleIndex = index;
+      }
+    });
+
+    state.mangaCurrentPage = currentVisibleIndex;
+    CapNhatSliderVaCurTrang(state.mangaCurrentPage);
+  });
+
+  modeSelect?.addEventListener("change", (e) => {
+    const choice = e.target.value;
+    localStorage.setItem("manga_reading_mode", choice);
+
+    if (choice === "auto") {
+      const isWebtoonSuggest =
+        state.isLongStrip ||
+        state.originalLanguage === "ko" ||
+        state.originalLanguage === "kr" ||
+        state.originalLanguage === "zh" ||
+        state.originalLanguage === "cn" ||
+        state.originalLanguage === "zh-hk";
+      state.currentMode = isWebtoonSuggest ? "webtoon" : "paginated";
+    } else {
+      state.currentMode = choice;
+    }
+    RenderViewer();
+    modeSelect.blur();
+  });
 
   document.querySelector("#prev-page")?.addEventListener("click", (e) => {
     e.preventDefault();
@@ -196,9 +245,55 @@ function bindReaderEvents() {
     ChuyenVeTrangTiepTheo();
   });
 
+  // GẮN SỰ KIỆN CHO HAI NÚT SWITCH CHƯƠNG TRÊN SIDEBAR
+  document.getElementById("manga-sidebar-previous-switch")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    ChuyenHuongDenChapterLanCan(-1);
+  });
+
+  document.getElementById("manga-sidebar-next-switch")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    ChuyenHuongDenChapterLanCan(1);
+  });
+
+  // XỬ LÝ SỰ KIỆN PHÍM DI CHUYỂN
   window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowLeft") ChuyenVeTrangTruoc();
-    if (e.key === "ArrowRight") ChuyenVeTrangTiepTheo();
+    const activeTag = document.activeElement.tagName;
+    if (activeTag === "SELECT" || activeTag === "INPUT" || activeTag === "TEXTAREA") {
+      return;
+    }
+
+    if (state.currentMode === "webtoon") {
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+        e.preventDefault();
+        return;
+      }
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        viewer?.scrollBy({ top: 180, behavior: "smooth" });
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        viewer?.scrollBy({ top: -180, behavior: "smooth" });
+      }
+    } else {
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+        return;
+      }
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        ChuyenVeTrangTruoc();
+      }
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        ChuyenVeTrangTiepTheo();
+      }
+    }
   });
 
   const gapCancel = document.getElementById("gap-cancel");
@@ -206,18 +301,12 @@ function bindReaderEvents() {
   const gapBackTitle = document.getElementById("gap-back-title");
   const mangaTitle = document.getElementById("manga-sidebar-name-manga");
 
-  gapCancel?.addEventListener("click", () => gapDialog.close());
-  gapClose?.addEventListener("click", () => gapDialog.close());
+  gapCancel?.addEventListener("click", () => gapDialog?.close());
+  gapClose?.addEventListener("click", () => gapDialog?.close());
   gapBackTitle?.addEventListener("click", () => {
-    window.location.href = `manga.html?mangaId=${mangaId}`;
+    window.location.href = `manga.html?mangaId=${state.mangaId}`;
   });
   mangaTitle?.addEventListener("click", () => {
-    window.location.href = `manga.html?mangaId=${mangaId}`;
+    window.location.href = `manga.html?mangaId=${state.mangaId}`;
   });
-}
-
-function HienGapModal(from, to, nextId) {
-  document.getElementById("gap-numbers").innerText = `${from} > ${to}`;
-  gapDialog.showModal();
-  document.getElementById("gap-continue").onclick = () => ChuyenHuongDenChapter(nextId);
 }

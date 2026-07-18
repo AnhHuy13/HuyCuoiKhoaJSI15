@@ -1,4 +1,5 @@
 import { isLogin, readFirebaseKey } from "../database/firebase.js";
+import { hienThiHopThoai } from "../helper/dialog.js";
 
 const DEFAULT_AVATAR =
   "https://res.cloudinary.com/rimebiqz/image/upload/co_rgb:000000,l_text:Arial_20_bold_normal_left:DEFAULT%250AAVATAR%2520/fl_layer_apply,fl_no_overflow,g_center,x_-50,y_19/defaul-avatar-1_yl9xfo.jpg";
@@ -25,16 +26,27 @@ function hideLoadingScreen() {
 }
 
 async function initAccountPage() {
-  console.log("[Account] --- BẮT ĐẦU KHỞI TẠO TRANG TÀI KHOẢN ---");
-
   try {
     updateProgress(20, "Đang xác minh tài khoản...");
     const user = await isLogin();
 
     if (!user) {
       updateProgress(40, "Xác minh thất bại. Đang chuyển hướng...");
-      alert("Vui lòng đăng nhập để xem thông tin tài khoản!");
-      window.location.href = "./auth/dangnhap.html";
+
+      const muonDangNhap = await hienThiHopThoai("Vui lòng đăng nhập để xem thông tin tài khoản.", [
+        {
+          label: "Đồng ý",
+          value: true,
+          backgroundColor: "#2ed573",
+          color: "#ffffff",
+        },
+      ]);
+
+      if (muonDangNhap) {
+        window.location.href = "./auth/dangnhap.html";
+      } else {
+        window.location.href = "./trangchu.html";
+      }
       return;
     }
 

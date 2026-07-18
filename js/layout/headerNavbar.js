@@ -1,9 +1,7 @@
-// --- KHÔNG DÙNG IMPORT TĨNH Ở ĐÂU FILE ĐỂ TRÁNH LỖI CRASH GIAO DIỆN ---
-
 const activePage = (() => {
   const path = window.location.pathname.toLowerCase();
   if (path.endsWith("trangchu.html") || path.endsWith("/")) return "home";
-  if (path.endsWith("manga.html")) return "manga";
+  if (path.endsWith("favorite.html")) return "favorite";
   if (path.endsWith("account.html")) return "account";
   return "";
 })();
@@ -56,14 +54,12 @@ const headerMarkup = `
             <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914483/home-white_tt5hfs.svg" alt="icon" class="icon-nav-link" />
             <a href="trangchu.html">Trang chủ</a>
         </li>
-        <li class="nav-item ${activePage === "manga" ? "active" : ""}">
-            <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914412/bookmark_khfizj.svg" alt="icon" class="icon-nav-link" />
-            <a href="trangchu.html">Yêu thích</a>
+        <li class="nav-item ${activePage === "favorite" ? "active" : ""}" >
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAADT0lEQVR4AeycMW4UURBEPdwBSC05gyPgxIGRLHwCjFMnCBw44QpOkOyAhBQfgUVkBDiHkASJDARHQFqqrZ9YYufjrR5q/kytupnFf/p3Vz11aN/a8EfqgAFI7d/YMAADEDsgbu8NMACxA+L23gADEDsgbp++Acvlcg95jnyP/I5sPUJDaAlNe9m8UgHA6TcYcIF8hnyIvItsPUJDaAlNi6IxTVMaAAy2xFQHyPEHN+FB0crdUqpTAGCg5+W+2TyyNNMAMMgDuH6GnFucFe2UbhoAuj9GzjVo7RkA7s3VfeimtWcAuI9B5hq09gwAt/vc75I/fb3WOauNV7mzV3ul9uo4A8DVRf5nPQcMYD3f0qoMIM3K9S4ygPV8S6v6jwDSZp7URQYgxmkABiB2QNzeG2AAYgfE7b0BBiB2QNzeG2AAYgfE7b0BAwOoXW8ANYcGPjeAgQ2uXW8ANYcGPjeAgQ2uXW8ANYcGPjeAgQ2uXT9FAF8h+lHJ+I6v442pATjpum4LuSi5BetPkKONqQB4DYc3YfpLPK9F+dkmfhjv4DGuaB3AR9i5D5OPkN/w/a8RZ8gjHO4jowaPcUSrAH7BvhfIHRj7Fs/rseJ/5d0dHEdt3IGv2mgRQPwWzi7MPEX+vql9UYM8Rd0uMu7CQxfNAYB5h8hPrGVxB/KQvYetbw4AK3hs9QYgJmIABiB2QNzeG2AAYgfE7b0BBiB2QNw+cQPEShptbwBicAZgAGIHxO29AQYgdkDc3htgAGIHxO29AQYgdkDc3htAAmDLDYB1kKw3ANJAttwAWAfJegMgDWTLDYB1kKw3ANJAttwAWAfJegMgDWTLDYB1kKw3ANJAtrxNAKzqEdUbgBiGARiA2AFxe2+AAYgdELfP2IAffRqWjX/6tOGsVzvOq5EB4HO1y3RfoLVnAPgyXX+rymjtGQDeVcec7gu0dhpA13UxxMV0PV6p7KJoX/nCvxzcAMDq6zDIk9Wn0zzJ0pwCICzGQB2ex8ipx3HRmqIzDUBMg8HO8dxGvkJ+QP5Eth6hIbSEpu2iMU1TKoCYCgNeIp8i4y+Z3MGz9QgNoSU0XYbGzEwHkDncHO4yADFlAzAAsQPi9t4AAxA7IG7vDagAGPr4DwAAAP//cnRWaAAAAAZJREFUAwDN9uzQ9xQ84wAAAABJRU5ErkJggg==" alt="icon" class="icon-nav-link" />
+            <a href="favorite.html">Thư viện</a>
         </li>
         <li class="nav-item">
-            <a href="trangchu.html">Thư viện</a>
-        </li>
-        <li class="nav-item">
+            <img src="" alt="icon" class="icon-nav-link" />
             <a href="trangchu.html">Lịch sử đọc</a>
         </li>
         <li class="nav-item">
@@ -90,13 +86,10 @@ const headerMarkup = `
   </nav>
 `;
 
-// Lệnh này được chạy ngay lập tức khi file được tải, đảm bảo giao diện luôn hiển thị
 document.body.insertAdjacentHTML("afterbegin", headerMarkup);
 
-// Sử dụng Dynamic Import (nhập khẩu động) để xử lý logic người dùng một cách an toàn
 async function updateNavbarAvatar() {
   try {
-    // Chỉ nạp file auth khi cần thiết, nếu file lỗi hoặc sai đường dẫn, nó sẽ rơi vào khối catch thay vì làm sập trang
     const { isLogin, readFirebaseKey } = await import("../database/firebase.js");
 
     const user = await isLogin();

@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Đọc truyện</title>
     <link rel="stylesheet" href="../css/font.css" />
-    <link rel="stylesheet" href="../css/doctruyen.css" />
+    <link rel="stylesheet" href="../css/doctruyen/base.css" />
+    <link rel="stylesheet" href="../css/doctruyen/controls-modals.css" />
+    <link rel="stylesheet" href="../css/doctruyen/reader-mode.css" />
+    <link rel="stylesheet" href="../css/doctruyen/sidebar.css" />
+    <link rel="stylesheet" href="../css/component/loading.css" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"
@@ -14,8 +18,11 @@
   <body>
     <div class="manga-container">
       <div class="manga-page-container" id="manga-page-container">
-        <img src="" alt="" class="manga-page" id="manga-page" />
-        <div class="slider-container">
+        <div id="manga-viewer" class="manga-viewer-paginated">
+          <img src="" alt="" class="manga-page" id="manga-page" />
+        </div>
+
+        <div class="slider-container" id="slider-wrapper">
           <div id="slider-tooltip">1</div>
           <input type="range" min="1" max="10" step="1" value="1" id="manga-progress" />
         </div>
@@ -32,6 +39,7 @@
               Tên chương ở đây...
             </p>
           </div>
+
           <div class="manga-sidebar-scanlation-container">
             <p>Được dịch từ nhóm:</p>
             <div class="manga-sidebar-scanlation-info">
@@ -41,17 +49,26 @@
               </h6>
             </div>
           </div>
+
           <div class="manga-sidebar-vol-switcher-container">
             <button
               id="manga-sidebar-previous-switch"
               class="manga-sidebar-previous-switch"
             ></button>
-            <div class="manga-sidebar-vol-container">
-              <p class="manga-sidebar-vol-current" class="manga-sidebar-vol-current">
-                Vol. 1 Ch. 1 Chaptername....
-              </p>
+            <div class="manga-sidebar-vol-container" id="manga-vol-container">
+              <p class="manga-sidebar-vol-current">Đang tải...</p>
+              <div class="manga-sidebar-vol-dropdown" id="manga-vol-dropdown"></div>
             </div>
             <button id="manga-sidebar-next-switch" class="manga-sidebar-next-switch"></button>
+          </div>
+
+          <div class="manga-sidebar-mode-container">
+            <p>Chế độ đọc:</p>
+            <select id="reading-mode-select">
+              <option value="auto">Tự động phát hiện</option>
+              <option value="paginated">Trang đơn</option>
+              <option value="webtoon">Webtoon (Cuộn dọc)</option>
+            </select>
           </div>
         </div>
 
@@ -59,15 +76,14 @@
           <div class="manga-sidebar-button-container">
             <button id="prev-page"></button>
             <div class="manga-sidebar-page-container">
-              <p class="manga-sidebar-page-current" class="manga-sidebar-page-current">
-                Page 0/0000
-              </p>
+              <p class="manga-sidebar-page-current">Page 0/0000</p>
             </div>
             <button id="next-page"></button>
           </div>
         </div>
       </div>
     </div>
+
     <dialog id="chapter-gap-dialog" class="gap-modal">
       <div class="gap-content">
         <div class="gap-header">
