@@ -3,6 +3,7 @@ import { FirstRender, RenderViewer, HienTrangManga, CapNhatSliderVaCurTrang } fr
 import { LoadChapterContext, ChuyenHuongDenChapterLanCan } from "./readerNavigation.js";
 import { LayArrayHinhManga, LayThongTinChapter } from "../fetch/fetchRead.js";
 import { layCache, luuCache } from "../helper/cacheHelper.js";
+import { luuLichSuDoc } from "../readingHistory/readingHistory.js";
 
 const slider = document.getElementById("manga-progress");
 const tooltip = document.getElementById("slider-tooltip");
@@ -53,6 +54,14 @@ export async function initializeReader() {
 
     FirstRender(ChuyenVeTrangTiepTheo);
     RenderViewer();
+
+    try {
+      if (chapterData) {
+        luuLichSuDoc(state.mangaId, state.chapterId, chapterData);
+      }
+    } catch (err) {
+      console.error("Không thể ghi nhận lịch sử đọc:", err);
+    }
   }
 
   await LoadChapterContext();

@@ -1,6 +1,12 @@
+/* css/readingHistory.css */
 :root {
   --navbar-animation-time: 0.3s;
   --menu-background-color: rgb(25, 26, 28);
+  --card-bg-color: #1e1f22;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --primary-accent: #ff6740;
+  --primary-accent-hover: #ff8363;
+  --text-muted: #7c8088;
 }
 
 * {
@@ -20,4 +26,216 @@ body {
 .main-content {
   padding-top: 60px;
   min-height: calc(100vh - 60px);
+}
+
+/* Khung bọc card lịch sử */
+.history-card {
+  display: flex;
+  background-color: var(--card-bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 16px;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Ảnh bìa */
+.history-cover-link {
+  flex-shrink: 0;
+}
+.history-cover {
+  width: 120px;
+  height: 175px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s ease;
+}
+.history-cover:hover {
+  transform: scale(1.03);
+}
+
+/* Nội dung thông tin bên phải */
+.history-details {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.history-manga-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-decoration: none;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.history-manga-title:hover {
+  color: var(--primary-accent);
+}
+
+/* Danh sách chapter */
+.history-chapters-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 12px;
+}
+
+/* Hàng hiển thị từng chapter */
+.history-chapter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border-color);
+  transition: background-color 0.15s ease;
+}
+.history-chapter-row:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Cột bên trái của hàng chapter (Eye icon, Flag, Vol/Ch, Group/Uploader) */
+.chapter-left-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.chapter-eye-icon {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+.chapter-text-info {
+  display: flex;
+  flex-direction: column;
+}
+.chapter-number-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+.chapter-number-title:hover {
+  color: var(--primary-accent);
+}
+.chapter-sub-info {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 2px;
+}
+
+/* Cột bên phải của hàng chapter (Thời gian, Lượt xem, Comment) */
+.chapter-right-col {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 0.85rem;
+  color: #c2c3c5;
+}
+.chapter-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.chapter-meta-item i {
+  font-size: 0.9rem;
+}
+
+/* Logic Ẩn/Hiện chapter bằng CSS để tối ưu hóa hiệu năng */
+.history-chapters-list .history-chapter-row {
+  display: none; /* Mặc định ẩn toàn bộ */
+}
+.history-chapters-list .history-chapter-row:nth-child(-n + 3) {
+  display: flex; /* Chỉ hiện 3 phần tử đầu tiên */
+}
+/* Khi card có class .is-expanded thì hiện toàn bộ chapter */
+.history-card.is-expanded .history-chapter-row {
+  display: flex !important;
+}
+
+/* Nút Show All / Show Less */
+.show-all-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid var(--border-color);
+}
+.show-all-btn {
+  background: none;
+  border: none;
+  color: var(--primary-accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 0 0 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.show-all-btn:hover {
+  color: var(--primary-accent-hover);
+  text-decoration: underline;
+}
+
+.library-text {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: flex-end;
+  margin-bottom: 7px;
+}
+
+.go-home {
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+  cursor: pointer;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.go-home:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.library-text h2 {
+  color: white;
+  margin-bottom: 0;
+  line-height: 50px;
+}
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined" !important;
+  font-style: normal;
+  display: inline-block;
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 48;
+  color: #ffffff;
+}
+
+.arrow-left {
+  font-size: 35px !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .history-card {
+    flex-direction: column;
+  }
+  .history-cover {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  .chapter-right-col {
+    display: none; /* Ẩn cột meta phụ trên mobile để đỡ chật chội */
+  }
 }
