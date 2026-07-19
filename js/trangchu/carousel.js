@@ -52,7 +52,7 @@ export function generateMangaPage(pageIndex, mangaItem) {
   tempElement.innerHTML = `
     <div class="carousel-item ${activeClass}">
       <img src="${linkCoverTruyen}" class="d-block w-100" id="home-carousel-background" alt="..." />
-      <div class="carousel-caption d-none d-md-block">
+      <div class="carousel-caption">
         <div class="home-carousel-content-container" onclick="window.location.href='../../html/manga.html?mangaId=${idTruyen}'">
           <div class="home-carousel-cover-container">
             <img src="${linkCoverTruyen}" alt="" class="home-carousel-cover" />

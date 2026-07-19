@@ -1,14 +1,22 @@
+/* css/component/loading.css */
+
 .loading-screen {
   position: fixed;
   top: 0;
-  left: 20%;
-  width: 80%;
+
+  /* MẶC ĐỊNH TRÊN DESKTOP: Chừa lại chính xác khoảng trống của sidebar bên trái */
+  left: var(--sidebar-width, 250px);
+  width: calc(100% - var(--sidebar-width, 250px));
   height: 100%;
-  background-color: var(--menu-background-color);
+
+  background-color: var(--menu-background-color, rgb(25, 26, 28));
   display: flex;
   justify-content: center;
   align-items: center;
+
+  /* Trên desktop: Nằm dưới navbar chính (1001) và sidebar (1050) để lộ 2 phần này ra */
   z-index: 999;
+
   opacity: 1;
   visibility: visible;
   transition:
@@ -49,4 +57,19 @@
   background-color: #ff4747;
   border-radius: 10px;
   transition: width 0.3s ease-out;
+}
+
+/* ==========================================
+   ĐIỀU CHỈNH RIÊNG CHO MOBILE & TABLET (DƯỚI 992px)
+   ========================================== */
+@media (max-width: 991px) {
+  .loading-screen {
+    /* Phủ kín 100% chiều rộng màn hình điện thoại */
+    left: 0;
+    width: 100%;
+
+    /* Đặt z-index là 1040 để che phủ toàn bộ nội dung và cả thanh header navbar (1001), 
+       nhưng vẫn nằm dưới thanh sidebar (1050) khi người dùng nhấn nút mở */
+    z-index: 1040;
+  }
 }

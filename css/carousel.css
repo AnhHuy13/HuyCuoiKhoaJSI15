@@ -124,3 +124,55 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* ==========================================
+   TỐI ƯU CAROUSEL CHO MOBILE & TABLET (< 768px)
+   ========================================== */
+@media (max-width: 767px) {
+  .carousel-item {
+    max-height: 260px; /* Thu hẹp chiều cao tổng thể */
+  }
+
+  #home-carousel-background {
+    height: 260px;
+  }
+
+  .home-carousel-content-container {
+    margin-top: 65px; /* Giữ khoảng cách an toàn dưới navbar 60px */
+    padding: 0 15px;
+    align-items: center;
+  }
+
+  /* Thu nhỏ ảnh bìa truyện */
+  .home-carousel-cover-container {
+    width: 80px;
+    height: 120px;
+    margin-left: 0; /* Reset lề trái */
+  }
+
+  .home-carousel-text-info {
+    margin-left: 15px;
+  }
+
+  /* Thu nhỏ tiêu đề truyện */
+  .home-carousel-title-manga {
+    font-size: 1.1rem !important;
+    line-height: 1.3;
+    margin-bottom: 6px;
+  }
+
+  /* Tạm ẩn tag trên mobile để dành diện tích cho mô tả */
+  .home-carousel-tag {
+    display: none !important;
+  }
+
+  /* Giới hạn mô tả ngắn gọn tối đa 2 dòng */
+  .home-carousel-description {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important; /* Ghi đè JS để ép tối đa 2 dòng */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

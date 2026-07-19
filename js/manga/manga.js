@@ -35,7 +35,7 @@ async function handleLibraryAction(mangaId, mangaInfo) {
       "Đăng nhập",
     );
     if (diToiDangNhap) {
-      window.location.href = "login.html";
+      window.location.href = "/auth/login.html";
     }
     return;
   }

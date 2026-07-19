@@ -11,3 +11,7 @@
   font-weight: 700;
   font-style: normal;
 }
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined" !important;
+}

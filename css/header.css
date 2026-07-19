@@ -1,6 +1,6 @@
-body.sidebar-open .header-logo {
-  display: none !important;
-}
+/* css/header.css */
+
+/* ĐÃ XÓA QUY TẮC ẨN LOGO TOÀN CỤC Ở ĐÂY */
 
 .sidebar:not(.open) .sidebar-logo {
   display: none;
@@ -8,7 +8,7 @@ body.sidebar-open .header-logo {
 
 .sidebar-open,
 .sidebar {
-  z-index: 999;
+  z-index: 1050; /* Đồng bộ để sidebar đè lên navbar khi mở trên mobile */
 }
 
 .banner-box {
@@ -26,14 +26,45 @@ body.sidebar-open .header-logo {
 .toggle-menu-btn {
   background-color: transparent;
   border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .toggle-menu-btn img {
   width: 30px;
   height: auto;
-  margin-right: 15px;
 }
 
+/* ==========================================================
+   LOGO NẰM SÁT BÊN CẠNH NÚT MENU VÀ CĂN GIỮA DỌC HOÀN HẢO
+   ========================================================== */
+.header-logo {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  text-decoration: none !important;
+
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.header-logo span {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: 1;
+}
+
+/* ==========================================
+   THANH NAVBAR CHÍNH
+   ========================================== */
 .navbar {
   position: fixed;
   top: 0;
@@ -41,9 +72,7 @@ body.sidebar-open .header-logo {
   width: 100%;
   height: 60px;
   z-index: 1001;
-
   background: rgba(25, 26, 28, 0);
-
   transition: all 0.3s ease;
 
   display: flex;
@@ -51,29 +80,41 @@ body.sidebar-open .header-logo {
   align-items: center;
   padding: 0 20px;
   border-bottom: 1px solid rgba(253, 79, 50, 0);
+  gap: 15px;
 }
 
 .navbar.scrolled {
-  background: rgba(25, 26, 28, 0.9);
+  background: rgba(25, 26, 28, 0.95);
   border-bottom: 1px solid rgba(253, 79, 50, 1);
+  backdrop-filter: blur(8px);
 }
 
-body.sidebar-open .navbar {
-  width: calc(100% - 250px);
-  left: 250px;
-}
-
+/* ==========================================
+   HỘP TÌM KIẾM (ĐẨY VỀ SÁT BÊN PHẢI)
+   ========================================== */
 .search-box-container {
   position: relative;
   width: 330px;
-  height: 25px;
-  flex-shrink: 0;
+  max-width: 100%;
+  height: 30px;
+  flex-shrink: 1;
+  margin-left: auto !important;
 }
 
 .search-box {
   width: 100%;
   height: 100%;
   box-sizing: border-box;
+  border-radius: 4px;
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  outline: none;
+}
+
+.search-box:focus {
+  border-color: rgb(253, 79, 50);
 }
 
 .search-query-container {
@@ -87,19 +128,32 @@ body.sidebar-open .navbar {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   max-height: 400px;
   overflow-y: auto;
-
   opacity: 0;
   pointer-events: none;
   transform: translateY(-10px);
   transition:
     opacity 0.3s ease,
     transform 0.3s ease;
+  z-index: 1010;
 }
 
 .search-query-container.active {
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+}
+
+.search-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(25, 26, 28, 0.65);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
 }
 
 .search-overlay.active {
@@ -114,38 +168,10 @@ body.sidebar-open .navbar {
 }
 
 .item-query {
-  padding: 10px 15px;
-  color: #ffffff;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.item-query:hover {
-  background-color: rgb(55, 60, 65);
-}
-
-.search-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(25, 26, 28, 0.65);
-
-  opacity: 8px;
-
-  z-index: 1000;
-
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-}
-
-.item-query {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 12px 12px;
+  padding: 12px;
   border-bottom: 1px solid rgb(50, 55, 60);
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -164,6 +190,7 @@ body.sidebar-open .navbar {
   height: 110px;
   background-color: #555;
   flex-shrink: 0;
+  border-radius: 4px;
 }
 
 .item-query-info {
@@ -175,13 +202,13 @@ body.sidebar-open .navbar {
 
 .item-query-name {
   color: #ffffff;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
   margin: 0;
-
+  line-height: 1.3;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -190,11 +217,25 @@ body.sidebar-open .navbar {
 .item-query-stat {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  gap: 6px;
   max-height: 20px;
+  font-size: 0.85rem;
+  color: #b0b0b0;
+}
+
+.item-query-stat img {
+  width: 14px;
+  height: 14px;
 }
 
 .item-query-star-text {
   color: #f56540;
+  margin: 0;
+}
+
+.item-query-bookmark-text {
+  margin: 0;
 }
 
 .item-query-status-container {
@@ -202,25 +243,51 @@ body.sidebar-open .navbar {
   flex-direction: row;
   background-color: rgb(61, 61, 61);
   border-radius: 10px;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
-  gap: 5px;
-  max-width: 100px;
+  gap: 6px;
+  padding: 2px 8px;
+  width: max-content;
+  margin-top: 4px;
 }
 
 .item-query-status {
-  font-size: 13px;
+  font-size: 11px;
+  color: #ffffff;
+  text-transform: capitalize;
 }
 
 .item-query-status-dot {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
   background-color: lime;
 }
 
-body.sidebar-open {
-  padding-left: 20%;
+body.sidebar-open .header-logo {
+  display: none !important;
+}
+
+@media (min-width: 992px) {
+  body.sidebar-open .navbar {
+    width: calc(100% - 250px);
+    left: 250px;
+  }
+}
+
+@media (max-width: 991px) {
+  body.sidebar-open .navbar {
+    width: 100% !important;
+    left: 0 !important;
+  }
+
+  .search-box-container {
+    width: 150px !important;
+  }
+
+  .header-logo span {
+    font-size: 1.2rem;
+  }
 }
 
 body.sidebar-open .banner-box {

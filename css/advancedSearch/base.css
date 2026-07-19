@@ -1,0 +1,68 @@
+:root {
+  --navbar-animation-time: 0.3s;
+  --menu-background-color: rgb(25, 26, 28);
+  --accent-orange: rgb(253, 79, 50);
+  --accent-orange-hover: rgb(255, 102, 78);
+  --card-bg: rgb(33, 34, 36);
+  --input-bg: rgb(44, 44, 44);
+  --border-color: rgba(255, 255, 255, 0.05);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif !important;
+}
+
+body {
+  padding-left: 0;
+  transition: padding-left var(--navbar-animation-time) ease-in-out;
+  background-color: var(--menu-background-color);
+  color: #ffffff;
+}
+
+.advanced-search-page {
+  padding-top: 70px;
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.search-header {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.go-back {
+  border: none;
+  background-color: rgba(255, 255, 255, 0);
+  cursor: pointer;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.go-back:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.search-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+@media (min-width: 992px) {
+  body.sidebar-open .advanced-search-page {
+    padding-left: 15px;
+  }
+}

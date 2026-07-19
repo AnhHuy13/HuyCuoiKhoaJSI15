@@ -1,0 +1,593 @@
+.filter-panel {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 15px 20px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 576px) {
+  .filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .filter-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.filter-item label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #b0b0b0;
+}
+
+.filter-select,
+.filter-input {
+  background-color: var(--input-bg);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  height: 40px;
+  padding: 0 10px;
+  outline: none;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease;
+  width: 100%;
+}
+
+.filter-select:focus,
+.filter-input:focus {
+  border-color: var(--accent-orange);
+}
+
+.year-input-group {
+  display: flex;
+  align-items: center;
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  height: 40px;
+}
+
+.year-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  width: 40px;
+  height: 100%;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: background-color 0.2s ease;
+}
+
+.year-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.year-input {
+  border: none !important;
+  text-align: center;
+  flex-grow: 1;
+  height: 100%;
+}
+
+/* Checkbox Dịch Thuật */
+.col-span-full-checkbox {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding-top: 5px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 28px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  user-select: none;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.checkbox-container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.custom-checkbox {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 20px;
+  width: 20px;
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.checkbox-container:hover input ~ .custom-checkbox {
+  background-color: rgb(55, 55, 55);
+}
+
+.checkbox-container input:checked ~ .custom-checkbox {
+  background-color: var(--accent-orange);
+  border-color: var(--accent-orange);
+}
+
+.custom-checkbox:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.checkbox-container input:checked ~ .custom-checkbox:after {
+  display: block;
+}
+
+.checkbox-container .custom-checkbox:after {
+  left: 6px;
+  top: 3px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.translated-lang-wrapper {
+  min-width: 150px;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+/* ==========================================
+   GENRE / TAG SELECTION GRID
+   ========================================== */
+.tag-selection-container {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.section-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b0b0b0;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.tag-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.tag-pill-choice {
+  background-color: var(--input-bg);
+  color: #ccc;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-pill-choice:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+/* Trạng thái Include (Xanh lá) */
+.tag-pill-choice.include {
+  background-color: rgb(46, 125, 50);
+  border-color: rgb(46, 125, 50);
+  color: white;
+}
+
+/* Trạng thái Exclude (Đỏ) */
+.tag-pill-choice.exclude {
+  background-color: rgb(198, 40, 40);
+  border-color: rgb(198, 40, 40);
+  color: white;
+}
+
+/* ==========================================
+   BỘ CHỌN NGÔN NGỮ TÙY BIẾN (CUSTOM DROPDOWN)
+   ========================================== */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.custom-dropdown-btn {
+  width: 100%;
+  height: 40px;
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  color: white;
+  padding: 0 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+  text-align: left;
+}
+
+.custom-dropdown-btn:focus,
+.custom-dropdown.active .custom-dropdown-btn {
+  border-color: var(--accent-orange);
+  outline: none;
+}
+
+.custom-dropdown-btn .btn-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-dropdown-btn .selected-flag {
+  border-radius: 2px;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.custom-dropdown-btn .dropdown-arrow {
+  font-size: 18px !important;
+  color: #888;
+  transition: transform 0.2s ease;
+}
+
+.custom-dropdown.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* Menu Dropdown */
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  max-height: 280px;
+  background-color: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  z-index: 1000;
+  overflow-y: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: none;
+  padding: 5px 0;
+}
+
+/* Kiểu dáng thanh cuộn riêng biệt */
+.custom-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-dropdown-menu::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 0 6px 6px 0;
+}
+
+.custom-dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.custom-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mục lựa chọn ngôn ngữ */
+.custom-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.custom-dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.custom-dropdown-item.selected {
+  background-color: rgba(253, 79, 50, 0.08);
+  color: var(--accent-orange);
+}
+
+/* Nút tròn Radio giả lập */
+.custom-dropdown-item .radio-dot {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #666;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+
+.custom-dropdown-item.selected .radio-dot {
+  border-color: var(--accent-orange);
+}
+
+.custom-dropdown-item .radio-dot::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-orange);
+  border-radius: 50%;
+  display: block;
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+
+.custom-dropdown-item.selected .radio-dot::after {
+  transform: scale(1);
+}
+
+/* Cờ quốc gia hiển thị */
+.custom-dropdown-item .flag-icon {
+  border-radius: 2px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   BỘ CHỌN NGÔN NGỮ TÙY BIẾN - MULTI-SELECT & SEARCH
+   ========================================== */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.custom-dropdown-btn {
+  width: 100%;
+  min-height: 40px;
+  height: auto;
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+  gap: 10px;
+}
+
+.custom-dropdown-btn:focus,
+.custom-dropdown.active .custom-dropdown-btn {
+  border-color: var(--accent-orange);
+  outline: none;
+}
+
+.custom-dropdown-btn .btn-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap; /* Cho phép rớt dòng nếu người dùng chọn quá nhiều cờ */
+}
+
+/* Container chứa các cờ nằm sát cạnh nhau */
+.selected-flags-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.selected-flags-container .flag-icon {
+  border-radius: 2px;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.custom-dropdown-btn .dropdown-arrow {
+  font-size: 18px !important;
+  color: #888;
+  transition: transform 0.2s ease;
+}
+
+.custom-dropdown.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* Thực đơn Dropdown to hơn */
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  max-height: 380px; /* Tăng kích thước tổng thể dropdown */
+  background-color: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  z-index: 1000;
+  overflow: hidden; /* Che bớt viền để thanh tìm kiếm dính ở góc */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  display: none;
+}
+
+/* Thanh tìm kiếm cố định (Fixed ở đầu menu) */
+.dropdown-search-wrapper {
+  position: sticky;
+  top: 0;
+  background-color: var(--card-bg);
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.dropdown-search-wrapper .search-icon {
+  color: #888;
+  font-size: 18px !important;
+}
+
+.dropdown-search-wrapper input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: white;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.dropdown-search-wrapper input:focus {
+  border-color: var(--accent-orange);
+}
+
+/* Khu vực cuộn hiển thị danh sách các ngôn ngữ */
+.dropdown-items-list {
+  max-height: 320px; /* Chiều cao vùng cuộn */
+  overflow-y: auto;
+  padding: 5px 0;
+}
+
+/* Kiểu dáng thanh cuộn riêng biệt */
+.dropdown-items-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-items-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dropdown-items-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.dropdown-items-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Các mục lựa chọn ngôn ngữ */
+.custom-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.custom-dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.custom-dropdown-item.selected {
+  background-color: rgba(253, 79, 50, 0.08);
+  color: var(--accent-orange);
+}
+
+/* Hộp đánh dấu Checkbox ô vuông */
+.custom-dropdown-item .checkbox-box {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #666;
+  border-radius: 3px; /* Đổi sang góc vuông nhẹ cho Checkbox */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.custom-dropdown-item.selected .checkbox-box {
+  border-color: var(--accent-orange);
+  background-color: var(--accent-orange);
+}
+
+.custom-dropdown-item.selected .checkbox-box::after {
+  content: "✓";
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+.custom-dropdown-item .flag-icon {
+  border-radius: 2px;
+  font-size: 16px;
+  flex-shrink: 0;
+}

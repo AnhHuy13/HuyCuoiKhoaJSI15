@@ -46,7 +46,7 @@ body {
   overflow: hidden;
 }
 
-.lastest-update-item img {
+.lastest-update-item > img {
   width: 80px;
   height: 100px;
   object-fit: cover;
@@ -312,4 +312,86 @@ body {
 
   line-height: 1.5;
   max-height: 3em;
+}
+
+.lastest-update-group-icon {
+  width: 16px !important;
+  height: 16px !important;
+  object-fit: contain !important;
+}
+
+/* ==========================================
+   TỐI ƯU TRANG CHỦ CHO MOBILE & TABLET (< 768px)
+   ========================================== */
+@media (max-width: 767px) {
+  /* Căn đều lề hai bên cho nội dung, tránh lệch lề trái */
+  .content {
+    margin-left: 0;
+    padding: 0 15px;
+  }
+
+  .lastest-update-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .lastest-update-item {
+    padding: 8px;
+  }
+
+  .lastest-update-item > img {
+    width: 70px;
+    height: 90px;
+  }
+
+  .lastest-update-name-manga {
+    font-size: 15px;
+  }
+
+  .self-published-heading {
+    margin-top: 25px;
+  }
+
+  /* Ẩn các nút chuyển hướng slide (người dùng vuốt bằng tay) */
+  .self-pub-arrow-btn {
+    display: none !important;
+  }
+
+  /* Điều chỉnh tỷ lệ phần tử tự xuất bản nhỏ lại tương ứng màn hình */
+  .self-published-item-container {
+    flex: 0 0 180px;
+    width: 180px;
+  }
+
+  .self-published-item-image {
+    width: 180px;
+    height: 250px;
+  }
+
+  /* Vì màn hình cảm ứng không có hover, cho hiển thị nhẹ các nút chức năng */
+  .self-published-item-image::before {
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  .self-published-item-btn,
+  .self-published-item-desc {
+    opacity: 1 !important;
+  }
+
+  .self-published-item-desc {
+    font-size: 0.75rem;
+    padding: 6px;
+  }
+
+  .self-published-item-read-btn {
+    width: 75px;
+    font-size: 13px;
+    max-height: 32px;
+    padding: 2px;
+  }
+
+  .self-published-item-info-btn {
+    width: 32px;
+    height: 32px;
+  }
 }

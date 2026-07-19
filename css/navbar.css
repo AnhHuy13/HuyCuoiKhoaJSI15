@@ -1,21 +1,32 @@
+/* css/navbar.css */
 :root {
   --navbar-animation-time: 0.3s;
   --navbar-color-background: rgb(44, 44, 44);
   --active-button-navbar: rgb(253, 79, 50);
+  --sidebar-width: 250px; /* Chuyển sang kích thước cố định để bảo vệ chữ không bị vỡ */
 }
 
 .sidebar {
-  width: 20%;
+  width: var(--sidebar-width);
   height: 100vh;
   position: fixed;
   top: 0;
   left: 0;
   background-color: var(--navbar-color-background);
-  padding: 20px 15px;
+  padding: 20px 15px 80px 15px;
   display: flex;
   flex-direction: column;
-  z-index: 1000;
+  z-index: 1050; /* Cao hơn navbar */
   box-sizing: border-box;
+  transition: transform var(--navbar-animation-time) ease-in-out;
+
+  /* Thuộc tính cốt lõi để ẩn sidebar sang bên trái */
+  transform: translateX(-100%);
+}
+
+/* 2. ĐIỀU KHIỂN HIỂN THỊ: Chỉ hiển thị sidebar khi body có class .sidebar-open */
+body.sidebar-open .sidebar {
+  transform: translateX(0);
 }
 
 .brand-wrapper {
@@ -25,93 +36,135 @@
   gap: 10px;
   color: white;
   text-decoration: none;
-  padding: 0px;
+  padding: 0;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .logo-navbar {
   width: 40px;
   height: auto;
+  flex-shrink: 0;
+}
+
+.brand-wrapper span {
+  font-size: 1.4rem;
+  font-weight: bold;
+  white-space: nowrap;
 }
 
 .nav-list {
   list-style: none;
   padding: 0;
+  margin: 0;
   width: 100%;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  gap: 8px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  padding: 10px;
-}
-
-.nav-item-bottom {
-  position: absolute;
-  bottom: 20px;
-  left: 15px;
-  right: 15px;
-  box-sizing: border-box;
+  padding: 12px 10px;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+  white-space: nowrap; /* Ngăn chặn chữ bị xuống dòng dọc như "Lịch / sử / đọc" */
 }
 
 .nav-item a {
   color: white;
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   margin-left: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .icon-nav-link {
-  width: 25px;
-}
-
-body {
-  padding-left: 20%;
-}
-
-.sidebar a {
-  text-decoration: none;
-}
-
-.sidebar a:hover {
-  color: white;
-}
-
-.brand-wrapper span {
-  font-size: 1.4375rem;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .nav-item.active {
   background-color: var(--active-button-navbar);
   font-weight: bold;
-  border-radius: 10px;
-  border: none;
 }
 
-.sidebar {
-  width: 20%;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: var(--navbar-color-background);
-  padding: 20px 15px 80px 15px;
-  display: flex;
-  flex-direction: column;
-  z-index: 1000;
-  box-sizing: border-box;
-}
-
-.sidebar.open {
-  transform: translateX(0);
+.nav-item-bottom {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .avatar-icon {
   width: 25px;
   height: 25px;
-  border-radius: 360px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ==========================================
+   XỬ LÝ RESPONSIVE THEO KÍCH THƯỚC MÀN HÌNH
+   ========================================== */
+
+/* css/navbar.css */
+
+/* 1. Màn hình Mobile & Tablet (Nhỏ hơn 992px) */
+@media (max-width: 991px) {
+  /* Lớp phủ mờ phía sau sidebar */
+  body.sidebar-open::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1049;
+    pointer-events: auto;
+  }
+
+  body.sidebar-open .navbar {
+    width: 100%;
+    left: 0;
+  }
+
+  /* Thu nhỏ ô tìm kiếm tránh đè lên các phần tử khác */
+  .search-box-container {
+    width: 150px !important;
+  }
+
+  /* ĐƯA LOGO NẰM KẾ BÊN NÚT MENU TOGGLE TRÊN MOBILE */
+  .header-logo {
+    position: static !important; /* Hủy bỏ thuộc tính absolute */
+    transform: none !important; /* Hủy bỏ dịch chuyển căn giữa */
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+    z-index: 1002;
+    margin-left: 10px !important; /* Khoảng cách nhỏ giữa nút menu và logo */
+  }
+
+  .header-logo span {
+    font-size: 1.2rem;
+  }
+}
+
+/* Màn hình Desktop (Từ 992px trở lên) */
+@media (min-width: 992px) {
+  body {
+    /* Tạo khoảng trống bên trái cho sidebar trên desktop */
+    padding-left: var(--sidebar-width) !important;
+    transition: padding-left var(--navbar-animation-time) ease-in-out;
+  }
+
+  /* Khi đóng sidebar trên desktop, trả lại toàn bộ chiều rộng cho nội dung */
+  body:not(.sidebar-open) {
+    padding-left: 0 !important;
+  }
 }
