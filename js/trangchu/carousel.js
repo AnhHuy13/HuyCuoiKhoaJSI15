@@ -47,28 +47,28 @@ export function generateMangaPage(pageIndex, mangaItem) {
   let flagTruyen = mangaItem?.originalLanguage;
 
   let linkCoverTruyen = mangaItem?.linkFileCover || "";
-
   const tempElement = document.createElement("div");
   tempElement.innerHTML = `
-    <div class="carousel-item ${activeClass}">
-      <img src="${linkCoverTruyen}" class="d-block w-100" id="home-carousel-background" alt="..." />
-      <div class="carousel-caption">
-        <div class="home-carousel-content-container" onclick="window.location.href='../../html/manga.html?mangaId=${idTruyen}'">
-          <div class="home-carousel-cover-container">
-            <img src="${linkCoverTruyen}" alt="" class="home-carousel-cover" />
-          </div>
-          <div class="home-carousel-text-info">
-            <div class="home-carousel-title-container">
-              <span class="flag-icon flag-icon-${flagTruyen}" id="flag-icon"></span>
-              <h5 class="home-carousel-title-manga">${nameTruyen}</h5>
-            </div>
-            <ul class="home-carousel-tag"></ul>
-            <p class="home-carousel-description">${descTruyen}</p>
-          </div>
+  <div class="carousel-item ${activeClass}">
+    <img src="${linkCoverTruyen}" class="d-block w-100" id="home-carousel-background" alt="..." />
+    <div class="carousel-caption">
+      <!-- Changed from a <div> with onclick to an <a> tag -->
+      <a class="home-carousel-content-container" href="../../html/manga.html?mangaId=${idTruyen}">
+        <div class="home-carousel-cover-container">
+          <img src="${linkCoverTruyen}" alt="" class="home-carousel-cover" />
         </div>
-      </div>
+        <div class="home-carousel-text-info">
+          <div class="home-carousel-title-container">
+            <span class="flag-icon flag-icon-${flagTruyen}" id="flag-icon"></span>
+            <h5 class="home-carousel-title-manga">${nameTruyen}</h5>
+          </div>
+          <ul class="home-carousel-tag"></ul>
+          <p class="home-carousel-description">${descTruyen}</p>
+        </div>
+      </a>
     </div>
-  `;
+  </div>
+`;
 
   const currentSlide = tempElement.firstElementChild;
 
@@ -77,11 +77,17 @@ export function generateMangaPage(pageIndex, mangaItem) {
   let tagsArray = mangaItem?.tags || [];
 
   for (let tagItem of tagsArray) {
-    let liElement = document.createElement("li");
-    liElement.textContent = tagItem?.attributes?.name?.en;
-    liElement.className = "home-carousel-tag-item";
-    fragment.appendChild(liElement);
+    let aElement = document.createElement("a");
+
+    aElement.textContent = tagItem?.attributes?.name?.en;
+    aElement.className = "home-carousel-tag-item";
+
+    const tagId = tagItem?.id || "";
+    aElement.href = `../../html/tag.html?tagId=${tagId}`;
+
+    fragment.appendChild(aElement);
   }
+
   ulElement.appendChild(fragment);
 
   if (pageIndex === 0) container.innerHTML = "";

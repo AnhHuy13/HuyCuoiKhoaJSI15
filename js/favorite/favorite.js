@@ -70,7 +70,7 @@ function renderMangaList() {
     container.innerHTML = `
       <div class="empty-state">
         <p>Vui lòng đăng nhập để xem và quản lý thư viện cá nhân của bạn.</p>
-        <button class="btn btn-danger btn-sm mt-2" onclick="window.location.href='/auth/login.html'">Đăng nhập ngay</button>
+        <button class="btn btn-danger btn-sm mt-2" onclick="window.location.href='./auth/dangnhap.html'">Đăng nhập ngay</button>
       </div>
     `;
     return;

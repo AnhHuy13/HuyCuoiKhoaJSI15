@@ -1,8 +1,16 @@
+// js/manga/manga.js
+
 import { SetDataCarousel } from "./manga-carousel.js";
 import { LayThongTinManga } from "../fetch/fetchMangaPage.js";
 import { SetDataMangaDetails, RenderChapterList } from "./manga-home.js";
 import { layCache, luuCache } from "../helper/cacheHelper.js";
-import { isLogin, readSubcollectionDoc, writeSubcollectionDoc } from "../database/firebase.js";
+import {
+  isLogin,
+  readSubcollectionDoc,
+  writeSubcollectionDoc,
+  getSubcollectionDocs,
+  readUserField,
+} from "../database/firebase.js";
 import { hienThiHopThoai } from "../helper/dialog.js";
 
 const CACHE_TTL_MS = 30 * 60 * 1000;
@@ -26,17 +34,13 @@ function hideLoadingScreen() {
   }
 }
 
+// ==========================================================
+// 1. THÊM TRUYỆN VÀO THƯ VIỆN CÁ NHÂN (READING STATUS)
+// ==========================================================
 async function handleLibraryAction(mangaId, mangaInfo) {
   const user = await isLogin();
-  console.log("trạng thái đăng nhập: " + user);
-  if (!user || user == null) {
-    const diToiDangNhap = await hienThiHopThoai(
-      "Bạn cần đăng nhập để thêm truyện vào thư viện cá nhân. Đi tới trang đăng nhập?",
-      "Đăng nhập",
-    );
-    if (diToiDangNhap) {
-      window.location.href = "/auth/login.html";
-    }
+  if (!user) {
+    await hienThiHopThoai("Bạn cần đăng nhập để thêm truyện vào thư viện cá nhân.", "Đăng nhập");
     return;
   }
 
@@ -145,7 +149,6 @@ async function handleLibraryAction(mangaId, mangaInfo) {
 
     try {
       await writeSubcollectionDoc(user.uid, "bookmarks", mangaId, documentData);
-
       localStorage.removeItem(`user_library_${user.uid}`);
       dongModal();
     } catch (err) {
@@ -156,6 +159,202 @@ async function handleLibraryAction(mangaId, mangaInfo) {
   };
 }
 
+// ==========================================================
+// 2. THÊM TRUYỆN VÀO CUSTOM LIST (ADD TO LIST MODAL)
+// ==========================================================
+async function handleAddToListAction(mangaId, mangaInfo) {
+  const user = await isLogin();
+  if (!user) {
+    await hienThiHopThoai("Bạn cần đăng nhập để quản lý danh sách cá nhân.", "Đăng nhập");
+    return;
+  }
+
+  // Đọc toàn bộ Custom Lists của người dùng hiện tại
+  let userLists = await getSubcollectionDocs(user.uid, "customLists");
+
+  // Đóng gói dữ liệu truyện ngắn gọn để lưu vào array titles của list
+  const currentMangaItem = {
+    id: mangaId,
+    title: mangaInfo.title || "Unknown",
+    cover: mangaInfo.cover || "",
+    description: mangaInfo.desc || "",
+    status: mangaInfo.status || "ongoing",
+    rating: mangaInfo.rating || "8.00",
+    bookmarks: mangaInfo.members || "N/A",
+    contentRating: mangaInfo.contentRating || "safe",
+    tags: mangaInfo.tags || [],
+  };
+
+  const overlay = document.createElement("div");
+  overlay.className = "lib-modal-overlay";
+
+  function renderAddToListModalContent() {
+    const listItemsHtml = userLists
+      .map((list) => {
+        const isChecked = (list.titles || []).some((t) => t.id === mangaId);
+        return `
+        <label class="custom-list-checkbox-item">
+          <input type="checkbox" data-list-id="${list.id}" ${isChecked ? "checked" : ""}>
+          <span class="checkbox-custom"></span>
+          <span class="custom-list-item-name">${list.name}</span>
+          <span class="badge-visibility ${list.visibility.toLowerCase()}">${list.visibility}</span>
+        </label>
+      `;
+      })
+      .join("");
+
+    overlay.innerHTML = `
+      <div class="lib-modal-box">
+        <button class="lib-modal-close" aria-label="Đóng">&times;</button>
+        <div class="lib-modal-header">
+          <h4>Add To List</h4>
+        </div>
+        <div class="lib-modal-body flex-column">
+          <div class="custom-lists-container">
+            ${listItemsHtml.length > 0 ? listItemsHtml : '<p class="text-muted text-center py-3 mb-0">Chưa có danh sách nào.</p>'}
+          </div>
+          <button class="btn-create-new-list-trigger" id="btn-trigger-create-list">
+            <span class="material-symbols-outlined">+</span> Create new list
+          </button>
+        </div>
+        <div class="lib-modal-actions">
+          <button class="lib-btn lib-btn-cancel">Cancel</button>
+          <button class="lib-btn lib-btn-action" id="btn-save-list-selection">Save</button>
+        </div>
+      </div>
+    `;
+
+    bindAddToListEvents();
+  }
+
+  function bindAddToListEvents() {
+    const closeBtn = overlay.querySelector(".lib-modal-close");
+    const cancelBtn = overlay.querySelector(".lib-btn-cancel");
+    const saveBtn = overlay.querySelector("#btn-save-list-selection");
+    const createTriggerBtn = overlay.querySelector("#btn-trigger-create-list");
+
+    closeBtn.onclick = dongModal;
+    cancelBtn.onclick = dongModal;
+
+    createTriggerBtn.onclick = () => {
+      openCreateListSubmodal();
+    };
+
+    saveBtn.onclick = async () => {
+      saveBtn.setAttribute("disabled", "true");
+      saveBtn.textContent = "Saving...";
+
+      const checkboxes = overlay.querySelectorAll('.custom-lists-container input[type="checkbox"]');
+
+      for (const cb of checkboxes) {
+        const listId = cb.getAttribute("data-list-id");
+        const listObj = userLists.find((x) => x.id === listId);
+        if (!listObj) continue;
+
+        let titles = listObj.titles || [];
+        const exists = titles.some((t) => t.id === mangaId);
+
+        if (cb.checked && !exists) {
+          titles.push(currentMangaItem);
+          await writeSubcollectionDoc(user.uid, "customLists", listId, { ...listObj, titles });
+        } else if (!cb.checked && exists) {
+          titles = titles.filter((t) => t.id !== mangaId);
+          await writeSubcollectionDoc(user.uid, "customLists", listId, { ...listObj, titles });
+        }
+      }
+
+      dongModal();
+    };
+  }
+
+  function openCreateListSubmodal() {
+    overlay.innerHTML = `
+      <div class="lib-modal-box">
+        <button class="lib-modal-close" aria-label="Đóng">&times;</button>
+        <div class="lib-modal-header">
+          <h4>Create New List</h4>
+        </div>
+        <div class="lib-modal-body flex-column">
+          <div class="submodal-input-group">
+            <input type="text" id="submodal-list-name-input" class="submodal-input" placeholder="List Name" required />
+          </div>
+          <label class="custom-list-checkbox-item mt-3">
+            <input type="checkbox" id="submodal-private-checkbox" checked />
+            <span class="checkbox-custom"></span>
+            <span class="custom-list-item-name">Private list</span>
+          </label>
+        </div>
+        <div class="lib-modal-actions">
+          <button class="lib-btn lib-btn-cancel" id="btn-cancel-create-sub">Cancel</button>
+          <button class="lib-btn lib-btn-action" id="btn-submit-create-sub">Create</button>
+        </div>
+      </div>
+    `;
+
+    const closeBtn = overlay.querySelector(".lib-modal-close");
+    const cancelBtn = overlay.querySelector("#btn-cancel-create-sub");
+    const submitBtn = overlay.querySelector("#btn-submit-create-sub");
+    const nameInput = overlay.querySelector("#submodal-list-name-input");
+    const privateCb = overlay.querySelector("#submodal-private-checkbox");
+
+    closeBtn.onclick = renderAddToListModalContent;
+    cancelBtn.onclick = renderAddToListModalContent;
+
+    submitBtn.onclick = async () => {
+      const listName = nameInput.value.trim();
+      if (!listName) {
+        alert("Vui lòng nhập tên danh sách!");
+        return;
+      }
+
+      submitBtn.setAttribute("disabled", "true");
+      submitBtn.textContent = "Creating...";
+
+      const realCreatorName = await readUserField(user.uid, "name", user.displayName || "User");
+      const newListId = `list_${Date.now()}`;
+
+      // Tạo danh sách mới và tự động thêm bộ truyện hiện tại vào danh sách này
+      const newListObj = {
+        id: newListId,
+        name: listName,
+        visibility: privateCb.checked ? "Private" : "Public",
+        creator: realCreatorName,
+        titles: [currentMangaItem],
+        createdAt: Date.now(),
+      };
+
+      await writeSubcollectionDoc(user.uid, "customLists", newListId, newListObj);
+
+      // Cập nhật mảng danh sách cục bộ và quay lại Modal Add To List
+      userLists.push(newListObj);
+      renderAddToListModalContent();
+    };
+  }
+
+  function dongModal() {
+    overlay.classList.remove("show");
+    setTimeout(() => {
+      if (overlay.parentNode) {
+        document.body.removeChild(overlay);
+      }
+    }, 250);
+  }
+
+  overlay.onclick = (e) => {
+    if (e.target === overlay) dongModal();
+  };
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    overlay.classList.add("show");
+  });
+
+  renderAddToListModalContent();
+}
+
+// ==========================================================
+// KHỞI TẠO TRANG
+// ==========================================================
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     updateProgress(20, "Đang kết nối hệ thống dữ liệu...");
@@ -188,10 +387,19 @@ window.addEventListener("DOMContentLoaded", async () => {
 
       await Promise.all([SetDataCarousel(info), RenderChapterList(mangaId)]);
 
+      // Nút Thêm vào thư viện
       const libraryBtn = document.querySelector(".manga-carousel-library-btn");
       if (libraryBtn) {
         libraryBtn.addEventListener("click", () => {
           handleLibraryAction(mangaId, info);
+        });
+      }
+
+      // Nút Thêm vào Custom List
+      const addToListBtn = document.getElementById("btn-add-to-list");
+      if (addToListBtn) {
+        addToListBtn.addEventListener("click", () => {
+          handleAddToListAction(mangaId, info);
         });
       }
 

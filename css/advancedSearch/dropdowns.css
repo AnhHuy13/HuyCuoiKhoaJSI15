@@ -1,0 +1,236 @@
+/* ==========================================
+   CUSTOM DROPDOWN BASE
+   ========================================== */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.custom-dropdown-btn {
+  width: 100%;
+  min-height: 40px;
+  height: auto;
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  color: white;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+  gap: 10px;
+}
+
+.custom-dropdown-btn:focus,
+.custom-dropdown.active .custom-dropdown-btn {
+  border-color: var(--accent-orange);
+  outline: none;
+}
+
+.custom-dropdown-btn .btn-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.custom-dropdown-btn .dropdown-arrow {
+  font-size: 18px !important;
+  color: #888;
+  transition: transform 0.2s ease;
+}
+
+.custom-dropdown.active .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* ==========================================
+   DROPDOWN MENU & SCROLLBAR
+   ========================================== */
+.custom-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  max-height: 380px;
+  background-color: var(--card-bg);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  z-index: 1000;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  display: none;
+}
+
+/* Scrollbar styling */
+.dropdown-items-list::-webkit-scrollbar,
+.custom-dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-items-list::-webkit-scrollbar-track,
+.custom-dropdown-menu::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.dropdown-items-list::-webkit-scrollbar-thumb,
+.custom-dropdown-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+}
+
+.dropdown-items-list::-webkit-scrollbar-thumb:hover,
+.custom-dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ==========================================
+   DROPDOWN ITEMS (COMMON & SINGLE-SELECT)
+   ========================================== */
+.custom-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.custom-dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.custom-dropdown-item.selected {
+  background-color: rgba(253, 79, 50, 0.08);
+  color: var(--accent-orange);
+}
+
+.custom-dropdown-item .flag-icon {
+  border-radius: 2px;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+/* Radio button style (for single-select) */
+.custom-dropdown-item .radio-dot {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #666;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease;
+}
+
+.custom-dropdown-item.selected .radio-dot {
+  border-color: var(--accent-orange);
+}
+
+.custom-dropdown-item .radio-dot::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-orange);
+  border-radius: 50%;
+  display: block;
+  transform: scale(0);
+  transition: transform 0.15s ease;
+}
+
+.custom-dropdown-item.selected .radio-dot::after {
+  transform: scale(1);
+}
+
+/* ==========================================
+   MULTI-SELECT FEATURE & SEARCH
+   ========================================== */
+.selected-flags-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.selected-flags-container .flag-icon {
+  border-radius: 2px;
+  font-size: 15px;
+  display: inline-block;
+}
+
+.dropdown-search-wrapper {
+  position: sticky;
+  top: 0;
+  background-color: var(--card-bg);
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.dropdown-search-wrapper .search-icon {
+  color: #888;
+  font-size: 18px !important;
+}
+
+.dropdown-search-wrapper input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: white;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.dropdown-search-wrapper input:focus {
+  border-color: var(--accent-orange);
+}
+
+.dropdown-items-list {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 5px 0;
+}
+
+/* Checkbox style (for multi-select) */
+.custom-dropdown-item .checkbox-box {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #666;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.custom-dropdown-item.selected .checkbox-box {
+  border-color: var(--accent-orange);
+  background-color: var(--accent-orange);
+}
+
+.custom-dropdown-item.selected .checkbox-box::after {
+  content: "✓";
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+}

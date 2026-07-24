@@ -55,16 +55,20 @@
   border-radius: 8px;
 }
 
-.home-carousel-content-container,
+.home-carousel-content-container {
+  margin-top: 80px;
+  display: flex !important;
+  flex-direction: row;
+  flex: 1;
+  text-decoration: none;
+  color: white;
+}
+
 .manga-carousel-content-container {
   margin-top: 80px;
   display: flex;
   flex-direction: row;
   flex: 1;
-}
-
-.home-carousel-content-container {
-  cursor: pointer;
 }
 
 .home-carousel-cover-container,
@@ -117,7 +121,8 @@
   padding: 5px 12px;
   border-radius: 20px;
   background-color: #333;
-  color: white;
+  color: white !important;
+  text-decoration: none;
 
   max-width: 11.25rem;
   white-space: nowrap;

@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Danh sách của tôi</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+    <link rel="stylesheet" href="../css/navbar.css" />
+    <link rel="stylesheet" href="../css/font.css" />
+    <link rel="stylesheet" href="../css/header.css" />
+    <link rel="stylesheet" href="../css/component/dialog.css" />
+    <link rel="stylesheet" href="../css/component/loading.css" />
+    <!-- Tách biệt file stylesheet rõ ràng theo Module -->
+    <link rel="stylesheet" href="../css/list/list.css" />
+    <link rel="stylesheet" href="../css/list/dialog-search.css" />
+    <link rel="stylesheet" href="../css/list/pagination.css" />
+  </head>
+  <body class="sidebar-open">
+    <div id="loading-screen" class="loading-screen">
+      <div class="loading-content">
+        <p class="loading-text">Đang kết nối hệ thống dữ liệu...</p>
+        <div class="progress-container">
+          <div class="progress-bar" id="load-progress"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Header & Navbar Injected dynamically -->
+    <script type="module" src="../js/layout/headerNavbar.js"></script>
+
+    <main class="lists-page-container">
+      <!-- VIEW 1: MY LISTS HOME (DASHBOARD) -->
+      <section id="my-lists-view" class="lists-view-section">
+        <div class="lists-header">
+          <button class="go-back-btn" id="home-back-btn">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+          </button>
+          <h2>My Lists</h2>
+        </div>
+
+        <div class="tabs-navigation">
+          <button class="tab-btn active" id="tab-my-lists">My Lists</button>
+          <button class="tab-btn" id="tab-followed-lists">Followed Lists</button>
+        </div>
+
+        <div class="lists-content-grid">
+          <button class="btn-create-trigger" id="btn-show-create-view">
+            <span class="material-symbols-outlined">add</span> New List
+          </button>
+
+          <!-- Grid chứa các thẻ danh sách đã tạo -->
+          <div class="lists-grid" id="user-lists-container"></div>
+        </div>
+      </section>
+
+      <!-- VIEW 2: LIST DETAILS (XEM CHI TIẾT DANH SÁCH + HERO BANNER) -->
+      <!-- VIEW 2: LIST DETAILS (XEM CHI TIẾT DANH SÁCH + HERO BANNER) -->
+      <section id="list-details-view" class="lists-view-section d-none">
+        <!-- Banner trên cùng -->
+        <div
+          class="list-hero-banner"
+          id="list-hero-banner"
+          style="
+            background-image: url(&quot;https://res.cloudinary.com/rimebiqz/image/upload/v1783914533/banner_qvydzf.jpg&quot;);
+          "
+        ></div>
+
+        <!-- Khung nội dung chi tiết phía dưới banner -->
+        <div class="list-hero-info-container">
+          <!-- Cột trái: Các nút chức năng xếp dọc -->
+          <div class="list-hero-actions-sidebar">
+            <button class="btn-hero-action follow-btn" id="btn-hero-follow">
+              <span class="material-symbols-outlined">bookmark</span> Follow
+            </button>
+            <button class="btn-hero-action star-btn">
+              <span class="material-symbols-outlined">star</span> Star
+            </button>
+            <div class="more-dropdown-wrapper">
+              <button class="btn-hero-action more-btn" id="btn-list-more">
+                <span class="material-symbols-outlined">more_horiz</span> More
+              </button>
+              <div class="more-dropdown-menu d-none" id="list-more-menu">
+                <button class="more-menu-item" id="btn-more-share">
+                  <span class="material-symbols-outlined">share</span> Share
+                </button>
+                <button class="more-menu-item" id="btn-more-edit">
+                  <span class="material-symbols-outlined">edit</span> Edit
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cột phải: Tiêu đề, thông tin người tạo, và Tabs -->
+          <div class="list-hero-details-content">
+            <h1 id="details-list-name" class="list-hero-title">hi</h1>
+
+            <div class="list-hero-meta">
+              <span id="details-list-visibility" class="badge-visibility private"
+                >Private MDList</span
+              >
+              <span class="creator-name-with-icon">
+                <span class="material-symbols-outlined">person</span>
+                <span id="details-list-creator">Mangoking1</span>
+              </span>
+            </div>
+
+            <!-- Thanh điều hướng phụ: Tabs & Nút chuyển bố cục -->
+            <div class="list-details-sub-header">
+              <div class="list-hero-tabs">
+                <span class="hero-tab active">Titles</span>
+                <span class="hero-tab">Feed</span>
+              </div>
+
+              <div class="layout-toggle-group">
+                <button class="layout-btn" id="details-layout-list-btn" title="Detailed List">
+                  <span class="material-symbols-outlined">view_list</span>
+                </button>
+                <button
+                  class="layout-btn active"
+                  id="details-layout-grid-btn"
+                  title="Comfortable Grid"
+                >
+                  <span class="material-symbols-outlined">grid_view</span>
+                </button>
+                <button class="layout-btn" id="details-layout-compact-btn" title="Compact Cards">
+                  <span class="material-symbols-outlined">apps</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Danh sách truyện chi tiết -->
+        <div class="list-details-body mt-4">
+          <div class="search-results-container list-view" id="details-manga-container"></div>
+
+          <!-- Phân trang tĩnh phía dưới cùng -->
+          <div class="pagination-container" id="details-pagination">
+            <button class="page-btn disabled">
+              <span class="material-symbols-outlined">west</span>
+            </button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn disabled">
+              <span class="material-symbols-outlined">east</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 3: CREATE LIST FORM -->
+      <section id="create-list-view" class="lists-view-section d-none">
+        <div class="lists-header">
+          <button class="go-back-btn" id="create-back-btn">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+          </button>
+          <h2>Create List</h2>
+        </div>
+
+        <div class="create-form-box">
+          <div class="form-row">
+            <div class="input-field-wrapper flex-grow-1">
+              <label for="list-name-input" class="floating-label">List name</label>
+              <input
+                type="text"
+                id="list-name-input"
+                class="list-text-input"
+                placeholder="Nhập tên list"
+                required
+              />
+            </div>
+
+            <div class="select-field-wrapper">
+              <label class="floating-label">Visibility</label>
+              <div class="custom-visibility-select" id="visibility-dropdown-btn">
+                <span id="selected-visibility">Private</span>
+                <span class="material-symbols-outlined select-chevron">expand_more</span>
+              </div>
+              <ul class="custom-visibility-options d-none" id="visibility-options-list">
+                <li data-value="Public">Public</li>
+                <li data-value="Private" class="active">Private</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="add-titles-bar-action mt-4">
+            <button type="button" class="btn-add-titles-modal" id="btn-open-search-modal">
+              <span class="material-symbols-outlined">add</span> Add some titles
+            </button>
+          </div>
+
+          <div class="selected-titles-preview-grid mt-4" id="temp-selected-titles-container"></div>
+
+          <div class="create-actions-footer">
+            <button class="btn-list-cancel" id="btn-create-cancel">Cancel</button>
+            <button class="btn-list-submit" id="btn-create-submit">Create</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- VIEW 4: EDIT LIST FORM (Đã loại bỏ hoàn toàn bộ lọc sắp xếp) -->
+      <section id="edit-list-view" class="lists-view-section d-none">
+        <div class="lists-header">
+          <button class="go-back-btn" id="edit-back-btn">
+            <span class="material-symbols-outlined">arrow_left_alt</span>
+          </button>
+          <h2>Edit List</h2>
+        </div>
+
+        <div class="create-form-box">
+          <div class="form-row">
+            <div class="input-field-wrapper flex-grow-1">
+              <label for="edit-list-name-input" class="floating-label">List name</label>
+              <input
+                type="text"
+                id="edit-list-name-input"
+                class="list-text-input"
+                placeholder="Nhập tên list"
+                required
+              />
+            </div>
+
+            <div class="select-field-wrapper">
+              <label class="floating-label">List Visibility</label>
+              <div class="custom-visibility-select" id="edit-visibility-dropdown-btn">
+                <span id="edit-selected-visibility">Private</span>
+                <span class="material-symbols-outlined select-chevron">expand_more</span>
+              </div>
+              <ul class="custom-visibility-options d-none" id="edit-visibility-options-list">
+                <li data-value="Public">Public</li>
+                <li data-value="Private">Private</li>
+              </ul>
+            </div>
+          </div>
+
+          <div
+            class="add-titles-bar-action mt-4"
+            style="border-bottom: 1px solid var(--border-color); padding-bottom: 15px"
+          >
+            <span class="floating-label">Titles</span>
+            <button
+              type="button"
+              class="btn-create-trigger mt-2"
+              id="btn-edit-add-title-trigger"
+              style="padding: 12px; font-size: 0.9rem"
+            >
+              <span class="material-symbols-outlined">add</span> Add Title
+            </button>
+          </div>
+
+          <!-- Lưới các manga hiện tại trong danh sách chỉnh sửa -->
+          <div class="edit-titles-grid mt-4" id="edit-titles-grid-container"></div>
+
+          <div class="create-actions-footer mt-5">
+            <button class="btn-list-cancel" id="btn-edit-cancel">Cancel</button>
+            <button class="btn-list-submit" id="btn-edit-save">Save</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- SEARCH TITLES DIALOG (REUSED CHO CẢ TẠO MỚI VÀ CHỈNH SỬA) -->
+    <dialog class="search-titles-dialog" id="search-titles-dialog">
+      <div class="dialog-header">
+        <h3>Search titles</h3>
+        <button class="dialog-close-x" id="btn-close-dialog">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="dialog-body-container">
+        <div class="dialog-search-control-bar">
+          <div class="dialog-search-input-box">
+            <span class="material-symbols-outlined search-icon-left">search</span>
+            <input type="text" id="dialog-search-input" placeholder="Search..." />
+            <button id="dialog-clear-search-btn" class="dialog-clear-btn" style="display: none">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="dialog-filter-actions-bar">
+          <div class="sort-dropdown-container">
+            <label for="dialog-sort-select">Sort by</label>
+            <select id="dialog-sort-select" class="dialog-sort-select">
+              <option value="relevance">Best Match</option>
+              <option value="rating">Rating</option>
+              <option value="latestUploadedChapter">Latest Update</option>
+              <option value="createdAt">Newest</option>
+            </select>
+          </div>
+
+          <div class="layout-toggle-group">
+            <button class="layout-btn active" id="dlg-layout-list-btn" title="Detailed List">
+              <span class="material-symbols-outlined">view_list</span>
+            </button>
+            <button class="layout-btn" id="dlg-layout-grid-btn" title="Comfortable Grid">
+              <span class="material-symbols-outlined">grid_view</span>
+            </button>
+            <button class="layout-btn" id="dlg-layout-compact-btn" title="Compact Cards">
+              <span class="material-symbols-outlined">apps</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="search-results-container list-view" id="dialog-results-container">
+          <div class="empty-results-state">
+            <span class="material-symbols-outlined massive-icon">search</span>
+            <p>Nhập từ khóa để bắt đầu tìm kiếm truyện</p>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="../js/navbar.js"></script>
+    <script type="module" src="../js/header.js"></script>
+    <script type="module" src="../js/list/list.js"></script>
+  </body>
+</html>

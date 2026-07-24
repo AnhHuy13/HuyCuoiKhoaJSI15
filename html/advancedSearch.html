@@ -73,11 +73,86 @@
           </div>
 
           <div class="filter-item">
-            <label for="filter-tags-mode">Filter tags</label>
-            <select id="filter-tags-mode" class="filter-select">
-              <option value="OR">Include any</option>
-              <option value="AND">Include all</option>
-            </select>
+            <label>Filter tags</label>
+            <div class="custom-dropdown" id="tags-custom-dropdown">
+              <button type="button" class="custom-dropdown-btn" id="tags-dropdown-btn">
+                <span class="btn-content">
+                  <span
+                    class="material-symbols-outlined tag-icon-mini"
+                    style="font-size: 16px; color: #888"
+                    >sell</span
+                  >
+                  <span id="selected-tags-summary-text">Filter tags</span>
+                </span>
+                <span class="material-symbols-outlined dropdown-arrow">expand_more</span>
+              </button>
+
+              <div class="custom-dropdown-menu tags-dropdown-menu" id="tags-dropdown-menu">
+                <div class="dropdown-search-wrapper">
+                  <span class="material-symbols-outlined search-icon">search</span>
+                  <input
+                    type="text"
+                    id="tag-search-input"
+                    placeholder="Search tags"
+                    autocomplete="off"
+                  />
+                  <button type="button" id="tag-reset-btn" class="tag-reset-btn">Reset</button>
+                </div>
+
+                <div class="tag-help-bar" id="tag-help-bar">
+                  <span class="info-icon">ⓘ</span>
+                  <p class="help-text">
+                    Click on any tag once to include it. Click on it again to exclude it. Click once
+                    more to clear it.
+                    <span class="dismiss-btn" id="dismiss-tag-help-btn">Dismiss</span>
+                  </p>
+                </div>
+
+                <div class="tags-dropdown-scroll-list">
+                  <div class="tag-categories-container">
+                    <div class="tag-category-group" data-category="format">
+                      <h3 class="category-title">Format</h3>
+                      <div class="tag-grid" id="tags-grid-format"></div>
+                    </div>
+
+                    <div class="tag-category-group" data-category="genre">
+                      <h3 class="category-title">Genre</h3>
+                      <div class="tag-grid" id="tags-grid-genre"></div>
+                    </div>
+
+                    <div class="tag-category-group" data-category="theme">
+                      <h3 class="category-title">Theme</h3>
+                      <div class="tag-grid" id="tags-grid-theme"></div>
+                    </div>
+
+                    <div class="tag-category-group" data-category="content">
+                      <h3 class="category-title">Content</h3>
+                      <div class="tag-grid" id="tags-grid-content"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="tag-other-options-bar">
+                  <h4 class="other-options-title">Other Options</h4>
+                  <div class="other-options-grid">
+                    <div class="option-item">
+                      <label for="filter-tags-mode">Inclusion mode</label>
+                      <select id="filter-tags-mode" class="filter-select">
+                        <option value="OR">Or</option>
+                        <option value="AND">And</option>
+                      </select>
+                    </div>
+                    <div class="option-item">
+                      <label for="filter-tags-exclusion-mode">Exclusion mode</label>
+                      <select id="filter-tags-exclusion-mode" class="filter-select">
+                        <option value="OR">Or</option>
+                        <option value="AND">And</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="filter-item">
@@ -87,7 +162,6 @@
               <option value="safe">Safe</option>
               <option value="suggestive">Suggestive</option>
               <option value="erotica">Erótica</option>
-              <option value="pornographic">Pornographic</option>
             </select>
           </div>
 
@@ -132,9 +206,7 @@
                     autocomplete="off"
                   />
                 </div>
-                <div class="dropdown-items-list" id="orig-dropdown-items-list">
-                  <!-- Dữ liệu ngôn ngữ gốc tự động sinh tại đây -->
-                </div>
+                <div class="dropdown-items-list" id="orig-dropdown-items-list"></div>
               </div>
             </div>
           </div>
@@ -172,7 +244,6 @@
               <span class="custom-checkbox"></span>
               Has translated chapters
             </label>
-            <!-- MỚI -->
             <div id="translated-lang-wrapper" class="translated-lang-wrapper" style="display: none">
               <div class="custom-dropdown" id="lang-custom-dropdown">
                 <button type="button" class="custom-dropdown-btn" id="lang-dropdown-btn">
@@ -197,13 +268,6 @@
               </div>
             </div>
           </div>
-        </div>
-
-        <div class="tag-selection-container">
-          <label class="section-label"
-            >Tags / Genres (Click once to Include Green, twice to Exclude Red)</label
-          >
-          <div class="tag-grid" id="tag-grid"></div>
         </div>
       </div>
 
@@ -249,6 +313,7 @@
     </main>
 
     <script type="module" src="../js/navbar.js"></script>
+    <script type="module" src="../js/header.js"></script>
     <script type="module" src="../js/advancedSearch/advancedSearch.js"></script>
   </body>
 </html>

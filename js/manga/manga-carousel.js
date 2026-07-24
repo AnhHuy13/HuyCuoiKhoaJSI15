@@ -28,7 +28,14 @@ export function SetDataCarousel(info) {
     const ulElement = document.querySelector(".manga-carousel-tag");
     if (ulElement) {
       ulElement.innerHTML = info.tags
-        .map((tag) => `<li class="manga-carousel-tag-item">${tag.attributes.name.en}</li>`)
+        .map(
+          (tag) => `
+            <li class="manga-carousel-tag-item">
+              <a href="tag.html?tagId=${tag.id}" class="manga-carousel-tag-text-item text-decoration-none text-inherit">
+                ${tag.attributes.name.en}
+              </a>
+            </li>`,
+        )
         .join("");
     }
 

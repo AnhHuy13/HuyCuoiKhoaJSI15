@@ -1,35 +1,43 @@
-// js/navbar.js
-
 function xuLySidebarAnHien() {
   var btnToggle = document.querySelector(".toggle-menu-btn");
   var sidebar = document.querySelector(".sidebar");
+  var loadingScreen;
+  try {
+    loadingScreen = document.querySelector(".loading-screen");
+  } catch (error) {}
   var body = document.body;
 
   if (btnToggle === null || sidebar === null) {
     return;
   }
 
-  // KHỞI TẠO ĐỒNG BỘ: Tự động khép menu khi người dùng truy cập bằng điện thoại lần đầu
   if (window.innerWidth <= 991) {
     sidebar.classList.remove("open");
+    try {
+      loadingScreen.classList.remove("open");
+    } catch (error) {}
     body.classList.remove("sidebar-open");
   }
 
   btnToggle.addEventListener("click", function (event) {
     event.stopPropagation();
     sidebar.classList.toggle("open");
+    try {
+      loadingScreen.classList.toggle("open");
+    } catch (error) {}
     body.classList.toggle("sidebar-open");
   });
 
-  // TỐI ƯU CLICK-OUTSIDE: Đóng menu khi click ra ngoài vùng trống điện thoại
   document.addEventListener("click", function (event) {
     if (window.innerWidth <= 991) {
-      // Chỉ khép lại khi: Menu đang mở, click KHÔNG trúng Sidebar và KHÔNG trúng nút Toggle Menu
       if (
         sidebar.classList.contains("open") &&
         !sidebar.contains(event.target) &&
         !btnToggle.contains(event.target)
       ) {
+        try {
+          loadingScreen.classList.remove("open");
+        } catch (error) {}
         sidebar.classList.remove("open");
         body.classList.remove("sidebar-open");
       }

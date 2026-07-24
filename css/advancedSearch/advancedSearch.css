@@ -1,5 +1,7 @@
 @import url(base.css);
-@import url(filter-and-tags.css);
+@import url(filters.css);
+@import url(dropdowns.css);
+@import url(tags.css);
 @import url(pagination.css);
 @import url(results-layouts.css);
 @import url(search-controls.css);

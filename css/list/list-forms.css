@@ -1,0 +1,152 @@
+/* ==========================================================================
+   css/list/list-forms.css
+   Bộ khung điều khiển biểu mẫu (Tạo mới & Chỉnh sửa thông tin danh sách)
+   ========================================================================== */
+
+.create-form-box {
+  background-color: var(--card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  padding: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.input-field-wrapper,
+.select-field-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+
+.select-field-wrapper {
+  width: 200px;
+}
+
+.floating-label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #888;
+}
+
+.list-text-input {
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  height: 46px;
+  border-radius: 6px;
+  padding: 0 15px;
+  outline: none;
+}
+
+.custom-visibility-select {
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  height: 46px;
+  border-radius: 6px;
+  padding: 0 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.custom-visibility-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  background-color: var(--input-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  z-index: 20;
+  list-style: none;
+  padding: 6px 0;
+}
+
+.custom-visibility-options li {
+  padding: 10px 15px;
+  cursor: pointer;
+}
+
+.btn-add-titles-modal {
+  background-color: transparent;
+  border: none;
+  color: var(--accent-orange);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.selected-titles-preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.preview-cover-item {
+  width: 70px;
+  height: 100px;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.preview-cover-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-remove-preview-item {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.create-actions-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+  border-top: 1px solid var(--border-color);
+  padding-top: 20px;
+}
+
+.btn-list-cancel {
+  background-color: var(--input-bg);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-list-submit {
+  background-color: var(--accent-orange);
+  border: none;
+  color: white;
+  border-radius: 6px;
+  padding: 10px 28px;
+  font-weight: bold;
+  cursor: pointer;
+}

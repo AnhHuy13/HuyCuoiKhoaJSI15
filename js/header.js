@@ -56,7 +56,6 @@ function InsertItemQuery(mangaList) {
             <p class="item-query-star-text">${data.rating}</p>
             <img src="https://res.cloudinary.com/rimebiqz/image/upload/v1783914412/bookmark_khfizj.svg" alt="" />
             <p class="item-query-bookmark-text">${data.follows}</p>
-            <img src="" alt="" />
           </div>
           <div class="item-query-status-container">
             <div class="item-query-status-dot"></div>
@@ -92,6 +91,12 @@ if (searchBox) {
   searchBox.addEventListener("focus", () => {
     if (searchBox.value.trim() !== "" && itemQueryList.children.length > 0) {
       toggleSearchDisplay(true);
+    }
+  });
+
+  searchBox.addEventListener("keypress", function (e) {
+    if (e.key === "Enter" && searchBox.value.trim() !== "" && itemQueryList.children.length > 0) {
+      window.location.href = `./advancedSearch.html?title=${String(searchBox.value)}&incMode=OR&excMode=OR`;
     }
   });
 }

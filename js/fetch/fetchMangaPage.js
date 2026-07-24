@@ -83,6 +83,7 @@ function groupChapters(rawChapters) {
       groupName: rels.find((r) => r.type === "scanlation_group")?.attributes?.name || "No Group",
       uploader: rels.find((r) => r.type === "user")?.attributes?.username || "Unknown",
       publishDate: formatTimeAgo(attr.publishDate),
+      externalUrl: attr.externalUrl || null, // <--- Lấy link nền tảng ngoài (MangaPlus, v.v.) nếu có
     });
   });
   return groupedData;

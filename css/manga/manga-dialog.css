@@ -193,3 +193,269 @@
     width: 100%;
   }
 }
+
+/* Thêm đoạn mã này vào cuối file css/manga/manga-dialog.css */
+
+/* --- ADD TO LIST & CREATE LIST MODAL STYLES --- */
+.custom-lists-container {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding-right: 5px;
+}
+
+.custom-lists-container::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-lists-container::-webkit-scrollbar-thumb {
+  background: #3d4046;
+  border-radius: 3px;
+}
+
+/* Item dòng danh sách có Checkbox */
+.custom-list-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #242528;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.custom-list-checkbox-item:hover {
+  background-color: #2e3035;
+}
+
+/* Ẩn checkbox mặc định của trình duyệt */
+.custom-list-checkbox-item input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Thiết kế Checkbox tùy chỉnh màu cam */
+.checkbox-custom {
+  height: 20px;
+  width: 20px;
+  min-width: 20px;
+  background-color: #191a1c;
+  border: 2px solid #555;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.custom-list-checkbox-item input:checked ~ .checkbox-custom {
+  background-color: #fd4f32;
+  border-color: #fd4f32;
+}
+
+.checkbox-custom::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-list-checkbox-item input:checked ~ .checkbox-custom::after {
+  display: block;
+}
+
+.custom-list-item-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  flex-grow: 1;
+}
+
+/* Nút kích hoạt tạo list mới */
+.btn-create-new-list-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: #ccc;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.btn-create-new-list-trigger:hover {
+  border-color: #fd4f32;
+  color: #fd4f32;
+  background-color: rgba(253, 79, 50, 0.05);
+}
+
+/* Ô nhập liệu trong Sub-Modal tạo list mới */
+.submodal-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.submodal-input {
+  background-color: #2a2c30;
+  border: 1px solid #3d4046;
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: white;
+  font-size: 0.95rem;
+  outline: none;
+  width: 100%;
+}
+
+.submodal-input:focus {
+  border-color: #fd4f32;
+}
+
+/* --- ADD TO LIST & CREATE LIST MODAL STYLES --- */
+.custom-lists-container {
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+  padding-right: 5px;
+}
+
+.custom-lists-container::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-lists-container::-webkit-scrollbar-thumb {
+  background: #3d4046;
+  border-radius: 3px;
+}
+
+/* Item dòng danh sách có Checkbox */
+.custom-list-checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background-color: #242528;
+  border-radius: 6px;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.custom-list-checkbox-item:hover {
+  background-color: #2e3035;
+}
+
+/* Ẩn checkbox mặc định của trình duyệt */
+.custom-list-checkbox-item input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Thiết kế Checkbox tùy chỉnh màu cam */
+.checkbox-custom {
+  height: 20px;
+  width: 20px;
+  min-width: 20px;
+  background-color: #191a1c;
+  border: 2px solid #555;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.custom-list-checkbox-item input:checked ~ .checkbox-custom {
+  background-color: #fd4f32;
+  border-color: #fd4f32;
+}
+
+.checkbox-custom::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.custom-list-checkbox-item input:checked ~ .checkbox-custom::after {
+  display: block;
+}
+
+.custom-list-item-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #ffffff;
+  flex-grow: 1;
+}
+
+/* Nút kích hoạt tạo list mới */
+.btn-create-new-list-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: #ccc;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s;
+}
+
+.btn-create-new-list-trigger:hover {
+  border-color: #fd4f32;
+  color: #fd4f32;
+  background-color: rgba(253, 79, 50, 0.05);
+}
+
+/* Ô nhập liệu trong Sub-Modal tạo list mới */
+.submodal-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.submodal-input {
+  background-color: #2a2c30;
+  border: 1px solid #3d4046;
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: white;
+  font-size: 0.95rem;
+  outline: none;
+  width: 100%;
+}
+
+.submodal-input:focus {
+  border-color: #fd4f32;
+}

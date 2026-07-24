@@ -2,7 +2,9 @@ import { POPULAR_TAGS } from "./constAdvSearch.js";
 import { showLoadingScreen, hideLoadingScreen, updateProgress } from "./utilsAdvSearch.js";
 import { renderMangaResults } from "./UIAdvSearch.js";
 import { fetchAdvancedSearch } from "../fetch/fetchAdvancedSearch.js";
-import { initSearchableDropdown } from "./dropdownAdvSearch.js"; // <-- Nạp module mới
+import { initSearchableDropdown } from "./dropdownAdvSearch.js";
+import { initAdvancedTagsManager } from "./tagsAdvSearch.js";
+import { updateURLFromFilters, parseFiltersFromURL, hydrateUIFromURL } from "./paramsAdvSearch.js";
 
 let lastSearchResults = [];
 let currentPage = 1;
@@ -90,8 +92,11 @@ async function initDropdowns() {
 function collectFilterParams() {
   const title = document.getElementById("main-search-input").value;
   const sort = document.getElementById("filter-sort").value;
+
+  // Lấy chế độ Inclusion/Exclusion đồng bộ từ các bộ chọn mới
   const includedTagsMode = document.getElementById("filter-tags-mode").value;
-  const excludedTagsMode = includedTagsMode;
+  const excludedTagsMode = document.getElementById("filter-tags-exclusion-mode").value;
+
   const contentRatingVal = document.getElementById("filter-content-rating").value;
   const demographicVal = document.getElementById("filter-demographic").value;
   const authorName = document.getElementById("filter-author").value;
@@ -148,6 +153,8 @@ async function performSearch() {
   showLoadingScreen("Đang tìm kiếm thông tin truyện...");
   try {
     const filters = collectFilterParams();
+    updateURLFromFilters(filters, currentPage);
+
     updateProgress(50, "Đang tải danh sách kết quả...");
     const results = await fetchAdvancedSearch(filters);
 
@@ -344,8 +351,21 @@ function setupEvents() {
 
 window.addEventListener("DOMContentLoaded", async () => {
   showLoadingScreen("Đang tải dữ liệu bộ lọc...");
-  initTagGrid();
-  await initDropdowns(); // Khởi tạo đồng loạt cả hai Custom Dropdowns
+
+  await initAdvancedTagsManager({
+    tagStates,
+    onStateChange: () => {},
+  });
+
+  await initDropdowns();
+
+  const hasURLParams = hydrateUIFromURL(tagStates);
+
   setupEvents();
+
+  if (hasURLParams) {
+    await performSearch();
+  }
+
   setTimeout(hideLoadingScreen, 300);
 });

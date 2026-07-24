@@ -100,18 +100,26 @@ export async function LayLatestUpdate(limit) {
 }
 
 export async function fetchLatestSelfPublishedManga(limit, offset = 0) {
+  // Giữ nguyên URL chuẩn của MangaDex (không thêm excludedManga)
   const url = `https://api.mangadex.org/manga?includedTags[]=891cf039-b895-47f0-9229-bef4c96eccd4&order[createdAt]=desc&limit=${limit}&offset=${offset}&includes[]=cover_art`;
 
   const response = await fetch(url);
   const json = await response.json();
   if (!json.data || json.data.length === 0) return [];
 
-  const mangaIds = json.data.map((m) => m.id);
+  // Lọc bỏ ID manga trực tiếp bằng JavaScript
+  const filteredData = json.data.filter(
+    (manga) => manga.id !== "124412be-d1bc-4a82-94ec-150290e079f0",
+  );
+
+  if (filteredData.length === 0) return [];
+
+  const mangaIds = filteredData.map((m) => m.id);
   const statsUrl = `https://api.mangadex.org/statistics/manga?manga[]=${mangaIds.join("&manga[]=")}`;
   const statsResponse = await fetch(statsUrl);
   const statsJson = await statsResponse.json();
 
-  return json.data.map((manga) => {
+  return filteredData.map((manga) => {
     const stats = statsJson.statistics[manga.id];
     const coverRel = manga.relationships.find((rel) => rel.type === "cover_art");
     const fileName = coverRel?.attributes?.fileName;

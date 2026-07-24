@@ -1,0 +1,184 @@
+:root {
+  --navbar-animation-time: 0.3s;
+  --menu-background-color: rgb(25, 26, 28);
+  --accent-orange: rgb(253, 79, 50);
+  --accent-orange-hover: rgb(255, 102, 78);
+  --card-bg: rgba(30, 31, 33, 0.85);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif !important;
+}
+
+body {
+  padding-left: 0;
+  transition: padding-left var(--navbar-animation-time) ease-in-out;
+  background-color: var(--menu-background-color);
+  color: #ffffff;
+}
+
+.tag-page-container {
+  padding-top: 80px;
+  padding-left: 24px;
+  padding-right: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.tag-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.go-back {
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  color: white;
+}
+
+.go-back:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tag-header h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.trending-section {
+  margin-bottom: 40px;
+}
+
+.section-subtitle {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 20px;
+}
+
+/* Khối hiển thị song song 2 cột trên PC */
+.trending-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 768px) {
+  .trending-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Định dạng thẻ cạc xu hướng */
+.manga-trending-card {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.manga-trending-card:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-background-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 25%;
+  transition: transform 0.5s ease;
+}
+
+.manga-trending-card:hover .card-background-img {
+  transform: scale(1.03);
+}
+
+/* Khối văn bản đè trên ảnh nền (Overlay) */
+.card-info-overlay {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px 20px;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+}
+
+.manga-trending-card:hover .card-info-overlay {
+  background: rgba(36, 37, 40, 0.95);
+}
+
+.card-manga-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-manga-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.manga-tag-pill {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #e0e0e0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.08);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Nút liên kết dưới cùng */
+.browse-all-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  margin-bottom: 60px;
+}
+
+.browse-all-btn {
+  color: var(--accent-orange);
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+  cursor: pointer;
+}
+
+.browse-all-btn:hover {
+  color: var(--accent-orange-hover);
+  text-decoration: underline !important;
+}
