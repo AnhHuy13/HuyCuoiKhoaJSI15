@@ -53,6 +53,29 @@ export function ChuyenLocale(code) {
   }
 }
 
+/**
+ * Tải động danh sách quốc gia từ countries.json và chuẩn hóa mã quốc gia sang chữ thường
+ * @returns {Promise<Array<{code: string, name: string}>>}
+ */
+export async function fetchCountries() {
+  try {
+    const res = await fetch("../data/countries.json");
+    const data = await res.json();
+
+    const mapped = Object.entries(data)
+      .map(([code, name]) => ({
+        code: code.toLowerCase(),
+        name: name,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    return [{ code: "none", name: "None" }, ...mapped];
+  } catch (error) {
+    console.error("Lỗi khi tải hoặc xử lý tệp countries.json:", error);
+    return [{ code: "none", name: "None" }];
+  }
+}
+
 export function changeStatusToColor(status) {
   const statusColors = {
     ongoing: "#008000",

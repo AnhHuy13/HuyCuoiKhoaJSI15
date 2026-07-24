@@ -1,6 +1,11 @@
+/* css/account.css */
+
 :root {
   --navbar-animation-time: 0.3s;
   --menu-background-color: rgb(25, 26, 28);
+  --accent-orange: #fd4f32;
+  --input-bg: #2a2c30;
+  --border-color: #3d4046;
 }
 
 * {
@@ -14,40 +19,689 @@ body {
   padding-left: 0;
   transition: padding-left var(--navbar-animation-time) ease-in-out;
   background-color: var(--menu-background-color);
+  color: white;
 }
 
 .account-page {
   padding-top: 60px;
 }
 
+/* --- Banner & Gom cụm Avatar chồng lớp mượt mà --- */
 .banner-profile {
-  background-image: url(https://res.cloudinary.com/rimebiqz/image/upload/v1783914533/banner_qvydzf.jpg);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
   width: 100%;
   height: 350px;
+  background-image: url("https://res.cloudinary.com/rimebiqz/image/upload/v1783914533/banner_qvydzf.jpg");
+  background-size: cover;
+  background-position: center;
   position: relative;
 }
 
-.avatar {
+.avatar-container {
   position: absolute;
-  border-radius: 50%;
-  width: 200px;
-  height: 200px;
-  bottom: -120px;
+  bottom: -80px; /* Nhô sâu xuống phía dưới */
   left: 60px;
-  border: 2px solid white;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid var(--menu-background-color);
+  background-color: #1a1a1a;
+  z-index: 10;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Nút hình bút chì góc phải Banner */
+.btn-banner-edit {
+  position: absolute;
+  bottom: 20px;
+  right: 60px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 6;
+}
+
+.btn-banner-edit:hover {
+  background-color: var(--accent-orange);
+  border-color: var(--accent-orange);
+}
+
+/* Đẩy chữ nằm hoàn toàn phía dưới nền tối bên cạnh Avatar */
+.profile-header-details {
+  padding: 24px 60px 24px 240px; /* Padding left 240px chừa khoảng trống cho Avatar */
+  background-color: #191a1c;
+  min-height: 100px;
 }
 
 .name-container {
-  position: absolute;
-  bottom: -105px;
-  left: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   color: white;
 }
 
+.name-flag-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.name-flag-row .fi {
+  width: 32px;
+  height: 24px;
+  border-radius: 3px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
 .name-account {
-  font-size: 35px;
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.id-account {
+  font-size: 1rem;
+  color: #888;
+  margin: 0;
+}
+
+/* Tabs điều hướng */
+.profile-tabs-nav {
+  display: flex;
+  background-color: #191a1c;
+  padding: 0 60px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.profile-tab-btn {
+  background: transparent;
+  border: none;
+  color: #888;
   font-weight: bold;
+  font-size: 1rem;
+  padding: 14px 24px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.profile-tab-btn.active {
+  color: white;
+}
+
+.profile-tab-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--accent-orange);
+}
+
+/* --- TAB INFO CARD GIÃN RA HẾT KHÔNG GIAN --- */
+.profile-info-card-full {
+  background-color: #1e1f22;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%; /* Đã co dãn rộng tối đa */
+}
+
+.profile-info-card-full h4 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.info-about-content {
+  color: #ccc;
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-line;
+}
+
+.info-meta-content {
+  font-family: monospace;
+  background-color: #121214;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: #aaa;
+  word-break: break-all;
+  width: fit-content;
+  font-size: 0.95rem;
+}
+
+.profile-share-link-wrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* --- 1 DÒNG CHỨA 1 LIST GIÃN RỘNG HẾT CHỖ --- */
+.user-lists-grid-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-bottom: 40px;
+  width: 100%; /* Giãn rộng hết không gian */
+}
+
+.profile-list-card {
+  background-color: #1e1f22;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  position: relative;
+  width: 100%; /* Đảm bảo 1 list phủ trọn 1 hàng ngang */
+}
+
+.profile-list-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.profile-list-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.profile-list-details h5 {
+  font-size: 1.15rem;
+  font-weight: bold;
+  margin: 0;
+  color: white;
+}
+
+.profile-list-creator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+/* Khung bọc bìa truyện */
+.profile-list-covers-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.list-manga-cover-thumb {
+  width: 60px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s;
+}
+
+.list-manga-cover-thumb:hover {
+  transform: scale(1.05);
+}
+
+.btn-see-more-covers {
+  width: 60px;
+  height: 90px;
+  background-color: #2a2c30;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-see-more-covers:hover {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+  background-color: rgba(253, 79, 50, 0.05);
+}
+
+.profile-list-actions {
+  position: relative;
+}
+
+.btn-list-more {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-list-more:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+.list-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  background-color: #191a1c;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 5px 0;
+  width: 140px;
+  z-index: 100;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+}
+
+.list-dropdown-item {
+  width: 100%;
+  background: none;
+  border: none;
+  color: #ccc;
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.list-dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: white;
+}
+
+/* --- DIALOG PROFILE EDIT --- */
+.profile-edit-dialog {
+  border: none;
+  border-radius: 8px;
+  background-color: #191a1c;
+  color: white;
+  width: 90%;
+  max-width: 580px;
+  padding: 24px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+}
+
+.profile-edit-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+}
+
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.dialog-header h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.dialog-close-x {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.dialog-close-x:hover {
+  color: white;
+}
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.dialog-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dialog-body::-webkit-scrollbar-thumb {
+  background: #3d4046;
+  border-radius: 3px;
+}
+
+.edit-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.edit-label {
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #aaa;
+}
+
+.form-control-dark {
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: white;
+  border-radius: 6px;
+  padding: 12px;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.form-control-dark:focus {
+  border-color: var(--accent-orange);
+}
+
+/* Upload Avatar */
+.avatar-upload-box {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 2px dashed #555;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #121214;
+}
+
+.avatar-upload-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+/* Upload Banner rộng toàn diện */
+.banner-upload-box-full {
+  width: 100%;
+  height: 150px;
+  border: 2px dashed #555;
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #121214;
+}
+
+.banner-upload-box-full img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.plus-icon {
+  font-size: 24px;
+  color: #666;
+  z-index: 1;
+}
+
+.avatar-upload-box:hover,
+.banner-upload-box-full:hover {
+  border-color: var(--accent-orange);
+}
+
+/* --- CUSTOM SEARCHABLE DROPDOWN (NATIONALITY) --- */
+.custom-dropdown-nation {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
+
+.custom-dropdown-btn-nation {
+  width: 100%;
+  min-height: 44px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: white;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.custom-dropdown-nation.active .custom-dropdown-btn-nation {
+  border-color: var(--accent-orange);
+}
+
+.btn-content-nation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.selected-flag-nation-container .flag-icon {
+  width: 24px;
+  height: 18px;
+  border-radius: 2px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dropdown-arrow-nation {
+  color: #888;
+  font-size: 18px !important;
+  transition: transform 0.2s;
+}
+
+.custom-dropdown-nation.active .dropdown-arrow-nation {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-menu-nation {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  width: 100%;
+  max-height: 260px;
+  background-color: #212224;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  z-index: 1000;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  display: none;
+}
+
+.dropdown-search-wrapper-nation {
+  position: sticky;
+  top: 0;
+  background-color: #212224;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 10;
+}
+
+.dropdown-search-wrapper-nation .search-icon-nation {
+  color: #888;
+  font-size: 18px !important;
+}
+
+.dropdown-search-wrapper-nation input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: white;
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  outline: none;
+}
+
+.dropdown-items-list-nation {
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.dropdown-items-list-nation::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-items-list-nation::-webkit-scrollbar-thumb {
+  background: #3d4046;
+  border-radius: 3px;
+}
+
+.custom-dropdown-item-nation {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: #ccc;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.custom-dropdown-item-nation:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  color: white;
+}
+
+.custom-dropdown-item-nation.selected {
+  background-color: rgba(253, 79, 50, 0.08);
+  color: var(--accent-orange);
+}
+
+.custom-dropdown-item-nation .flag-icon {
+  width: 22px;
+  height: 16px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* Radio circle */
+.custom-dropdown-item-nation .radio-dot {
+  width: 16px;
+  height: 16px;
+  border: 1px solid #666;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.custom-dropdown-item-nation.selected .radio-dot {
+  border-color: var(--accent-orange);
+}
+
+.custom-dropdown-item-nation.selected .radio-dot::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent-orange);
+  border-radius: 50%;
+  display: block;
+}
+
+.dialog-footer {
+  border-top: 1px solid var(--border-color);
+  padding-top: 16px;
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-dialog-save {
+  background-color: var(--accent-orange);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-dialog-save:hover {
+  background-color: #e0432a;
+}
+
+/* Thêm vào cuối file css/account.css */
+
+.btn-logout-full {
+  background-color: #ef5350;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-weight: bold;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+  width: 100%; /* Giãn rộng bằng các box thông tin */
+  text-align: center;
+  font-size: 1rem;
+  outline: none;
+}
+
+.btn-logout-full:hover {
+  background-color: #d32f2f;
+}
+
+.btn-logout-full:active {
+  transform: scale(0.98);
 }
